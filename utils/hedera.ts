@@ -1,4 +1,4 @@
-import { Client, PrivateKey, AccountId, TransferTransaction, Hbar } from "@hashgraph/sdk";
+import { Client, PrivateKey, AccountId, TransferTransaction, Hbar, ContractCallQuery, ContractExecuteTransaction, ContractFunctionParameters } from "@hashgraph/sdk";
 
 export type HederaNetwork = "testnet" | "mainnet";
 export type HederaConnection = {
@@ -25,8 +25,8 @@ export async function signAndTransfer(
 ): Promise<{ txId: string }> {
 	const tx = new TransferTransaction();
 	for (const t of transfers) {
-		tx.addHbarTransfer(conn.accountId, Hbar.fromTinybars(-BigInt(t.amountTinybar)));
-		tx.addHbarTransfer(t.to, Hbar.fromTinybars(BigInt(t.amountTinybar)));
+		tx.addHbarTransfer(conn.accountId, Hbar.fromTinybars(-parseInt(t.amountTinybar)));
+		tx.addHbarTransfer(t.to, Hbar.fromTinybars(parseInt(t.amountTinybar)));
 	}
 	const response = await tx.execute(conn.client);
 	const receipt = await response.getReceipt(conn.client);
@@ -37,7 +37,7 @@ export async function signAndTransfer(
 async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
 	const pwKey = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), { name: "PBKDF2" }, false, ["deriveKey"]);
 	return crypto.subtle.deriveKey(
-		{ name: "PBKDF2", salt, iterations: 100000, hash: "SHA-256" },
+		{ name: "PBKDF2", salt: new Uint8Array(salt), iterations: 100000, hash: "SHA-256" },
 		pwKey,
 		{ name: "AES-GCM", length: 256 },
 		false,
@@ -84,4 +84,195 @@ export async function loginOfflineWithPrivateKey(privateKey: string, password: s
 	} catch {
 		return false;
 	}
+}
+
+// Smart Contract Interaction Functions
+
+export async function createListing(
+	conn: HederaConnection,
+	contractId: string,
+	productId: string,
+	seller: string,
+	amount: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("createEscrow", new ContractFunctionParameters()
+			.addBytes32(productId)
+			.addAddress(seller)
+		)
+		.setPayableAmount(Hbar.fromTinybars(parseInt(amount)));
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function placeOrder(
+	conn: HederaConnection,
+	contractId: string,
+	orderId: string,
+	seller: string,
+	amount: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("createEscrow", new ContractFunctionParameters()
+			.addBytes32(orderId)
+			.addAddress(seller)
+		)
+		.setPayableAmount(Hbar.fromTinybars(parseInt(amount)));
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function trackSupplyChain(
+	conn: HederaConnection,
+	contractId: string,
+	productId: string
+): Promise<any> {
+	const query = new ContractCallQuery()
+		.setContractId(contractId)
+		.setFunction("getProductTraceability", new ContractFunctionParameters()
+			.addBytes32(productId)
+		);
+
+	const response = await query.execute(conn.client);
+	return response.getBytes(0);
+}
+
+export async function scheduleTransport(
+	conn: HederaConnection,
+	contractId: string,
+	requestId: string,
+	origin: string,
+	destination: string,
+	distance: number,
+	weight: number,
+	price: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("createTransportRequest", new ContractFunctionParameters()
+			.addBytes32(requestId)
+			.addString(origin)
+			.addString(destination)
+			.addUint256(distance)
+			.addUint256(weight)
+			.addUint256(parseInt(price))
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function recordHealthData(
+	conn: HederaConnection,
+	contractId: string,
+	recordId: string,
+	animalId: string,
+	animalType: string,
+	breed: string,
+	age: number,
+	healthStatus: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("createHealthRecord", new ContractFunctionParameters()
+			.addBytes32(recordId)
+			.addBytes32(animalId)
+			.addString(animalType)
+			.addString(breed)
+			.addUint256(age)
+			.addString(healthStatus)
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function addSupplyChainStep(
+	conn: HederaConnection,
+	contractId: string,
+	productId: string,
+	action: string,
+	location: string,
+	metadata: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("addSupplyChainStep", new ContractFunctionParameters()
+			.addBytes32(productId)
+			.addString(action)
+			.addString(location)
+			.addString(metadata)
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function performQualityCheck(
+	conn: HederaConnection,
+	contractId: string,
+	productId: string,
+	checkType: string,
+	passed: boolean,
+	notes: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("performQualityCheck", new ContractFunctionParameters()
+			.addBytes32(productId)
+			.addString(checkType)
+			.addBool(passed)
+			.addString(notes)
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function scheduleConsultation(
+	conn: HederaConnection,
+	contractId: string,
+	consultationId: string,
+	farmer: string,
+	issue: string,
+	fee: string
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("scheduleConsultation", new ContractFunctionParameters()
+			.addBytes32(consultationId)
+			.addAddress(farmer)
+			.addString(issue)
+			.addUint256(parseInt(fee))
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
+}
+
+export async function createEquipmentLease(
+	conn: HederaConnection,
+	contractId: string,
+	leaseId: string,
+	equipmentType: string,
+	equipmentName: string,
+	dailyRate: string,
+	duration: number
+): Promise<{ txId: string }> {
+	const tx = new ContractExecuteTransaction()
+		.setContractId(contractId)
+		.setFunction("createEquipmentLease", new ContractFunctionParameters()
+			.addBytes32(leaseId)
+			.addString(equipmentType)
+			.addString(equipmentName)
+			.addUint256(parseInt(dailyRate))
+			.addUint256(duration)
+		);
+
+	const response = await tx.execute(conn.client);
+	return { txId: response.transactionId.toString() };
 }

@@ -1,7 +1,25 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware({
-	publicRoutes: ["/", "/auth/login(.*)", "/auth/signup(.*)", "/auth/logout", "/hedera-test"],
+const isPublicRoute = createRouteMatcher([
+	"/",
+	"/auth/login(.*)",
+	"/auth/signup(.*)",
+	"/auth/logout",
+	"/hedera-test",
+	"/test-hedera",
+	"/pricing",
+	"/contact",
+	"/help",
+	"/privacy",
+	"/learn-more",
+	"/listings/browse",
+	"/cart",
+	"/checkout",
+	"/checkout/success"
+]);
+
+export default clerkMiddleware((auth, req) => {
+	if (!isPublicRoute(req)) auth().protect();
 });
 
 export const config = {

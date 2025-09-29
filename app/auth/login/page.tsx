@@ -17,9 +17,10 @@ export default function LoginPage() {
 					<p className="text-green-700">Encrypted Hedera key cached. You can use the app offline.</p>
 				) : (
 					<form
-						onSubmit={(e) => {
+						onSubmit={async (e) => {
 							e.preventDefault();
-							setOk(loginOfflineWithPrivateKey(privKey, password));
+							const result = await loginOfflineWithPrivateKey(privKey, password);
+							setOk(result);
 						}}
 						className="grid gap-2"
 					>

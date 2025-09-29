@@ -18,6 +18,23 @@ model User {
 	profiles  Profile[]
 	listings  Listing[]
 	ordersAsBuyer Order[] @relation("buyer")
+	
+	// Messaging
+	sentMessages     Message[] @relation("sentMessages")
+	receivedMessages Message[] @relation("receivedMessages")
+	
+	// Agro-Veterinary services
+	agroVetBookings      ServiceBooking[] @relation("agroVetBookings")
+	clientBookings       ServiceBooking[] @relation("clientBookings")
+	agroVetRecords       HealthRecord[]  @relation("agroVetRecords")
+	ownerRecords         HealthRecord[]  @relation("ownerRecords")
+	
+	// Agro-Vet products and services
+	agroVetProducts      AgroVetProduct[] @relation("agroVetProducts")
+	agroVetEquipment     EquipmentLease[] @relation("agroVetEquipment")
+	clientEquipment      EquipmentLease[] @relation("clientEquipment")
+	agroVetAdvice        ExpertAdvice[]  @relation("agroVetAdvice")
+	clientAdvice         ExpertAdvice[]  @relation("clientAdvice")
 }
 
 model Profile {
@@ -39,16 +56,27 @@ model Profile {
 }
 
 model Listing {
-	id          String   @id @default(cuid())
-	title       String
-	description String
-	priceCents  Int
-	currency    String   @default("USD")
-	seller      User     @relation(fields: [sellerId], references: [id])
-	sellerId    String
-	orders      Order[]
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
+	id                String   @id @default(cuid())
+	title             String
+	description       String
+	productDescription String?
+	priceCents        Int
+	currency          String   @default("USD")
+	quantity          Int
+	unit              String   @default("kg")
+	category          String
+	images            String[] // Array of image URLs/IPFS hashes
+	video             String?  // Video URL/IPFS hash
+	location          String?  // Farm location
+	harvestDate       DateTime?
+	expiryDate        DateTime?
+	isActive          Boolean  @default(true)
+	isVerified        Boolean  @default(false)
+	seller            User     @relation(fields: [sellerId], references: [id])
+	sellerId          String
+	orders            Order[]
+	createdAt         DateTime @default(now())
+	updatedAt         DateTime @updatedAt
 }
 
 model Order {
@@ -61,19 +89,150 @@ model Order {
 	amountCents  Int
 	currency     String     @default("USD")
 	hederaEscrow String?
+	deliveryAddress String?
+	deliveryDate DateTime?
+	trackingNumber String?
+	notes        String?
 	createdAt    DateTime   @default(now())
 	updatedAt    DateTime   @updatedAt
+	
+	// Supply chain tracking
+	trackingUpdates TrackingUpdate[]
+	messages        Message[]
+}
+
+model TrackingUpdate {
+	id        String   @id @default(cuid())
+	order     Order    @relation(fields: [orderId], references: [id])
+	orderId   String
+	location  String
+	latitude  Float?
+	longitude Float?
+	status    String
+	notes     String?
+	timestamp DateTime @default(now())
+}
+
+model Message {
+	id             String   @id @default(cuid())
+	sender         User     @relation("sentMessages", fields: [senderId], references: [id])
+	senderId       String
+	recipient      User     @relation("receivedMessages", fields: [recipientId], references: [id])
+	recipientId    String
+	conversationId String?
+	content        String
+	messageType    MessageType @default(TEXT)
+	attachments    String[]
+	isRead         Boolean  @default(false)
+	order          Order?   @relation(fields: [orderId], references: [id])
+	orderId        String?
+	createdAt      DateTime @default(now())
+	updatedAt      DateTime @updatedAt
+}
+
+model ServiceBooking {
+	id            String   @id @default(cuid())
+	agroVet       User     @relation("agroVetBookings", fields: [agroVetId], references: [id])
+	agroVetId     String
+	client        User     @relation("clientBookings", fields: [clientId], references: [id])
+	clientId      String
+	serviceType   String   // CONSULTATION, VACCINATION, TREATMENT, EQUIPMENT_LEASE, EXPERT_ADVICE
+	description   String
+	scheduledDate DateTime
+	location      String
+	status        BookingStatus @default(PENDING)
+	notes         String?
+	createdAt     DateTime @default(now())
+	updatedAt     DateTime @updatedAt
+}
+
+model HealthRecord {
+	id            String   @id @default(cuid())
+	agroVet       User     @relation("agroVetRecords", fields: [agroVetId], references: [id])
+	agroVetId     String
+	animalOwner   User     @relation("ownerRecords", fields: [animalOwnerId], references: [id])
+	animalOwnerId String
+	animalType    String
+	animalId      String
+	treatment     String
+	medication    String?
+	vaccination   String?
+	notes         String?
+	attachments   String[]
+	createdAt     DateTime @default(now())
+	updatedAt     DateTime @updatedAt
+}
+
+model AgroVetProduct {
+	id          String   @id @default(cuid())
+	agroVet     User     @relation("agroVetProducts", fields: [agroVetId], references: [id])
+	agroVetId   String
+	productType String   // SEEDS, VACCINES, PESTICIDES, EQUIPMENT, FERTILIZERS, TOOLS
+	title       String
+	description String
+	priceCents  Int
+	currency    String   @default("USD")
+	quantity    Int
+	unit        String   @default("piece")
+	category    String
+	images      String[]
+	video       String?
+	location    String?
+	isActive    Boolean  @default(true)
+	isVerified  Boolean  @default(false)
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}
+
+model EquipmentLease {
+	id          String   @id @default(cuid())
+	agroVet     User     @relation("agroVetEquipment", fields: [agroVetId], references: [id])
+	agroVetId   String
+	client      User     @relation("clientEquipment", fields: [clientId], references: [id])
+	clientId    String
+	equipment   String
+	description String
+	dailyRate   Int      // Rate in cents per day
+	currency    String   @default("USD")
+	startDate   DateTime
+	endDate     DateTime
+	status      LeaseStatus @default(PENDING)
+	notes       String?
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}
+
+model ExpertAdvice {
+	id          String   @id @default(cuid())
+	agroVet     User     @relation("agroVetAdvice", fields: [agroVetId], references: [id])
+	agroVetId   String
+	client      User     @relation("clientAdvice", fields: [clientId], references: [id])
+	clientId    String
+	title       String
+	description String
+	adviceType  String   // CROP_MANAGEMENT, PEST_CONTROL, SOIL_HEALTH, LIVESTOCK_CARE, EQUIPMENT_USAGE
+	content     String
+	attachments String[]
+	isPublic    Boolean  @default(false)
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
 }
 
 enum Role {
-	BUYER
 	FARMER
+	DISTRIBUTOR
+	TRANSPORTER
+	BUYER
+	VETERINARIAN
 	ADMIN
 }
 
 enum ProfileType {
-	BUYER
 	FARMER
+	DISTRIBUTOR
+	TRANSPORTER
+	BUYER
+	VETERINARIAN
 }
 
 enum KycStatus {
@@ -86,7 +245,33 @@ enum OrderStatus {
 	PENDING
 	PAID
 	SHIPPED
+	IN_TRANSIT
+	DELIVERED
 	COMPLETED
 	DISPUTED
 	REFUNDED
+	CANCELLED
+}
+
+enum MessageType {
+	TEXT
+	IMAGE
+	DOCUMENT
+	LOCATION
+}
+
+enum BookingStatus {
+	PENDING
+	CONFIRMED
+	IN_PROGRESS
+	COMPLETED
+	CANCELLED
+}
+
+enum LeaseStatus {
+	PENDING
+	ACTIVE
+	COMPLETED
+	CANCELLED
+	EXPIRED
 }
