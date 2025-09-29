@@ -1,0 +1,92 @@
+// Datasource
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+}
+
+// Generator
+generator client {
+	provider = "prisma-client-js"
+}
+
+model User {
+	id        String   @id @default(cuid())
+	email     String   @unique
+	role      Role
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	profiles  Profile[]
+	listings  Listing[]
+	ordersAsBuyer Order[] @relation("buyer")
+}
+
+model Profile {
+	id        String   @id @default(cuid())
+	user      User     @relation(fields: [userId], references: [id])
+	userId    String
+	type      ProfileType
+	fullName  String
+	kycStatus KycStatus @default(PENDING)
+	country   String
+	address   String
+	phone     String
+	idNumber  String
+	hederaWallet String
+	createdAt DateTime  @default(now())
+	updatedAt DateTime  @updatedAt
+
+	@@unique([userId, type], name: "userId_type")
+}
+
+model Listing {
+	id          String   @id @default(cuid())
+	title       String
+	description String
+	priceCents  Int
+	currency    String   @default("USD")
+	seller      User     @relation(fields: [sellerId], references: [id])
+	sellerId    String
+	orders      Order[]
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}
+
+model Order {
+	id           String   @id @default(cuid())
+	buyer        User     @relation("buyer", fields: [buyerId], references: [id])
+	buyerId      String
+	listing      Listing  @relation(fields: [listingId], references: [id])
+	listingId    String
+	status       OrderStatus @default(PENDING)
+	amountCents  Int
+	currency     String     @default("USD")
+	hederaEscrow String?
+	createdAt    DateTime   @default(now())
+	updatedAt    DateTime   @updatedAt
+}
+
+enum Role {
+	BUYER
+	FARMER
+	ADMIN
+}
+
+enum ProfileType {
+	BUYER
+	FARMER
+}
+
+enum KycStatus {
+	PENDING
+	APPROVED
+	REJECTED
+}
+
+enum OrderStatus {
+	PENDING
+	PAID
+	SHIPPED
+	COMPLETED
+	DISPUTED
+	REFUNDED
+}
