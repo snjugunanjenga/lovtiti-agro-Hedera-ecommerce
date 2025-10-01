@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@clerk/nextjs';
+// import { useUser } from '@clerk/nextjs';
 
 interface DeliveryInfo {
   fullName: string;
@@ -47,7 +47,8 @@ interface PaymentMethod {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { user } = useUser();
+  // const { user } = useUser();
+  const user = null as any; // Temporary for development
   const { items, totalItems, totalPrice, clearCart } = useCart();
   
   const [currentStep, setCurrentStep] = useState(1);

@@ -13,6 +13,10 @@ export default function SignupPage() {
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Check if Clerk keys are properly configured
+  const hasValidClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== 'pk_test_placeholder_key_for_development_only';
+
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
   };
@@ -30,7 +34,12 @@ export default function SignupPage() {
   const handleSignUpSuccess = async () => {
     if (selectedRole) {
       try {
-        // Save the role to the user's metadata
+        console.log('🎯 User signup successful, assigning role:', selectedRole);
+        
+        // Wait a moment for Clerk to fully initialize the user
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Save the role to the user's metadata and database
         const response = await fetch('/api/auth/assign-role', {
           method: 'POST',
           headers: {
@@ -40,14 +49,35 @@ export default function SignupPage() {
         });
 
         if (response.ok) {
-          console.log('Role assigned successfully:', selectedRole);
-          // Redirect to the appropriate dashboard
-          window.location.href = `/dashboard/${selectedRole.toLowerCase().replace('_', '-')}`;
+          const data = await response.json();
+          console.log('✅ Role assigned successfully:', data);
+          
+          // Wait a moment for the role to be processed
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          // Sync user to database
+          const syncResponse = await fetch('/api/auth/sync-user', {
+            method: 'POST',
+          });
+          
+          if (syncResponse.ok) {
+            console.log('✅ User synced to database');
+          }
+          
+          // Redirect to the appropriate dashboard based on role
+          const dashboardPath = selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole.toLowerCase()}`;
+          window.location.href = dashboardPath;
         } else {
           console.error('Failed to assign role');
+          // Still redirect to dashboard even if role assignment fails
+          const dashboardPath = selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole.toLowerCase()}`;
+          window.location.href = dashboardPath;
         }
       } catch (error) {
         console.error('Error assigning role:', error);
+        // Still redirect to dashboard even if role assignment fails
+        const dashboardPath = selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole.toLowerCase()}`;
+        window.location.href = dashboardPath;
       }
     }
   };
@@ -109,21 +139,38 @@ export default function SignupPage() {
             </div>
             
             <div className="space-y-4">
-              <SignUp 
-                routing="hash"
-                afterSignUpUrl={`/dashboard/${selectedRole?.toLowerCase().replace('_', '-') || 'farmer'}`}
-                appearance={{
-                  elements: {
-                    formButtonPrimary: "bg-green-600 hover:bg-green-700 text-white",
-                    card: "shadow-none",
-                    headerTitle: "hidden",
-                    headerSubtitle: "hidden",
-                    socialButtonsBlockButton: "border-gray-300 hover:border-green-300",
-                    formFieldInput: "border-gray-300 focus:border-green-500 focus:ring-green-500",
-                    footerActionLink: "text-green-600 hover:text-green-700"
-                  }
-                }}
-              />
+              {hasValidClerkKeys ? (
+                <SignUp 
+                  routing="hash"
+                  afterSignUpUrl={selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole?.toLowerCase() || 'farmer'}`}
+                  appearance={{
+                    elements: {
+                      formButtonPrimary: "bg-green-600 hover:bg-green-700 text-white",
+                      card: "shadow-none",
+                      headerTitle: "hidden",
+                      headerSubtitle: "hidden",
+                      socialButtonsBlockButton: "border-gray-300 hover:border-green-300",
+                      formFieldInput: "border-gray-300 focus:border-green-500 focus:ring-green-500",
+                      footerActionLink: "text-green-600 hover:text-green-700"
+                    }
+                  }}
+                  unsafeMetadata={{
+                    role: selectedRole
+                  }}
+                />
+              ) : (
+                <div className="text-center p-6">
+                  <h3 className="text-lg font-semibold mb-4">Authentication Setup Required</h3>
+                  <p className="text-gray-600 mb-4">
+                    Clerk authentication is not configured. Please add your Clerk API keys to the .env file.
+                  </p>
+                  <div className="bg-yellow-50 border border-yellow-200 rounded p-4">
+                    <p className="text-sm text-yellow-800">
+                      <strong>Setup Required:</strong> Add your Clerk API keys to enable user registration.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

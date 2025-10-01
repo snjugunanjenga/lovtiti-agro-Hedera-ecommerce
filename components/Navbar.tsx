@@ -31,14 +31,39 @@ export default function Navbar() {
   // Get user role from metadata or user object
   const getUserRole = () => {
     if (!user) return null;
-    // This would typically come from your user metadata or database
-    return user.publicMetadata?.role as string || 'FARMER';
+    
+    // Get role from Clerk metadata
+    const role = user.publicMetadata?.role as string;
+    
+    // If no role in metadata, try to get from database via API
+    if (!role || role === 'UserRole') {
+      // Fallback to 'BUYER' for now, but we should fetch from database
+      return 'BUYER';
+    }
+    
+    return role;
   };
 
   const userRole = getUserRole();
+  
+  // Get display name for role
+  const getRoleDisplayName = (role: string | null) => {
+    if (!role) return 'User';
+    
+    switch (role) {
+      case 'FARMER': return 'Farmer';
+      case 'BUYER': return 'Buyer';
+      case 'DISTRIBUTOR': return 'Distributor';
+      case 'TRANSPORTER': return 'Transporter';
+      case 'VETERINARIAN': return 'Agro-Vet';
+      case 'ADMIN': return 'Admin';
+      default: return role;
+    }
+  };
 
   const navigation = [
     { name: 'Marketplace', href: '/listings/browse', public: true },
+    { name: 'Services', href: '/services', public: true },
     { name: 'Pricing', href: '/pricing', public: true },
     { name: 'Learn More', href: '/learn-more', public: true },
   ];
@@ -104,7 +129,9 @@ export default function Navbar() {
   };
 
   const getAvailableDashboards = () => {
-    return dashboards.filter(canAccessDashboard);
+    // Show all dashboards for all users for now
+    return dashboards;
+    // return dashboards.filter(canAccessDashboard);
   };
 
   return (
@@ -139,8 +166,7 @@ export default function Navbar() {
             ))}
 
             {/* Dashboard Dropdown */}
-            <SignedIn>
-              <div className="relative group">
+            <div className="relative group">
                 <button
                   className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
                     pathname.startsWith('/dashboard')
@@ -206,7 +232,6 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
-            </SignedIn>
             
             
             {/* Cart Button */}
@@ -252,18 +277,11 @@ export default function Navbar() {
                   <p className="text-sm font-medium text-gray-900">
                     {user?.firstName || 'User'}
                   </p>
-                  <p className="text-xs text-gray-500 capitalize">
-                    {userRole?.toLowerCase() || 'Member'}
+                  <p className="text-xs text-gray-500">
+                    {getRoleDisplayName(userRole)}
                   </p>
                 </div>
-                <UserButton 
-                  afterSignOutUrl="/" 
-                  appearance={{
-                    elements: {
-                      avatarBox: "w-10 h-10 ring-2 ring-green-200 hover:ring-green-300 transition-all duration-200"
-                    }
-                  }}
-                />
+                <UserButton />
               </div>
             </SignedIn>
           </div>
@@ -305,8 +323,7 @@ export default function Navbar() {
               ))}
 
               {/* Mobile Dashboard Section */}
-              <SignedIn>
-                <div className="pt-4 border-t border-green-200">
+              <div className="pt-4 border-t border-green-200">
                   <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Your Dashboards
                   </div>
@@ -342,7 +359,6 @@ export default function Navbar() {
                     </div>
                   )}
                 </div>
-              </SignedIn>
               
               {/* Mobile Cart */}
               <Link href="/cart" className="block">
@@ -381,11 +397,11 @@ export default function Navbar() {
                       <p className="text-sm font-medium text-gray-900">
                         {user?.firstName || 'User'}
                       </p>
-                      <p className="text-xs text-gray-500 capitalize">
-                        {userRole?.toLowerCase() || 'Member'}
+                      <p className="text-xs text-gray-500">
+                        {getRoleDisplayName(userRole)}
                       </p>
                     </div>
-                    <UserButton afterSignOutUrl="/" />
+                    <UserButton />
                   </div>
                 </SignedIn>
               </div>

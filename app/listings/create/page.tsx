@@ -16,10 +16,15 @@ import {
   Package,
   DollarSign,
   Save,
-  ArrowLeft
+  ArrowLeft,
+  Shield,
+  AlertCircle
 } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import { getBusinessRulesForUser } from '@/utils/businessLogic';
 
 export default function CreateListingPage() {
+  const { user, isLoaded } = useUser();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -38,6 +43,10 @@ export default function CreateListingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+
+  // Check if user can create listings (Farmers and Agrovets only)
+  const userRole = user?.publicMetadata?.role as string || 'BUYER';
+  const canCreateListings = ['FARMER', 'VETERINARIAN', 'ADMIN'].includes(userRole);
 
   const categories = [
     'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 'Herbs', 
@@ -121,6 +130,57 @@ export default function CreateListingPage() {
       setIsSubmitting(false);
     }
   };
+
+  // Show access denied if user cannot create listings
+  if (isLoaded && !canCreateListings) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-12">
+        <div className="max-w-4xl mx-auto px-4">
+          <Card className="text-center">
+            <CardHeader>
+              <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                <Shield className="w-8 h-8 text-red-600" />
+              </div>
+              <CardTitle className="text-xl text-gray-900">Access Denied</CardTitle>
+              <CardDescription className="text-gray-600">
+                Only Farmers and Agro-Veterinarians can create product listings
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-start">
+                  <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5 mr-3" />
+                  <div>
+                    <h4 className="text-sm font-medium text-yellow-800">Insufficient Permissions</h4>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Your current role ({userRole}) doesn't have permission to create listings.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-gray-900">Who can create listings:</h4>
+                <div className="space-y-1">
+                  <p className="text-sm text-gray-600">• Farmers - List agricultural products</p>
+                  <p className="text-sm text-gray-600">• Agro-Veterinarians - List equipment and products</p>
+                </div>
+              </div>
+
+              <div className="flex space-x-3">
+                <Button onClick={() => router.push('/')} className="flex-1">
+                  Go to Homepage
+                </Button>
+                <Button variant="outline" onClick={() => router.push('/auth/signup')} className="flex-1">
+                  Sign Up as Farmer/Agro-Vet
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 py-12">

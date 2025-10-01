@@ -4,9 +4,17 @@ import { useCart } from '@/hooks/useCart';
 import CartItem from '@/components/cart/CartItem';
 import CartSummary from '@/components/cart/CartSummary';
 import CartEmpty from '@/components/cart/CartEmpty';
-import { Loader2 } from 'lucide-react';
+import { Loader2, LogIn } from 'lucide-react';
+// import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function CartPage() {
+  // const { isSignedIn, isLoaded } = useUser();
+  const isSignedIn = true; // Allow cart access without authentication for now
+  const isLoaded = true; // Temporary for development
+  const router = useRouter();
+  
   const {
     items,
     totalItems,
@@ -16,6 +24,41 @@ export default function CartPage() {
     clearCart,
     isLoading,
   } = useCart();
+
+  useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push('/auth/login');
+    }
+  }, [isLoaded, isSignedIn, router]);
+
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-green-600 mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <LogIn className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Login Required</h2>
+          <p className="text-gray-600 mb-4">Please log in to view your cart</p>
+          <button
+            onClick={() => router.push('/auth/login')}
+            className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

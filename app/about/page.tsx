@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import Navbar from '@/components/Navbar';
+// Navbar is already included in the root layout
 import { 
   Leaf, 
   Users, 
@@ -144,7 +144,6 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      <Navbar />
       
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">

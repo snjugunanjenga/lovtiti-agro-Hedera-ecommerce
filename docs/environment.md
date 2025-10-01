@@ -266,7 +266,7 @@ BI_DASHBOARD_URL="https://bi.lovittiagro.com"
 ## Environment Setup Instructions
 
 ### 1. Development Environment
-1. Copy the environment variables to your `.env.local` file
+1. Copy the environment variables to your `.env` file
 2. Fill in the required values for your development setup
 3. Ensure all services (Redis, Elasticsearch) are running locally
 4. Set `NODE_ENV="development"`

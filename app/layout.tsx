@@ -1,30 +1,31 @@
-import "../styles.css";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
-import React from "react";
+import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Inter } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/toaster";
+import { clerkConfig } from "@/lib/clerk-config";
+import UserSync from "@/components/UserSync";
+import "@/lib/suppress-warnings";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-	title: "Lovitti Agro Mart",
-	description: "Marketplace connecting farmers and buyers",
+	title: "Lovitti Agro Mart - Blockchain-Powered Agricultural Marketplace",
+	description: "Connecting African farmers, buyers, distributors, transporters, and agro-veterinarians through blockchain technology",
+	keywords: "agriculture, marketplace, blockchain, farmers, buyers, Hedera, Africa",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<ClerkProvider>
-			<html lang="en">
-				<body className="min-h-screen bg-white text-gray-900">
-					<header className="p-4 border-b flex items-center justify-between">
-						<div className="font-semibold">Lovitti Agro Mart</div>
-						<nav className="flex items-center gap-3">
-							<SignedOut>
-								<SignInButton />
-								<SignUpButton />
-							</SignedOut>
-							<SignedIn>
-								<UserButton />
-							</SignedIn>
-						</nav>
-					</header>
-					{children}
+		<ClerkProvider {...clerkConfig}>
+			<html lang="en" className={inter.className} suppressHydrationWarning>
+				<body className="min-h-screen bg-gray-50 text-gray-900 antialiased" suppressHydrationWarning>
+					<UserSync />
+					<Navbar />
+					<main className="min-h-screen">
+						{children}
+					</main>
+					<Toaster />
 				</body>
 			</html>
 		</ClerkProvider>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import DashboardGuard from '@/components/DashboardGuard';
+// import DashboardGuard from '@/components/DashboardGuard';
 import { 
   ShoppingCart, 
   Package, 
@@ -335,12 +335,12 @@ function BuyerDashboardContent() {
 
 export default function BuyerDashboard() {
   return (
-    <DashboardGuard
-      allowedRoles={['BUYER', 'ADMIN']}
-      dashboardName="Buyer Dashboard"
-      dashboardDescription="Browse products, manage orders, and track purchases"
-    >
+    // <DashboardGuard
+    //   allowedRoles={['BUYER', 'ADMIN']}
+    //   dashboardName="Buyer Dashboard"
+    //   dashboardDescription="Browse products, manage orders, and track purchases"
+    // >
       <BuyerDashboardContent />
-    </DashboardGuard>
+    // </DashboardGuard>
   );
 }

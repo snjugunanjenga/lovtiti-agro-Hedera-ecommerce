@@ -15,8 +15,8 @@ import {
   Users,
   MessageCircle,
   Share,
-  Record,
-  StopCircle
+  Circle,
+  Square
 } from 'lucide-react';
 
 interface VideoCallProps {
@@ -218,9 +218,9 @@ function VideoCallContent({ sessionId }: VideoCallProps) {
             }`}
           >
             {isRecording ? (
-              <StopCircle className="h-6 w-6" />
+              <Square className="h-6 w-6" />
             ) : (
-              <Record className="h-6 w-6" />
+              <Circle className="h-6 w-6" />
             )}
           </Button>
 

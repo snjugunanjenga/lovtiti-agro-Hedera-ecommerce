@@ -98,7 +98,7 @@ export async function createListing(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("createEscrow", new ContractFunctionParameters()
-			.addBytes32(productId)
+			.addBytes32(new TextEncoder().encode(productId))
 			.addAddress(seller)
 		)
 		.setPayableAmount(Hbar.fromTinybars(parseInt(amount)));
@@ -117,7 +117,7 @@ export async function placeOrder(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("createEscrow", new ContractFunctionParameters()
-			.addBytes32(orderId)
+			.addBytes32(new TextEncoder().encode(orderId))
 			.addAddress(seller)
 		)
 		.setPayableAmount(Hbar.fromTinybars(parseInt(amount)));
@@ -134,11 +134,11 @@ export async function trackSupplyChain(
 	const query = new ContractCallQuery()
 		.setContractId(contractId)
 		.setFunction("getProductTraceability", new ContractFunctionParameters()
-			.addBytes32(productId)
+			.addBytes32(new TextEncoder().encode(productId))
 		);
 
 	const response = await query.execute(conn.client);
-	return response.getBytes(0);
+	return response.getBytes32(0);
 }
 
 export async function scheduleTransport(
@@ -154,7 +154,7 @@ export async function scheduleTransport(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("createTransportRequest", new ContractFunctionParameters()
-			.addBytes32(requestId)
+			.addBytes32(new TextEncoder().encode(requestId))
 			.addString(origin)
 			.addString(destination)
 			.addUint256(distance)
@@ -179,8 +179,8 @@ export async function recordHealthData(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("createHealthRecord", new ContractFunctionParameters()
-			.addBytes32(recordId)
-			.addBytes32(animalId)
+			.addBytes32(new TextEncoder().encode(recordId))
+			.addBytes32(new TextEncoder().encode(animalId))
 			.addString(animalType)
 			.addString(breed)
 			.addUint256(age)
@@ -202,7 +202,7 @@ export async function addSupplyChainStep(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("addSupplyChainStep", new ContractFunctionParameters()
-			.addBytes32(productId)
+			.addBytes32(new TextEncoder().encode(productId))
 			.addString(action)
 			.addString(location)
 			.addString(metadata)
@@ -223,7 +223,7 @@ export async function performQualityCheck(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("performQualityCheck", new ContractFunctionParameters()
-			.addBytes32(productId)
+			.addBytes32(new TextEncoder().encode(productId))
 			.addString(checkType)
 			.addBool(passed)
 			.addString(notes)
@@ -244,7 +244,7 @@ export async function scheduleConsultation(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("scheduleConsultation", new ContractFunctionParameters()
-			.addBytes32(consultationId)
+			.addBytes32(new TextEncoder().encode(consultationId))
 			.addAddress(farmer)
 			.addString(issue)
 			.addUint256(parseInt(fee))
@@ -266,7 +266,7 @@ export async function createEquipmentLease(
 	const tx = new ContractExecuteTransaction()
 		.setContractId(contractId)
 		.setFunction("createEquipmentLease", new ContractFunctionParameters()
-			.addBytes32(leaseId)
+			.addBytes32(new TextEncoder().encode(leaseId))
 			.addString(equipmentType)
 			.addString(equipmentName)
 			.addUint256(parseInt(dailyRate))

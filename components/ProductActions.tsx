@@ -8,9 +8,13 @@ import {
   Check, 
   Loader2,
   Plus,
-  Minus
+  Minus,
+  LogIn
 } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
+// import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
+import { canUserBuyFrom, getBusinessRulesForUser } from '@/utils/businessLogic';
 
 interface ProductActionsProps {
   productId: string;
@@ -53,6 +57,17 @@ export default function ProductActions({
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingLike, setIsTogglingLike] = useState(false);
   
+  // const { user, isSignedIn } = useUser();
+  const user = null; // Temporary for development
+  const isSignedIn = false; // Temporary for development
+  const router = useRouter();
+
+  // Get user role (default to BUYER for now)
+  const userRole = user?.publicMetadata?.role as string || 'BUYER';
+  
+  // Check if user can buy from this seller based on business logic
+  const canBuy = canUserBuyFrom(userRole as any, sellerType);
+  
   const {
     addToCart,
     toggleLike,
@@ -61,6 +76,12 @@ export default function ProductActions({
   } = useCart();
 
   const handleAddToCart = async () => {
+    // Allow cart functionality without authentication for now
+    // if (!isSignedIn) {
+    //   router.push('/auth/login');
+    //   return;
+    // }
+
     setIsAddingToCart(true);
     try {
       await addToCart({
@@ -93,6 +114,12 @@ export default function ProductActions({
   };
 
   const handleToggleLike = async () => {
+    // Allow like functionality without authentication for now
+    // if (!isSignedIn) {
+    //   router.push('/auth/login');
+    //   return;
+    // }
+
     setIsTogglingLike(true);
     try {
       await toggleLike(productId, listingId);
@@ -149,10 +176,12 @@ export default function ProductActions({
         {/* Add to Cart Button */}
         <Button
           onClick={handleAddToCart}
-          disabled={isAddingToCart || isInCartStatus}
+          disabled={isAddingToCart || isInCartStatus || !canBuy}
           className={`flex-1 ${
             isInCartStatus
               ? 'bg-green-600 text-white cursor-not-allowed'
+              : !canBuy
+              ? 'bg-gray-400 text-white cursor-not-allowed'
               : 'bg-green-600 hover:bg-green-700'
           }`}
         >
@@ -165,6 +194,11 @@ export default function ProductActions({
             <>
               <Check className="w-4 h-4 mr-2" />
               Added to Cart
+            </>
+          ) : !canBuy ? (
+            <>
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Not Available
             </>
           ) : (
             <>
@@ -231,6 +265,22 @@ export default function ProductActions({
           </p>
           <p className="text-xs text-gray-500">
             View your liked items in your profile
+          </p>
+        </div>
+      )}
+
+      {/* Business Logic Information */}
+      {!canBuy && (
+        <div className="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800 font-medium">
+            Purchase Not Available
+          </p>
+          <p className="text-xs text-yellow-700 mt-1">
+            {userRole === 'FARMER' && sellerType === 'FARMER' && 'Farmers cannot buy from other farmers'}
+            {userRole === 'DISTRIBUTOR' && sellerType === 'DISTRIBUTOR' && 'Distributors cannot buy from other distributors'}
+            {userRole === 'TRANSPORTER' && 'Transporters cannot buy products'}
+            {userRole === 'VETERINARIAN' && sellerType === 'VETERINARIAN' && 'Agrovets cannot buy from other Agrovets'}
+            {userRole === 'BUYER' && sellerType === 'BUYER' && 'Buyers cannot buy from other buyers'}
           </p>
         </div>
       )}

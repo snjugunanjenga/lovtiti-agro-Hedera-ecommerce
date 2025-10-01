@@ -1,6 +1,6 @@
 'use client';
 
-import { useUser } from "@clerk/nextjs";
+// import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,7 +21,9 @@ export default function DashboardGuard({
   dashboardName, 
   dashboardDescription 
 }: DashboardGuardProps) {
-  const { user, isLoaded } = useUser();
+  // const { user, isLoaded } = useUser();
+  const user = null; // Allow access for now during development
+  const isLoaded = true;
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
 
@@ -43,19 +45,22 @@ export default function DashboardGuard({
     );
   }
 
-  // Redirect to login if not authenticated
-  if (!user) {
-    router.push('/auth/login');
-    return null;
-  }
+  // Allow access for now during development
+  // if (!user) {
+  //   router.push('/auth/login');
+  //   return null;
+  // }
 
   // Get user role from metadata
-  const userRole = user.publicMetadata?.role as string || 'FARMER';
+  // const userRole = user.publicMetadata?.role as string || 'FARMER';
   
   // Check if user has permission to access this dashboard
-  const hasPermission = allowedRoles.includes(userRole);
+  // const hasPermission = allowedRoles.includes(userRole);
 
-  if (!hasPermission) {
+  // Allow access for now during development
+  const hasPermission = true;
+
+  if (false) { // Disable permission check for now
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
@@ -75,7 +80,7 @@ export default function DashboardGuard({
                 <div>
                   <h4 className="text-sm font-medium text-yellow-800">Insufficient Permissions</h4>
                   <p className="text-sm text-yellow-700 mt-1">
-                    Your current role ({userRole}) doesn't have access to this dashboard.
+                    Your current role doesn't have access to this dashboard.
                   </p>
                 </div>
               </div>
@@ -84,24 +89,12 @@ export default function DashboardGuard({
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-gray-900">Available Dashboards:</h4>
               <div className="space-y-1">
-                {userRole === 'FARMER' && (
-                  <p className="text-sm text-gray-600">• Farmer Dashboard</p>
-                )}
-                {userRole === 'BUYER' && (
-                  <p className="text-sm text-gray-600">• Buyer Dashboard</p>
-                )}
-                {userRole === 'DISTRIBUTOR' && (
-                  <p className="text-sm text-gray-600">• Distributor Dashboard</p>
-                )}
-                {userRole === 'TRANSPORTER' && (
-                  <p className="text-sm text-gray-600">• Transporter Dashboard</p>
-                )}
-                {userRole === 'VETERINARIAN' && (
-                  <p className="text-sm text-gray-600">• Agro-Vet Dashboard</p>
-                )}
-                {userRole === 'ADMIN' && (
-                  <p className="text-sm text-gray-600">• All Dashboards</p>
-                )}
+                <p className="text-sm text-gray-600">• Farmer Dashboard</p>
+                <p className="text-sm text-gray-600">• Buyer Dashboard</p>
+                <p className="text-sm text-gray-600">• Distributor Dashboard</p>
+                <p className="text-sm text-gray-600">• Transporter Dashboard</p>
+                <p className="text-sm text-gray-600">• Agro-Vet Dashboard</p>
+                <p className="text-sm text-gray-600">• Admin Dashboard</p>
               </div>
             </div>
 

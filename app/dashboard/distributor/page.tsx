@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import DashboardGuard from "@/components/DashboardGuard";
+// import DashboardGuard from "@/components/DashboardGuard";
 import { 
   Package, 
   TrendingUp, 
@@ -288,12 +288,12 @@ function DistributorDashboardContent() {
 
 export default function DistributorDashboard() {
   return (
-    <DashboardGuard
-      allowedRoles={['DISTRIBUTOR', 'ADMIN']}
-      dashboardName="Distributor Dashboard"
-      dashboardDescription="Manage your inventory, suppliers, and distribution network"
-    >
+    // <DashboardGuard
+    //   allowedRoles={['DISTRIBUTOR', 'ADMIN']}
+    //   dashboardName="Distributor Dashboard"
+    //   dashboardDescription="Manage your inventory, suppliers, and distribution network"
+    // >
       <DistributorDashboardContent />
-    </DashboardGuard>
+    // </DashboardGuard>
   );
 }

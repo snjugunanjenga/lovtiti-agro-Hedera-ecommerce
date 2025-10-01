@@ -19,6 +19,52 @@ import {
 import ProductActions from '@/components/ProductActions';
 import SafeImage from '@/components/ui/safe-image';
 
+// Mock data outside component to avoid hydration issues
+const mockListings = [
+  {
+    id: '1',
+    title: 'Fresh Organic Tomatoes',
+    description: 'Premium organic tomatoes from our certified farm',
+    priceCents: 50000, // ₦500
+    quantity: 100,
+    unit: 'kg',
+    category: 'Vegetables',
+    location: 'Lagos, Nigeria',
+    images: ['https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop&crop=center'],
+    harvestDate: '2024-01-15',
+    seller: { id: '1', email: 'farmer1@example.com' },
+    createdAt: '2024-01-20'
+  },
+  {
+    id: '2',
+    title: 'Premium Rice',
+    description: 'High-quality rice grains, perfect for cooking',
+    priceCents: 80000, // ₦800
+    quantity: 50,
+    unit: 'kg',
+    category: 'Grains',
+    location: 'Kano, Nigeria',
+    images: ['https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop&crop=center'],
+    harvestDate: '2024-01-10',
+    seller: { id: '2', email: 'farmer2@example.com' },
+    createdAt: '2024-01-18'
+  },
+  {
+    id: '3',
+    title: 'Fresh Cocoa Beans',
+    description: 'Premium cocoa beans for chocolate production',
+    priceCents: 120000, // ₦1200
+    quantity: 25,
+    unit: 'kg',
+    category: 'Spices',
+    location: 'Ondo, Nigeria',
+    images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center'],
+    harvestDate: '2024-01-05',
+    seller: { id: '3', email: 'farmer3@example.com' },
+    createdAt: '2024-01-15'
+  }
+];
+
 interface Listing {
   id: string;
   title: string;
@@ -38,71 +84,23 @@ interface Listing {
 }
 
 export default function BrowseListingsPage() {
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [filteredListings, setFilteredListings] = useState<Listing[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [listings] = useState<Listing[]>(mockListings);
+  const [filteredListings, setFilteredListings] = useState<Listing[]>(mockListings);
+  const [isLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
 
+  console.log('Component rendering, isLoading:', isLoading);
+
   const categories = [
     'All', 'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 
     'Herbs', 'Dairy', 'Meat', 'Poultry', 'Seafood', 'Beverages'
   ];
 
-  // Mock data - in production, this would come from API
-  useEffect(() => {
-    const mockListings: Listing[] = [
-      {
-        id: '1',
-        title: 'Fresh Organic Tomatoes',
-        description: 'Premium organic tomatoes from our certified farm',
-        priceCents: 50000, // ₦500
-        quantity: 100,
-        unit: 'kg',
-        category: 'Vegetables',
-        location: 'Lagos, Nigeria',
-        images: ['https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400&h=300&fit=crop&crop=center'],
-        harvestDate: '2024-01-15',
-        seller: { id: '1', email: 'farmer1@example.com' },
-        createdAt: '2024-01-20'
-      },
-      {
-        id: '2',
-        title: 'Premium Rice',
-        description: 'High-quality rice grains, perfect for cooking',
-        priceCents: 80000, // ₦800
-        quantity: 50,
-        unit: 'kg',
-        category: 'Grains',
-        location: 'Kano, Nigeria',
-        images: ['https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop&crop=center'],
-        harvestDate: '2024-01-10',
-        seller: { id: '2', email: 'farmer2@example.com' },
-        createdAt: '2024-01-18'
-      },
-      {
-        id: '3',
-        title: 'Fresh Cocoa Beans',
-        description: 'Premium cocoa beans for chocolate production',
-        priceCents: 120000, // ₦1200
-        quantity: 25,
-        unit: 'kg',
-        category: 'Spices',
-        location: 'Ondo, Nigeria',
-        images: ['https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&crop=center'],
-        harvestDate: '2024-01-05',
-        seller: { id: '3', email: 'farmer3@example.com' },
-        createdAt: '2024-01-15'
-      }
-    ];
-
-    setListings(mockListings);
-    setFilteredListings(mockListings);
-    setIsLoading(false);
-  }, []);
+  // No complex useEffect needed - using static mock data
 
   // Filter and search logic
   useEffect(() => {
@@ -157,7 +155,8 @@ export default function BrowseListingsPage() {
     return new Date(dateString).toLocaleDateString();
   };
 
-  if (isLoading) {
+  // Simple loading check with timeout
+  if (isLoading && listings.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -294,7 +293,7 @@ export default function BrowseListingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredListings.map((listing) => (
               <Card key={listing.id} className="hover:shadow-lg transition-shadow">
-                <div className="aspect-square bg-gray-100 rounded-t-lg overflow-hidden">
+                <div className="aspect-square bg-gray-100 rounded-t-lg overflow-hidden relative">
                   <SafeImage
                     src={listing.images[0] || 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center'}
                     alt={listing.title}

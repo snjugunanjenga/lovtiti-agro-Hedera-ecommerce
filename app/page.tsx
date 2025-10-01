@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Navbar from "@/components/Navbar";
 import { 
   ShoppingCart, 
   Truck, 
@@ -20,8 +19,6 @@ import {
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
-      {/* Navigation */}
-      <Navbar />
 
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
@@ -42,9 +39,9 @@ export default function Home() {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/onboarding/farmer">
+              <Link href="/auth/signup">
                 <Button variant="outline" size="lg" className="text-lg px-8 py-6">
-                  Join as Farmer
+                  Join the Platform
                 </Button>
               </Link>
             </div>
@@ -303,7 +300,6 @@ export default function Home() {
               <h3 className="text-lg font-semibold mb-4 text-gray-300">Support</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
                 <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
               </ul>
@@ -313,8 +309,6 @@ export default function Home() {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/learn-more" className="hover:text-white transition-colors">Documentation</Link></li>
                 <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
-                <li><Link href="/api" className="hover:text-white transition-colors">API</Link></li>
-                <li><Link href="/status" className="hover:text-white transition-colors">Status</Link></li>
               </ul>
             </div>
           </div>

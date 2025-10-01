@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { logCartActivity } from '@/utils/userActivityLogger';
 
 export interface CartItem {
   id: string;
@@ -48,11 +49,17 @@ export function useCart() {
     likedItems: [],
     totalItems: 0,
     totalPrice: 0,
-    isLoading: true,
+    isLoading: false, // Start with false to avoid loading state issues
   });
 
   // Load cart from localStorage on mount
   useEffect(() => {
+    // Check if we're in the browser
+    if (typeof window === 'undefined') {
+      setCartState(prev => ({ ...prev, isLoading: false }));
+      return;
+    }
+
     try {
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       const savedLiked = localStorage.getItem(LIKED_STORAGE_KEY);
@@ -83,7 +90,7 @@ export function useCart() {
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    if (!cartState.isLoading) {
+    if (!cartState.isLoading && typeof window !== 'undefined') {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify({
           items: cartState.items,
@@ -98,7 +105,7 @@ export function useCart() {
 
   // Save liked items to localStorage whenever it changes
   useEffect(() => {
-    if (!cartState.isLoading) {
+    if (!cartState.isLoading && typeof window !== 'undefined') {
       try {
         localStorage.setItem(LIKED_STORAGE_KEY, JSON.stringify(cartState.likedItems));
       } catch (error) {
@@ -109,6 +116,24 @@ export function useCart() {
 
   // Add item to cart
   const addToCart = useCallback((item: Omit<CartItem, 'id' | 'addedAt' | 'updatedAt'>) => {
+    // Log cart activity (using mock user data for now since auth is disabled)
+    const mockUserId = 'user-' + Date.now();
+    const mockUserRole = 'BUYER';
+    const mockUserEmail = 'user@example.com';
+    
+    logCartActivity(mockUserId, mockUserRole, mockUserEmail, 'CART_ADD', {
+      productId: item.productId,
+      listingId: item.listingId,
+      sellerId: item.sellerId,
+      sellerType: item.sellerType,
+      productName: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      currency: item.currency,
+      category: item.category,
+      timestamp: new Date().toISOString()
+    });
+
     setCartState(prev => {
       // Check if item already exists in cart
       const existingItem = prev.items.find(cartItem => 
@@ -162,6 +187,29 @@ export function useCart() {
   // Remove item from cart
   const removeFromCart = useCallback((itemId: string) => {
     setCartState(prev => {
+      // Find the item being removed for logging
+      const removedItem = prev.items.find(item => item.id === itemId);
+      
+      // Log cart activity if item found
+      if (removedItem) {
+        const mockUserId = 'user-' + Date.now();
+        const mockUserRole = 'BUYER';
+        const mockUserEmail = 'user@example.com';
+        
+        logCartActivity(mockUserId, mockUserRole, mockUserEmail, 'CART_REMOVE', {
+          productId: removedItem.productId,
+          listingId: removedItem.listingId,
+          sellerId: removedItem.sellerId,
+          sellerType: removedItem.sellerType,
+          productName: removedItem.name,
+          quantity: removedItem.quantity,
+          price: removedItem.price,
+          currency: removedItem.currency,
+          category: removedItem.category,
+          timestamp: new Date().toISOString()
+        });
+      }
+
       const updatedItems = prev.items.filter(item => item.id !== itemId);
       const totalItems = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);

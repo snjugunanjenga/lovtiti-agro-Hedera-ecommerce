@@ -86,13 +86,17 @@ const nextConfig = {
     
     return config;
   },
+  // Disable React DevTools warning in development
+  reactStrictMode: false,
   // Suppress development warnings
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  // Suppress specific warnings
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
     pagesBufferLength: 2,
   },
-  // Disable React DevTools warning in development
-  reactStrictMode: false,
 }
 
 module.exports = nextConfig

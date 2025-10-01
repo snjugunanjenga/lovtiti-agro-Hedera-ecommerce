@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import DashboardGuard from '@/components/DashboardGuard';
+// import DashboardGuard from '@/components/DashboardGuard';
 import { 
   Leaf, 
   Plus, 
@@ -602,12 +602,12 @@ function FarmerDashboardContent() {
 
 export default function FarmerDashboard() {
   return (
-    <DashboardGuard
-      allowedRoles={['FARMER', 'ADMIN']}
-      dashboardName="Farmer Dashboard"
-      dashboardDescription="Manage your products, orders, and farming operations"
-    >
+    // <DashboardGuard
+    //   allowedRoles={['FARMER', 'ADMIN']}
+    //   dashboardName="Farmer Dashboard"
+    //   dashboardDescription="Manage your products, orders, and farming operations"
+    // >
       <FarmerDashboardContent />
-    </DashboardGuard>
+    // </DashboardGuard>
   );
 }

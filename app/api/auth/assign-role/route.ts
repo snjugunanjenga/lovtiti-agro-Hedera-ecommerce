@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserRole } from "@/utils/roleManager";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,20 +19,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    // In a real application, you would:
-    // 1. Update the user's role in your database
-    // 2. Update their Clerk metadata
-    // 3. Set up role-based permissions
-    // 4. Send confirmation email
+    // Update the user's role in Clerk metadata
+    await clerkClient.users.updateUserMetadata(userId, {
+      publicMetadata: {
+        role: role
+      }
+    });
 
-    console.log(`Assigning role ${role} to user ${userId}`);
+    // Update the user's role in your database
+    const updatedUser = await prisma.user.upsert({
+      where: { id: userId },
+      update: { role: role as any },
+      create: {
+        id: userId,
+        email: "", // Will be updated by webhook
+        role: role as any,
+      }
+    });
 
-    // For now, we'll just return success
-    // In production, you would use Clerk's API to update the user's metadata
+    console.log(`Role ${role} assigned to user ${userId} in both Clerk metadata and database`);
+
     return NextResponse.json({ 
       success: true, 
       message: `Role ${role} assigned successfully`,
-      role: role as UserRole
+      role: role as UserRole,
+      user: updatedUser
     });
 
   } catch (error) {

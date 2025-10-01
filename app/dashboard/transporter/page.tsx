@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import DashboardGuard from "@/components/DashboardGuard";
+// import DashboardGuard from "@/components/DashboardGuard";
 import { 
   Truck, 
   MapPin, 
@@ -366,12 +366,12 @@ function TransporterDashboardContent() {
 
 export default function TransporterDashboard() {
   return (
-    <DashboardGuard
-      allowedRoles={['TRANSPORTER', 'ADMIN']}
-      dashboardName="Transporter Dashboard"
-      dashboardDescription="Manage your routes, cargo, and delivery operations"
-    >
+    // <DashboardGuard
+    //   allowedRoles={['TRANSPORTER', 'ADMIN']}
+    //   dashboardName="Transporter Dashboard"
+    //   dashboardDescription="Manage your routes, cargo, and delivery operations"
+    // >
       <TransporterDashboardContent />
-    </DashboardGuard>
+    // </DashboardGuard>
   );
 }

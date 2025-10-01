@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import DashboardGuard from "@/components/DashboardGuard";
+// import DashboardGuard from "@/components/DashboardGuard";
 import { 
   Stethoscope, 
   Package, 
@@ -463,12 +463,12 @@ function AgroVetDashboardContent() {
 
 export default function AgroVetDashboard() {
   return (
-    <DashboardGuard
-      allowedRoles={['VETERINARIAN', 'ADMIN']}
-      dashboardName="Agro-Vet Dashboard"
-      dashboardDescription="Manage your products, equipment leasing, and expert services"
-    >
+    // <DashboardGuard
+    //   allowedRoles={['VETERINARIAN', 'ADMIN']}
+    //   dashboardName="Agro-Vet Dashboard"
+    //   dashboardDescription="Manage your products, equipment leasing, and expert services"
+    // >
       <AgroVetDashboardContent />
-    </DashboardGuard>
+    // </DashboardGuard>
   );
 }

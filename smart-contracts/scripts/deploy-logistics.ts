@@ -22,7 +22,7 @@ async function deployLogistics() {
 
   // Deploy contract
   const contractCreateTransaction = new ContractCreateTransaction()
-    .setBytecode(contractSource)
+    .setBytecode(new TextEncoder().encode(contractSource))
     .setGas(2000000)
     .setConstructorParameters(new ContractFunctionParameters())
     .setInitialBalance(new Hbar(10));
