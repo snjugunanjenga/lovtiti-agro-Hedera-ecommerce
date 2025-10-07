@@ -315,7 +315,7 @@ function KycVerificationContent() {
                 <option value="BUYER">Buyers</option>
                 <option value="DISTRIBUTOR">Distributors</option>
                 <option value="TRANSPORTER">Transporters</option>
-                <option value="VETERINARIAN">Agro-Veterinarians</option>
+                <option value="VETERINARIAN">Agro Experts</option>
               </select>
               <select
                 value={selectedStatus}

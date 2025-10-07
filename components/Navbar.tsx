@@ -55,7 +55,7 @@ export default function Navbar() {
       case 'BUYER': return 'Buyer';
       case 'DISTRIBUTOR': return 'Distributor';
       case 'TRANSPORTER': return 'Transporter';
-      case 'VETERINARIAN': return 'Agro-Vet';
+      case 'VETERINARIAN': return 'Agro Expert';
       case 'ADMIN': return 'Admin';
       default: return role;
     }
@@ -106,7 +106,7 @@ export default function Navbar() {
       roles: ['TRANSPORTER', 'ADMIN']
     },
     {
-      name: 'Agro-Vet Dashboard',
+      name: 'Agro Expert Dashboard',
       href: '/dashboard/agro-vet',
       icon: Stethoscope,
       description: 'Products, equipment & advice',

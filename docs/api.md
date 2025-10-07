@@ -1,7 +1,7 @@
 # API Documentation - Lovitti Agro Mart
 
 ## Overview
-Lovitti Agro Mart provides a comprehensive REST API for managing agricultural supply chain operations across multiple stakeholder types: farmers, distributors, transporters, buyers, and agro veterinarians.
+Lovitti Agro Mart provides a comprehensive REST API for managing agricultural supply chain operations across multiple stakeholder types: farmers, distributors, transporters, buyers, and agro experts.
 
 ## Base URL
 ```
@@ -427,10 +427,10 @@ Get STREAM video call token
 }
 ```
 
-### Agro-Veterinarian Services
+### Agro Expert Services
 
 #### GET /agro-vet/products
-Get agro-vet products (seeds, vaccines, pesticides, equipment)
+Get agro expert products (seeds, vaccines, pesticides, equipment)
 **Query Parameters:**
 - `productType` - Filter by product type (SEEDS, VACCINES, PESTICIDES, EQUIPMENT, FERTILIZERS, TOOLS)
 - `category` - Filter by category
@@ -478,7 +478,7 @@ Get agro-vet products (seeds, vaccines, pesticides, equipment)
 ```
 
 #### POST /agro-vet/products
-Create agro-vet product listing
+Create agro expert product listing
 ```json
 {
   "productType": "SEEDS",

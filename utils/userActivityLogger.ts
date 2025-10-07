@@ -303,3 +303,7 @@ export const logError = (userId: string, userRole: string, userEmail: string, er
 
 // Export the singleton instance
 export const userActivityLogger = UserActivityLogger.getInstance();
+
+
+
+

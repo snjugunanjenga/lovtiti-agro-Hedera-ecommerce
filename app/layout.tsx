@@ -4,14 +4,14 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/toaster";
 import { clerkConfig } from "@/lib/clerk-config";
-import UserSync from "@/components/UserSync";
+import UserSync from "@/components/UserSync"; 
 import "@/lib/suppress-warnings";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
 	title: "Lovitti Agro Mart - Blockchain-Powered Agricultural Marketplace",
-	description: "Connecting African farmers, buyers, distributors, transporters, and agro-veterinarians through blockchain technology",
+	description: "Connecting African farmers, buyers, distributors, transporters, and agro experts through blockchain technology",
 	keywords: "agriculture, marketplace, blockchain, farmers, buyers, Hedera, Africa",
 };
 

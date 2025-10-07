@@ -135,14 +135,14 @@ export const translations = {
     'role.buyer': 'Buyer',
     'role.distributor': 'Distributor',
     'role.transporter': 'Transporter',
-    'role.agro-vet': 'Agro-Vet',
+    'role.agro-vet': 'Agro Expert',
     'role.admin': 'Admin',
     
     // Dashboard
     'dashboard.overview': 'Overview',
     'dashboard.listings': 'My Listings',
     'dashboard.orders': 'Orders',
-    'dashboard.agro-products': 'Agro-Vet Products',
+    'dashboard.agro-products': 'Agro Expert Products',
     'dashboard.equipment': 'Equipment Lease',
     'dashboard.tutorials': 'Tutorials',
     'dashboard.analytics': 'Analytics',
@@ -221,7 +221,7 @@ export const translations = {
     'role.buyer': 'Mnunuzi',
     'role.distributor': 'Msambazaji',
     'role.transporter': 'Mchukuzi',
-    'role.agro-vet': 'Daktari wa Mifugo',
+    'role.agro-vet': 'Mtaalamu wa Kilimo',
     'role.admin': 'Msimamizi',
     
     // Dashboard
@@ -307,7 +307,7 @@ export const translations = {
     'role.buyer': 'Acheteur',
     'role.distributor': 'Distributeur',
     'role.transporter': 'Transporteur',
-    'role.agro-vet': 'Vétérinaire',
+    'role.agro-vet': 'Expert Agricole',
     'role.admin': 'Administrateur',
     
     // Dashboard

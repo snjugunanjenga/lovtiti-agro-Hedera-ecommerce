@@ -2,14 +2,14 @@ Product Requirements Document (PRD)
 
 ## 1. Project Overview
 **Title:** Lovitti Agro Mart  
-**Vision:** A comprehensive blockchain-powered agricultural ecosystem that connects African farmers, distributors, transporters, buyers, and agro veterinarians through a transparent, Hedera Hashgraph-based platform. The platform enables full supply chain traceability, secure transactions, and efficient agricultural product distribution across Africa.  
+**Vision:** A comprehensive blockchain-powered agricultural ecosystem that connects African farmers, distributors, transporters, buyers, and agro experts through a transparent, Hedera Hashgraph-based platform. The platform enables full supply chain traceability, secure transactions, and efficient agricultural product distribution across Africa.  
 **Objective:** Build a scalable, accessible web platform that empowers all stakeholders in the agricultural value chain by reducing post-harvest losses, ensuring fair pricing, providing transparent logistics, and enabling veterinary services through a blockchain-backed system with complete supply chain visibility.## 2. Problem Statement
 **Agricultural Supply Chain Challenges:**
 - **Farmers:** Post-harvest losses due to lack of buyers, storage, or transportation
 - **Distributors:** Difficulty sourcing quality products and managing inventory across regions
 - **Transporters:** Inefficient route planning and lack of cargo visibility
 - **Buyers:** Limited access to fresh, traceable agricultural products
-- **Agro Veterinarians:** Difficulty reaching livestock farmers and tracking animal health records
+- **Agro Experts:** Difficulty reaching livestock farmers and tracking animal health records
 - **All Stakeholders:** Lack of transparency, trust issues, and inefficient payment systems
 
 ## 3. Target Audience
@@ -18,18 +18,18 @@ Product Requirements Document (PRD)
 - **Distributors:** Agricultural product distributors, wholesalers, and supply chain intermediaries
 - **Transporters:** Logistics companies, truck drivers, and transportation service providers
 - **Buyers:** Individuals, cooperatives, retailers, restaurants, and institutional buyers seeking agricultural products
-- **Agro Veterinarians:** Professional agricultural product suppliers and experts who sell seeds, vaccines, pesticides, lease equipment to farmers, and provide expert agricultural advice and consultation services
+- **Agro Experts:** Professional agricultural product suppliers and experts who sell seeds, vaccines, pesticides, lease equipment to farmers, and provide expert agricultural advice and consultation services
 - **Administrators:** Platform moderators managing KYC verification, listings, disputes, and system oversight
 
 ## 4. Key Features
 
 ### User Authentication & Management
 - **Clerk Integration:** Secure authentication (email, phone, social login) for all user types
-- **Role-Based Access:** Separate dashboards and permissions for farmers, distributors, transporters, buyers, and agro veterinarians
+- **Role-Based Access:** Separate dashboards and permissions for farmers, distributors, transporters, buyers, and agro experts
 - **Mandatory KYC:** Account creation with KYC verification for all user types
 
 ### KYC Verification System
-- **Multi-Role KYC:** Specialized verification for farmers, distributors, transporters, buyers, and agro veterinarians
+- **Multi-Role KYC:** Specialized verification for farmers, distributors, transporters, buyers, and agro experts
 - **Document Verification:** ID, business licenses, certifications, and professional credentials
 - **Admin Approval:** Platform moderators verify and approve all KYC submissions
 
@@ -37,7 +37,7 @@ Product Requirements Document (PRD)
 - **Farmer Listings:** Crops, livestock, fish, honey with detailed specifications
 - **Distributor Listings:** Bulk products, processed goods, and supply chain services
 - **Transport Services:** Logistics offerings with capacity, routes, and pricing
-- **Agro-Vet Services:** Agricultural products (seeds, vaccines, pesticides), equipment leasing, and expert consultation services
+- **Agro Expert Services:** Agricultural products (seeds, vaccines, pesticides), equipment leasing, and expert consultation services
 - **Storage Solutions:** Cold storage, warehousing, and preservation services
 
 ### Supply Chain Management
@@ -57,12 +57,12 @@ Product Requirements Document (PRD)
 - **Distributor Dashboard:** Inventory management, supplier connections, and market insights
 - **Transporter Dashboard:** Route optimization, cargo tracking, and delivery management
 - **Buyer Dashboard:** Product discovery, order placement, and supply chain visibility
-- **Agro-Vet Dashboard:** Product sales, equipment leasing, expert advice, and client management
+- **Agro Expert Dashboard:** Product sales, equipment leasing, expert advice, and client management
 
 ### Communication & Collaboration
 - **Multi-Stakeholder Messaging:** Direct communication between all platform users via STREAM API
-- **Video Calling:** Real-time video consultations between farmers and agro-vets for expert advice
-- **Service Booking:** Appointment scheduling for agro-vet consultations, equipment leasing, and logistics services
+- **Video Calling:** Real-time video consultations between farmers and agro experts for expert advice
+- **Service Booking:** Appointment scheduling for agro expert consultations, equipment leasing, and logistics services
 - **Real-Time Updates:** Live tracking and notifications throughout the supply chain
 - **Group Chats:** Collaborative discussions for farming communities and expert groups
 
@@ -146,7 +146,7 @@ Product Requirements Document (PRD)
   - **Distributors:** Business licenses, warehouse certifications, distribution networks
   - **Transporters:** Vehicle registrations, driver licenses, insurance coverage
   - **Buyers:** Business registration, purchase history, credit verification
-  - **Agro Veterinarians:** Professional licenses, veterinary certifications, practice permits
+  - **Agro Experts:** Professional licenses, veterinary certifications, practice permits
 - **Admin Verification:** Platform moderators verify and approve all KYC submissions
 
 ### Supply Chain Workflow
@@ -174,7 +174,7 @@ Product Requirements Document (PRD)
 - **Distributors:** 500 verified distributors
 - **Transporters:** 1,000 transportation service providers
 - **Buyers:** 10,000 individual and institutional buyers
-- **Agro Veterinarians:** 200 licensed veterinarians
+- **Agro Experts:** 200 licensed experts
 - **Total Platform Users:** 16,700+ active users
 
 ### Business Metrics

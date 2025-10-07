@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         { role: 'Buyers', count: 678, growth: 18.7 },
         { role: 'Distributors', count: 89, growth: 12.4 },
         { role: 'Transporters', count: 156, growth: 31.2 },
-        { role: 'Agro-Vets', count: 45, growth: 8.9 }
+        { role: 'Agro Experts', count: 45, growth: 8.9 }
       ],
       topProducts: [
         { name: 'Fresh Tomatoes', sales: 1250, revenue: 187500, growth: 15.2 },

@@ -142,7 +142,7 @@ export default function TestUserCreationPage() {
                 <option value="FARMER">Farmer</option>
                 <option value="DISTRIBUTOR">Distributor</option>
                 <option value="TRANSPORTER">Transporter</option>
-                <option value="VETERINARIAN">Agro-Veterinarian</option>
+                <option value="VETERINARIAN">Agro Expert</option>
                 <option value="ADMIN">Admin</option>
               </select>
             </div>
@@ -261,3 +261,5 @@ export default function TestUserCreationPage() {
     </div>
   );
 }
+
+

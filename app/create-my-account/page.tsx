@@ -105,7 +105,7 @@ export default function CreateMyAccountPage() {
                 <option value="FARMER">Farmer - Sell agricultural products</option>
                 <option value="DISTRIBUTOR">Distributor - Distribute products</option>
                 <option value="TRANSPORTER">Transporter - Transport goods</option>
-                <option value="VETERINARIAN">Agro-Veterinarian - Provide veterinary services</option>
+                <option value="VETERINARIAN">Agro Expert - Provide agricultural expertise and services</option>
                 <option value="ADMIN">Admin - Platform management</option>
               </select>
             </div>
@@ -189,3 +189,5 @@ export default function CreateMyAccountPage() {
     </div>
   );
 }
+
+

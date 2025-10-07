@@ -76,7 +76,7 @@ function MobileContent() {
     },
     {
       id: 'agro-vet',
-      title: 'Agro-Vet Services',
+      title: 'Agro Expert Services',
       description: 'Expert advice and products',
       icon: Stethoscope,
       color: 'text-red-600',

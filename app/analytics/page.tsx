@@ -92,7 +92,7 @@ function AnalyticsContent() {
         { role: 'Buyers', count: 678, growth: 18.7 },
         { role: 'Distributors', count: 89, growth: 12.4 },
         { role: 'Transporters', count: 156, growth: 31.2 },
-        { role: 'Agro-Vets', count: 45, growth: 8.9 }
+        { role: 'Agro Experts', count: 45, growth: 8.9 }
       ],
       topProducts: [
         { name: 'Fresh Tomatoes', sales: 1250, revenue: 187500, growth: 15.2 },
@@ -188,7 +188,7 @@ function AnalyticsContent() {
                 <option value="buyer">Buyers</option>
                 <option value="distributor">Distributors</option>
                 <option value="transporter">Transporters</option>
-                <option value="agro-vet">Agro-Vets</option>
+                <option value="agro-vet">Agro Experts</option>
               </select>
               <Button variant="outline" size="sm">
                 <Filter className="h-4 w-4 mr-2" />

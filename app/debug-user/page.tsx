@@ -188,7 +188,7 @@ export default function DebugUserPage() {
                   Set Transporter
                 </Button>
                 <Button onClick={() => assignRole('VETERINARIAN')} disabled={isLoading} size="sm">
-                  Set Agro-Vet
+                  Set Agro Expert
                 </Button>
               </div>
             </div>
@@ -224,3 +224,5 @@ export default function DebugUserPage() {
     </div>
   );
 }
+
+

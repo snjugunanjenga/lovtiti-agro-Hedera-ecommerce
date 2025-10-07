@@ -80,7 +80,7 @@ function FarmerDashboardContent() {
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'listings', label: 'My Listings', icon: Package },
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
-    { id: 'agro-products', label: 'Agro-Vet Products', icon: Stethoscope },
+    { id: 'agro-products', label: 'Agro Expert Products', icon: Stethoscope },
     { id: 'equipment', label: 'Equipment Lease', icon: Wrench },
     { id: 'tutorials', label: 'Tutorials', icon: BookOpen },
     { id: 'analytics', label: 'Analytics', icon: TrendingUp },
@@ -414,12 +414,12 @@ function FarmerDashboardContent() {
           </div>
         )}
 
-        {/* Agro-Vet Products Tab */}
+        {/* Agro Expert Products Tab */}
         {activeTab === 'agro-products' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Agro-Vet Products</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Agro Expert Products</h2>
                 <p className="text-gray-600">Browse products from agricultural professionals</p>
               </div>
               <div className="flex space-x-2">

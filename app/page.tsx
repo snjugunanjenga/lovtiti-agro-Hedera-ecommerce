@@ -273,12 +273,12 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* Agro-Vets */}
+            {/* Agro Experts */}
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-red-400">Agro-Vets</h3>
+              <h3 className="text-lg font-semibold mb-4 text-red-400">Agro Experts</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Join as Agro-Vet</Link></li>
-                <li><Link href="/dashboard/agro-vet" className="hover:text-white transition-colors">Agro-Vet Dashboard</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Join as Agro Expert</Link></li>
+                <li><Link href="/dashboard/agro-vet" className="hover:text-white transition-colors">Agro Expert Dashboard</Link></li>
                 <li><Link href="/listings/create" className="hover:text-white transition-colors">Sell Products</Link></li>
                 <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
               </ul>

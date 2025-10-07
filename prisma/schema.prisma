@@ -23,13 +23,13 @@ model User {
 	sentMessages     Message[] @relation("sentMessages")
 	receivedMessages Message[] @relation("receivedMessages")
 	
-	// Agro-Veterinary services
+	// Agro Expert services
 	agroVetBookings      ServiceBooking[] @relation("agroVetBookings")
 	clientBookings       ServiceBooking[] @relation("clientBookings")
 	agroVetRecords       HealthRecord[]  @relation("agroVetRecords")
 	ownerRecords         HealthRecord[]  @relation("ownerRecords")
 	
-	// Agro-Vet products and services
+	// Agro Expert products and services
 	agroVetProducts      AgroVetProduct[] @relation("agroVetProducts")
 	agroVetEquipment     EquipmentLease[] @relation("agroVetEquipment")
 	clientEquipment      EquipmentLease[] @relation("clientEquipment")

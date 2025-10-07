@@ -93,7 +93,7 @@ export default function DashboardGuard({
                 <p className="text-sm text-gray-600">• Buyer Dashboard</p>
                 <p className="text-sm text-gray-600">• Distributor Dashboard</p>
                 <p className="text-sm text-gray-600">• Transporter Dashboard</p>
-                <p className="text-sm text-gray-600">• Agro-Vet Dashboard</p>
+                <p className="text-sm text-gray-600">• Agro Expert Dashboard</p>
                 <p className="text-sm text-gray-600">• Admin Dashboard</p>
               </div>
             </div>

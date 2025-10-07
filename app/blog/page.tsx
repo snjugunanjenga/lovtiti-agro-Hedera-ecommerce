@@ -36,7 +36,7 @@ const blogPosts = [
   },
   {
     id: 4,
-    title: "The Role of Agro-Veterinarians in Modern Agriculture",
+    title: "The Role of Agro Experts in Modern Agriculture",
     excerpt: "Understanding how veterinary professionals are supporting farmers with animal health, equipment leasing, and expert advice.",
     author: "Dr. Michael Chen",
     date: "2024-01-01",

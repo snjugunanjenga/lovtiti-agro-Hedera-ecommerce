@@ -279,7 +279,7 @@ export default function ProductActions({
             {userRole === 'FARMER' && sellerType === 'FARMER' && 'Farmers cannot buy from other farmers'}
             {userRole === 'DISTRIBUTOR' && sellerType === 'DISTRIBUTOR' && 'Distributors cannot buy from other distributors'}
             {userRole === 'TRANSPORTER' && 'Transporters cannot buy products'}
-            {userRole === 'VETERINARIAN' && sellerType === 'VETERINARIAN' && 'Agrovets cannot buy from other Agrovets'}
+            {userRole === 'VETERINARIAN' && sellerType === 'VETERINARIAN' && 'Agro Experts cannot buy from other Agro Experts'}
             {userRole === 'BUYER' && sellerType === 'BUYER' && 'Buyers cannot buy from other buyers'}
           </p>
         </div>

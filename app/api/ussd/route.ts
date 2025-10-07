@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 1. Browse Products
 2. My Orders
 3. Track Delivery
-4. Agro-Vet Services
+4. Agro Expert Services
 5. Messages
 6. Account Info
 0. Exit`;
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 Enter your order number to track delivery status.`;
             break;
           case '4':
-            response = `CON Agro-Vet Services
+            response = `CON Agro Expert Services
 1. Expert Advice
 2. Equipment Lease
 3. Health Records
@@ -183,7 +183,7 @@ Enter your order number to track delivery status.`;
           response = `CON Track Delivery
 Enter your order number to track delivery status.`;
         } else if (category === '4') {
-          // Agro-Vet Services
+          // Agro Expert Services
           switch (subChoice) {
             case '1':
               response = `CON Expert Advice
@@ -216,7 +216,7 @@ Enter your order number to track delivery status.`;
 0. Back`;
               break;
             case '0':
-              response = `CON Agro-Vet Services
+              response = `CON Agro Expert Services
 1. Expert Advice
 2. Equipment Lease
 3. Health Records
@@ -232,7 +232,7 @@ Enter your order number to track delivery status.`;
             case '1':
               response = `CON Send Message
 1. To Farmer
-2. To Agro-Vet
+2. To Agro Expert
 3. To Transporter
 4. To Support
 0. Back`;
@@ -338,7 +338,7 @@ export async function GET(request: NextRequest) {
         'Browse Products',
         'Order Management',
         'Delivery Tracking',
-        'Agro-Vet Services',
+        'Agro Expert Services',
         'Messaging',
         'Account Management'
       ],

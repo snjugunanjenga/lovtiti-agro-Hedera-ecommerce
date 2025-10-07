@@ -373,3 +373,7 @@ npm install stream-chat stream-chat-react
 Your Stream Chat integration is ready for deployment. Follow the setup guide in `STREAM_SETUP.md` to configure your Stream account and start using real-time messaging and calling features.
 
 The implementation provides a solid foundation for building a comprehensive communication platform for the agricultural ecosystem, enabling seamless collaboration between all stakeholders in the supply chain.
+
+
+
+

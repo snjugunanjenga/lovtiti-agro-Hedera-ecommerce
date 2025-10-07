@@ -44,7 +44,7 @@ export default function CreateListingPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
 
-  // Check if user can create listings (Farmers and Agrovets only)
+  // Check if user can create listings (Farmers and Agro Experts only)
   const userRole = user?.publicMetadata?.role as string || 'BUYER';
   const canCreateListings = ['FARMER', 'VETERINARIAN', 'ADMIN'].includes(userRole);
 
@@ -143,7 +143,7 @@ export default function CreateListingPage() {
               </div>
               <CardTitle className="text-xl text-gray-900">Access Denied</CardTitle>
               <CardDescription className="text-gray-600">
-                Only Farmers and Agro-Veterinarians can create product listings
+                Only Farmers and Agro Experts can create product listings
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -163,7 +163,7 @@ export default function CreateListingPage() {
                 <h4 className="text-sm font-medium text-gray-900">Who can create listings:</h4>
                 <div className="space-y-1">
                   <p className="text-sm text-gray-600">• Farmers - List agricultural products</p>
-                  <p className="text-sm text-gray-600">• Agro-Veterinarians - List equipment and products</p>
+                  <p className="text-sm text-gray-600">• Agro Experts - List equipment and products</p>
                 </div>
               </div>
 
@@ -172,7 +172,7 @@ export default function CreateListingPage() {
                   Go to Homepage
                 </Button>
                 <Button variant="outline" onClick={() => router.push('/auth/signup')} className="flex-1">
-                  Sign Up as Farmer/Agro-Vet
+                  Sign Up as Farmer/Agro Expert
                 </Button>
               </div>
             </CardContent>

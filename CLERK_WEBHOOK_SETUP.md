@@ -147,3 +147,7 @@ DATABASE_URL="postgresql://..."
 ---
 
 **Note**: The webhook setup is required for automatic user creation. Without it, users will only be created manually or through the test endpoints.
+
+
+
+

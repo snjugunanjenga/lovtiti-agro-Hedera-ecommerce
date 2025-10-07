@@ -4,7 +4,7 @@
 A comprehensive checkout system for the blockchain-powered agricultural marketplace supporting multiple user types, currencies, payment methods, and supply chain tracking.
 
 ## 🎯 Core Objectives
-- **Seamless Multi-Role Experience**: Support farmers, buyers, distributors, transporters, and agro-vets
+- **Seamless Multi-Role Experience**: Support farmers, buyers, distributors, transporters, and agro experts
 - **Multi-Currency Support**: Handle 10+ fiat currencies + 4 cryptocurrencies
 - **Multiple Payment Methods**: Stripe, MPESA Daraja, Cryptocurrency payments
 - **Supply Chain Integration**: Track products from farm to buyer
@@ -255,7 +255,7 @@ interface SupplyChainRecord {
 - **Buyers**: Purchase products, track orders
 - **Distributors**: Bulk purchasing, inventory management
 - **Transporters**: Delivery services, route optimization
-- **Agro-Vets**: Product sales, equipment leasing
+- **Agro Experts**: Product sales, equipment leasing
 
 ### Currency & Language
 - **Currency Conversion**: Real-time exchange rates

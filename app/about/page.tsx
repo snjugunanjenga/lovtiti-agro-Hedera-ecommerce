@@ -139,7 +139,7 @@ export default function AboutPage() {
     { year: '2021', title: 'First 100 Farmers', description: 'We onboarded our first 100 farmers across Nigeria and Ghana.' },
     { year: '2022', title: 'Blockchain Integration', description: 'Successfully integrated Hedera Hashgraph for transparent transactions.' },
     { year: '2023', title: 'Multi-Country Expansion', description: 'Expanded operations to Kenya, Uganda, and Tanzania.' },
-    { year: '2024', title: 'Agro-Vet Services', description: 'Launched comprehensive agro-veterinary services and equipment leasing.' }
+    { year: '2024', title: 'Agro Expert Services', description: 'Launched comprehensive agricultural expert services and equipment leasing.' }
   ];
 
   return (
@@ -158,7 +158,7 @@ export default function AboutPage() {
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             We are revolutionizing African agriculture through blockchain technology, 
-            connecting farmers, distributors, transporters, buyers, and agro-veterinarians 
+            connecting farmers, distributors, transporters, buyers, and agro experts 
             in a transparent, efficient, and sustainable ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -374,7 +374,7 @@ export default function AboutPage() {
             Ready to Join Our Mission?
           </h2>
           <p className="text-lg text-gray-600 mb-8">
-            Whether you're a farmer, buyer, distributor, transporter, or agro-veterinarian, 
+            Whether you're a farmer, buyer, distributor, transporter, or agro expert, 
             there's a place for you in our ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

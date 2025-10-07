@@ -82,3 +82,7 @@ Once you add your real Clerk keys:
 ---
 
 **Your database is ready!** Once you add the Clerk keys, everything will work perfectly! 🎉
+
+
+
+

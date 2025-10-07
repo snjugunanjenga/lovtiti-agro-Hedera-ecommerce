@@ -71,7 +71,7 @@ export const getAvailableDashboards = (userRole: UserRole) => {
     { name: 'Buyer Dashboard', path: '/dashboard/buyer', roles: ['BUYER', 'ADMIN'] },
     { name: 'Distributor Dashboard', path: '/dashboard/distributor', roles: ['DISTRIBUTOR', 'ADMIN'] },
     { name: 'Transporter Dashboard', path: '/dashboard/transporter', roles: ['TRANSPORTER', 'ADMIN'] },
-    { name: 'Agro-Vet Dashboard', path: '/dashboard/agro-vet', roles: ['VETERINARIAN', 'ADMIN'] },
+    { name: 'Agro Expert Dashboard', path: '/dashboard/agro-vet', roles: ['VETERINARIAN', 'ADMIN'] },
   ];
 
   return dashboards.filter(dashboard => dashboard.roles.includes(userRole));
@@ -83,7 +83,7 @@ export const getRoleDisplayName = (role: UserRole): string => {
     BUYER: 'Buyer',
     DISTRIBUTOR: 'Distributor',
     TRANSPORTER: 'Transporter',
-    VETERINARIAN: 'Agro-Veterinarian',
+    VETERINARIAN: 'Agro Expert',
     ADMIN: 'Administrator',
   };
 
