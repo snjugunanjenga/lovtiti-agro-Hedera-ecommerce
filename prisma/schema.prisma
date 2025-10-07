@@ -275,3 +275,162 @@ enum LeaseStatus {
 	CANCELLED
 	EXPIRED
 }
+
+// NFT Models
+model NFT {
+  id              String   @id @default(cuid())
+  tokenId         String   @unique
+  contractAddress String
+  ownerAddress    String
+  creatorAddress  String
+  tokenStandard   String   @default("HTS-721")
+  metadataUri     String
+  metadataHash    String
+  category        String   // PRODUCT, SERVICE, EQUIPMENT
+  metadata        String   // JSON string
+  royalties       String   // JSON string
+  isBurned        Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  listings        NFTListing[]
+  transactions    NFTTransaction[]
+  supplyChainSteps SupplyChainStep[]
+  qualityChecks   QualityCheck[]
+  serviceBookings ServiceBooking[]
+  equipmentLeases EquipmentLease[]
+}
+
+model NFTListing {
+  id              String   @id @default(cuid())
+  nftId           String
+  nft             NFT      @relation(fields: [nftId], references: [id])
+  sellerAddress   String
+  price           Decimal  @db.Decimal(20, 8)
+  currency        String   @default("HBAR")
+  isActive        Boolean  @default(true)
+  listingTime     DateTime @default(now())
+  expiryTime      DateTime?
+  category        String
+  description     String?
+  tags            String[]
+  views           Int      @default(0)
+  favorites       Int      @default(0)
+  isAuction       Boolean  @default(false)
+  auctionEndTime  DateTime?
+  reservePrice    Decimal? @db.Decimal(20, 8)
+  currentBid      Decimal? @db.Decimal(20, 8)
+  currentBidder   String?
+  bidCount        Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model NFTTransaction {
+  id              String   @id @default(cuid())
+  nftId           String
+  nft             NFT      @relation(fields: [nftId], references: [id])
+  fromAddress     String
+  toAddress       String
+  price           Decimal  @db.Decimal(20, 8)
+  currency        String
+  transactionHash String   @unique
+  blockNumber     BigInt?
+  gasUsed         BigInt?
+  status          String   // PENDING, CONFIRMED, FAILED
+  type            String   // MINT, TRANSFER, SALE, BURN
+  royalties       String?  // JSON string
+  createdAt       DateTime @default(now())
+}
+
+model SupplyChainStep {
+  id              String   @id @default(cuid())
+  nftId           String
+  nft             NFT      @relation(fields: [nftId], references: [id])
+  stepIndex       Int
+  action          String
+  location        String
+  actorAddress    String
+  metadata        String?  // JSON string
+  isVerified      Boolean  @default(false)
+  verifierAddress String?
+  verifiedAt      DateTime?
+  verificationNotes String?
+  createdAt       DateTime @default(now())
+}
+
+model QualityCheck {
+  id          String   @id @default(cuid())
+  nftId       String
+  nft         NFT      @relation(fields: [nftId], references: [id])
+  checkType   String
+  passed      Boolean
+  score       Int      // 0-100
+  notes       String?
+  inspector   String
+  evidence    String[] // IPFS hashes
+  createdAt   DateTime @default(now())
+}
+
+model ServiceBooking {
+  id              String   @id @default(cuid())
+  serviceNftId    String
+  serviceNft      NFT      @relation(fields: [serviceNftId], references: [id])
+  clientAddress   String
+  startTime       DateTime
+  endTime         DateTime
+  amount          Decimal  @db.Decimal(20, 8)
+  currency        String
+  status          String   // BOOKED, IN_PROGRESS, COMPLETED, CANCELLED
+  feedback        String?
+  rating          Int?     // 1-5
+  location        String?
+  requirements    String?
+  createdAt       DateTime @default(now())
+}
+
+model EquipmentLease {
+  id              String   @id @default(cuid())
+  equipmentNftId  String
+  equipmentNft    NFT      @relation(fields: [equipmentNftId], references: [id])
+  lesseeAddress   String
+  startDate       DateTime
+  endDate         DateTime
+  dailyRate       Decimal  @db.Decimal(20, 8)
+  totalAmount     Decimal  @db.Decimal(20, 8)
+  deposit         Decimal  @db.Decimal(20, 8)
+  status          String   // ACTIVE, COMPLETED, CANCELLED
+  deliveryAddress String
+  pickupAddress   String
+  insurance       Boolean  @default(true)
+  training        Boolean  @default(false)
+  maintenance     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+}
+
+model EscrowTransaction {
+  id              String   @id @default(cuid())
+  buyerAddress    String
+  sellerAddress   String
+  nftContract     String
+  nftTokenId      String
+  amount          Decimal  @db.Decimal(20, 8)
+  currency        String
+  status          String   // PENDING_PAYMENT, PENDING_DELIVERY, DELIVERED, RELEASED, DISPUTED
+  deliveryStatus  String   @default("PENDING_DELIVERY")
+  trackingNumber  String?
+  carrier         String?
+  estimatedDelivery DateTime?
+  actualDelivery  DateTime?
+  paymentStatus   String   @default("PENDING")
+  paymentHash     String?
+  paidAt          DateTime?
+  isDisputed      Boolean  @default(false)
+  disputeReason   String?
+  disputeEvidence String[]
+  rating          Int?     // 1-5
+  feedback        String?
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime
+}

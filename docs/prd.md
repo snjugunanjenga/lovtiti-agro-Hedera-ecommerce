@@ -33,24 +33,31 @@ Product Requirements Document (PRD)
 - **Document Verification:** ID, business licenses, certifications, and professional credentials
 - **Admin Approval:** Platform moderators verify and approve all KYC submissions
 
-### Product & Service Listings
-- **Farmer Listings:** Crops, livestock, fish, honey with detailed specifications
-- **Distributor Listings:** Bulk products, processed goods, and supply chain services
-- **Transport Services:** Logistics offerings with capacity, routes, and pricing
-- **Agro Expert Services:** Agricultural products (seeds, vaccines, pesticides), equipment leasing, and expert consultation services
-- **Storage Solutions:** Cold storage, warehousing, and preservation services
+### Product & Service Listings (NFT-Based)
+- **Farmer Product NFTs:** Crops, livestock, fish, honey tokenized as NFTs with embedded metadata
+- **Distributor Service NFTs:** Bulk products, processed goods, and supply chain services as tradeable NFTs
+- **Transport Service NFTs:** Logistics offerings with capacity, routes, and pricing as service NFTs
+- **Agro Expert Service NFTs:** Agricultural products (seeds, vaccines, pesticides), equipment leasing, and expert consultation services as NFTs
+- **Equipment NFTs:** Farm equipment tokenized for leasing and ownership tracking
+- **Storage Solution NFTs:** Cold storage, warehousing, and preservation services as service NFTs
 
-### Supply Chain Management
-- **Order Management:** End-to-end order tracking from farm to buyer
-- **Logistics Coordination:** Automated matching of transporters with orders
-- **Route Optimization:** AI-powered route planning for efficient delivery
-- **Inventory Management:** Real-time inventory tracking across the supply chain
+### Supply Chain Management (NFT-Enhanced)
+- **NFT-Based Order Management:** End-to-end order tracking with immutable NFT ownership records
+- **Smart Contract Logistics:** Automated matching of transporters with orders via smart contracts
+- **Route Optimization:** AI-powered route planning with NFT-based delivery confirmation
+- **Inventory Management:** Real-time inventory tracking with NFT ownership and provenance
+- **Quality Assurance NFTs:** Automated quality checks recorded on blockchain
+- **Sustainability Tracking:** Environmental impact metrics embedded in NFT metadata
 
-### Blockchain Integration
+### Blockchain Integration & NFT Marketplace
 - **Hedera Smart Contracts:** Secure, transparent escrow transactions for all stakeholders
+- **NFT Tokenization:** All products and services tokenized as Non-Fungible Tokens (NFTs)
 - **Supply Chain Traceability:** Immutable product journey tracking from source to consumer
 - **HBAR Payments:** Cryptocurrency payments with instant settlement
+- **MetaMask Integration:** Ethereum wallet connectivity with cross-chain bridge to Hedera
 - **Stripe Integration:** Traditional fiat payment options
+- **NFT Marketplace:** Decentralized trading platform for agricultural products and services
+- **Royalty System:** Perpetual royalties for NFT creators on secondary sales
 
 ### Specialized Dashboards
 - **Farmer Dashboard:** Product listing, order management, and analytics
@@ -70,6 +77,16 @@ Product Requirements Document (PRD)
 - **Comprehensive Rating:** Users rate each other on service quality, reliability, and professionalism
 - **Trust Scores:** Algorithmic trust scoring based on transaction history and ratings
 - **Quality Assurance:** Product quality verification and certification tracking
+
+### NFT Marketplace Features
+- **NFT Creation & Minting:** Farmers and experts can create NFTs for their products and services
+- **Decentralized Trading:** Peer-to-peer NFT trading with smart contract automation
+- **Auction System:** NFT auctions for premium agricultural products and rare services
+- **Cross-Chain Bridge:** Seamless NFT transfers between Ethereum and Hedera networks
+- **Royalty Distribution:** Automatic royalty payments to NFT creators on secondary sales
+- **NFT Analytics:** Comprehensive trading analytics and portfolio tracking
+- **DeFi Integration:** NFT staking, lending, and yield farming opportunities
+- **DAO Governance:** Community-driven platform governance with NFT-based voting
 
 ## 5. Non-Functional Requirements
 
@@ -127,9 +144,13 @@ Product Requirements Document (PRD)
 
 ### Blockchain & Payments
 - **Blockchain:** Hedera Hashgraph for smart contracts and transactions
+- **NFT Standards:** HTS-721 (Hedera Token Service - Non-Fungible)
+- **Cross-Chain:** Ethereum integration with MetaMask wallet support
 - **Cryptocurrency:** HBAR for blockchain payments
 - **Fiat Payments:** Stripe for traditional payment methods
-- **Smart Contracts:** Solidity contracts for escrow and supply chain tracking
+- **Smart Contracts:** Solidity contracts for NFT marketplace, escrow, and supply chain tracking
+- **IPFS:** Decentralized storage for NFT metadata and media files
+- **Web3 Integration:** MetaMask, WalletConnect for wallet connectivity
 
 ### DevOps & Infrastructure
 - **Deployment:** Vercel for frontend and API deployment
@@ -179,10 +200,13 @@ Product Requirements Document (PRD)
 
 ### Business Metrics
 - **Transaction Volume:** 5,000 transactions per month across all user types
+- **NFT Marketplace Activity:** 10,000+ NFTs minted, $10M+ trading volume annually
 - **Supply Chain Efficiency:** 30% reduction in delivery times
 - **Post-Harvest Loss Reduction:** 25% reduction reported by farmers
 - **Revenue Growth:** $500K monthly transaction volume
+- **NFT Trading Volume:** $2M+ monthly NFT marketplace volume
 - **User Satisfaction:** 4.5/5 average rating across all user types
+- **Creator Royalties:** $200K+ in royalties distributed to NFT creators
 
 ### Platform Performance
 - **System Uptime:** 99.9% availability
