@@ -40,8 +40,8 @@ interface CartState {
   isLoading: boolean;
 }
 
-const CART_STORAGE_KEY = 'lovitti-agro-cart';
-const LIKED_STORAGE_KEY = 'lovitti-agro-liked';
+const CART_STORAGE_KEY = 'lovtiti-agro-cart';
+const LIKED_STORAGE_KEY = 'lovtiti-agro-liked';
 
 export function useCart() {
   const [cartState, setCartState] = useState<CartState>({

@@ -1,4 +1,4 @@
-# Payment Integration Guide - Lovitti Agro Mart
+# Payment Integration Guide - Lovtiti Agro Mart
 
 ## 🎯 Overview
 Complete payment integration system supporting multiple payment methods for the blockchain-powered agricultural marketplace. This guide covers the implementation of Stripe, MPESA Daraja, Hedera HBAR, and MetaMask payment systems.

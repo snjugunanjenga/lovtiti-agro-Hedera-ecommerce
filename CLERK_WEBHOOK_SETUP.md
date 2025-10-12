@@ -17,7 +17,7 @@ We've confirmed that:
 ### Step 1: Access Clerk Dashboard
 
 1. Go to [https://dashboard.clerk.com](https://dashboard.clerk.com)
-2. Select your Lovitti Agro Mart project
+2. Select your Lovtiti Agro Mart project
 3. Go to "Webhooks" in the left sidebar
 
 ### Step 2: Create Webhook Endpoint
@@ -147,6 +147,9 @@ DATABASE_URL="postgresql://..."
 ---
 
 **Note**: The webhook setup is required for automatic user creation. Without it, users will only be created manually or through the test endpoints.
+
+
+
 
 
 

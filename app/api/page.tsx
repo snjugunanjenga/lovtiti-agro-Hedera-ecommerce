@@ -94,7 +94,7 @@ export default function APIPage() {
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">API Documentation</h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Integrate with Lovitti Agro Mart's powerful API to build custom applications, 
+            Integrate with Lovtiti Agro Mart's powerful API to build custom applications, 
             manage listings, process payments, and access real-time agricultural data.
           </p>
         </div>
@@ -239,7 +239,7 @@ export default function APIPage() {
               </div>
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold mb-2">Python</h4>
-                <code className="text-sm text-gray-600">pip install lovitti-agro-api</code>
+                <code className="text-sm text-gray-600">pip install lovtiti-agro-api</code>
               </div>
               <div className="p-4 border rounded-lg">
                 <h4 className="font-semibold mb-2">PHP</h4>

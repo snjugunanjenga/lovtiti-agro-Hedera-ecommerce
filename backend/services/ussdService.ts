@@ -36,7 +36,7 @@ export async function handleUssd(params: UssdParams): Promise<string> {
 	const session = sessions.get(sessionId)!;
 
 	if (!input) {
-		return "CON Welcome to Lovitti Agro Mart\n1. Browse listings\n2. My orders\n3. Help\n4. KYC Registration\n5. Track Order";
+		return "CON Welcome to Lovtiti Agro Mart\n1. Browse listings\n2. My orders\n3. Help\n4. KYC Registration\n5. Track Order";
 	}
 
 	// Browse listings

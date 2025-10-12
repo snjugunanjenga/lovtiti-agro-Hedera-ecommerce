@@ -92,7 +92,7 @@ export default function SignupPage() {
                 <Shield className="w-8 h-8 text-white" />
               </div>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Join Lovitti Agro Mart</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Join Lovtiti Agro Mart</h1>
             <p className="text-xl text-gray-600">
               Connect with Africa's agricultural ecosystem
             </p>

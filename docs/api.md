@@ -1,7 +1,7 @@
-# API Documentation - Lovitti Agro Mart
+# API Documentation - Lovtiti Agro Mart
 
 ## Overview
-Lovitti Agro Mart provides a comprehensive REST API for managing agricultural supply chain operations across multiple stakeholder types: farmers, distributors, transporters, buyers, and agro experts.
+Lovtiti Agro Mart provides a comprehensive REST API for managing agricultural supply chain operations across multiple stakeholder types: farmers, distributors, transporters, buyers, and agro experts.
 
 ## Base URL
 ```

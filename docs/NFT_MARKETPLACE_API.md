@@ -1,7 +1,7 @@
-# 🌾 NFT Marketplace API Documentation - Lovitti Agro Mart
+# 🌾 NFT Marketplace API Documentation - Lovtiti Agro Mart
 
 ## Overview
-The NFT Marketplace API extends the core Lovitti Agro Mart platform with comprehensive Web3 functionality, enabling users to create, trade, and manage agricultural products, services, and equipment as Non-Fungible Tokens (NFTs) on Hedera Hashgraph.
+The NFT Marketplace API extends the core Lovtiti Agro Mart platform with comprehensive Web3 functionality, enabling users to create, trade, and manage agricultural products, services, and equipment as Non-Fungible Tokens (NFTs) on Hedera Hashgraph.
 
 ## Base URL
 ```
@@ -724,7 +724,7 @@ Connect MetaMask wallet and create Hedera account
 {
   "ethereumAddress": "0x742d35Cc6634C0532925a3b8D8C2a5e2E7C8e9f0",
   "signature": "0x1234567890abcdef...",
-  "message": "Connect to Lovitti Agro Mart NFT Marketplace"
+  "message": "Connect to Lovtiti Agro Mart NFT Marketplace"
 }
 ```
 
@@ -1015,4 +1015,4 @@ For NFT marketplace API support:
 
 ---
 
-*This NFT Marketplace API documentation provides comprehensive coverage of all Web3 functionality for the Lovitti Agro Mart platform. The API enables true ownership, provenance tracking, and decentralized trading of agricultural products, services, and equipment as NFTs on Hedera Hashgraph.*
+*This NFT Marketplace API documentation provides comprehensive coverage of all Web3 functionality for the Lovtiti Agro Mart platform. The API enables true ownership, provenance tracking, and decentralized trading of agricultural products, services, and equipment as NFTs on Hedera Hashgraph.*

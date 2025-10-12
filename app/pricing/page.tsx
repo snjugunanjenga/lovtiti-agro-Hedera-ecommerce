@@ -239,7 +239,7 @@ export default function PricingPage() {
             Ready to grow your farming business?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join thousands of farmers already using Lovitti Agro Mart
+            Join thousands of farmers already using Lovtiti Agro Mart
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-6">

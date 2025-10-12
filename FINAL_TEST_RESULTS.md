@@ -118,7 +118,7 @@ Tests: 20 passed, 20 total
 
 ## **PRODUCTION READY!**
 
-The Lovitti Agro Mart system is now **fully functional** with:
+The Lovtiti Agro Mart system is now **fully functional** with:
 
 ### **✅ Multi-Role KYC Verification System**
 - Complete onboarding for all 5 user types (Farmer, Distributor, Transporter, Buyer, Veterinarian)

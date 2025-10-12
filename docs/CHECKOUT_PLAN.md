@@ -1,4 +1,4 @@
-# Product Checkout System Plan - Lovitti Agro Mart
+# Product Checkout System Plan - Lovtiti Agro Mart
 
 ## Overview
 A comprehensive checkout system for the blockchain-powered agricultural marketplace supporting multiple user types, currencies, payment methods, and supply chain tracking.
@@ -376,4 +376,4 @@ interface SupplyChainRecord {
 
 ---
 
-This comprehensive plan provides a roadmap for implementing a world-class checkout system that supports the unique requirements of Lovitti Agro Mart's blockchain-powered agricultural marketplace.
+This comprehensive plan provides a roadmap for implementing a world-class checkout system that supports the unique requirements of Lovtiti Agro Mart's blockchain-powered agricultural marketplace.

@@ -1,4 +1,4 @@
-// NFT Types and Interfaces for Lovitti Agro Mart Marketplace
+// NFT Types and Interfaces for Lovtiti Agro Mart Marketplace
 
 export type NFTStandard = "HTS-721"; // Hedera Token Service - Non-Fungible
 export type NFTCategory = "PRODUCT" | "SERVICE" | "EQUIPMENT";

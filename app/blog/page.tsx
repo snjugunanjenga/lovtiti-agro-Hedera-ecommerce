@@ -56,7 +56,7 @@ const blogPosts = [
   },
   {
     id: 6,
-    title: "Success Stories: Farmers Thriving on Lovitti Agro Mart",
+    title: "Success Stories: Farmers Thriving on Lovtiti Agro Mart",
     excerpt: "Real stories from farmers who have transformed their businesses using our blockchain-powered marketplace.",
     author: "Community Team",
     date: "2023-12-20",

@@ -224,7 +224,7 @@ describe('NFT Components', () => {
         {
           step: 0,
           action: 'NFT_MINTED',
-          location: 'Lovitti Agro Mart',
+          location: 'Lovtiti Agro Mart',
           actor: '0.0.creator456',
           timestamp: '2024-01-15T10:00:00Z',
           verified: true,

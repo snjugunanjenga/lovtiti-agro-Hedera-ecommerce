@@ -51,11 +51,11 @@ export default function Navbar() {
     if (!role) return 'User';
     
     switch (role) {
-      case 'FARMER': return 'Farmer';
       case 'BUYER': return 'Buyer';
+      case 'FARMER': return 'Farmer';
       case 'DISTRIBUTOR': return 'Distributor';
       case 'TRANSPORTER': return 'Transporter';
-      case 'VETERINARIAN': return 'Agro Expert';
+      case 'AGROEXPERT': return 'Agro Expert';
       case 'ADMIN': return 'Admin';
       default: return role;
     }
@@ -112,7 +112,7 @@ export default function Navbar() {
       description: 'Products, equipment & advice',
       color: 'text-red-600',
       bgColor: 'bg-red-100',
-      roles: ['VETERINARIAN', 'ADMIN']
+      roles: ['AGROEXPERT', 'ADMIN']
     },
   ];
 
@@ -145,7 +145,7 @@ export default function Navbar() {
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
             <span className="text-2xl font-bold text-green-800 group-hover:text-green-900 transition-colors">
-              Lovitti Agro Mart
+              Lovtiti Agro Mart
             </span>
           </Link>
 

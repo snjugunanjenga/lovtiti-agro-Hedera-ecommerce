@@ -1,6 +1,6 @@
-// Role management utilities for Lovitti Agro Mart
+// Role management utilities for Lovtiti Agro Mart
 
-export type UserRole = 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'VETERINARIAN' | 'ADMIN';
+export type UserRole = 'BUYER' | 'FARMER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'AGROEXPERT' | 'ADMIN';
 
 export interface RolePermissions {
   canAccessDashboard: (role: UserRole, dashboard: string) => boolean;
@@ -11,16 +11,16 @@ export interface RolePermissions {
 }
 
 export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
-  FARMER: {
-    canAccessDashboard: (role, dashboard) => dashboard === 'farmer' || dashboard === 'admin',
-    canCreateListings: () => true,
+  BUYER: {
+    canAccessDashboard: (role, dashboard) => dashboard === 'buyer' || dashboard === 'admin',
+    canCreateListings: () => false,
     canManageOrders: () => true,
     canAccessAnalytics: () => true,
     canManageUsers: () => false,
   },
-  BUYER: {
-    canAccessDashboard: (role, dashboard) => dashboard === 'buyer' || dashboard === 'admin',
-    canCreateListings: () => false,
+  FARMER: {
+    canAccessDashboard: (role, dashboard) => dashboard === 'farmer' || dashboard === 'admin',
+    canCreateListings: () => true,
     canManageOrders: () => true,
     canAccessAnalytics: () => true,
     canManageUsers: () => false,
@@ -39,7 +39,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canAccessAnalytics: () => true,
     canManageUsers: () => false,
   },
-  VETERINARIAN: {
+  AGROEXPERT: {
     canAccessDashboard: (role, dashboard) => dashboard === 'agro-vet' || dashboard === 'admin',
     canCreateListings: () => true,
     canManageOrders: () => true,
@@ -67,11 +67,11 @@ export const canAccessDashboard = (userRole: UserRole, dashboardPath: string): b
 
 export const getAvailableDashboards = (userRole: UserRole) => {
   const dashboards = [
-    { name: 'Farmer Dashboard', path: '/dashboard/farmer', roles: ['FARMER', 'ADMIN'] },
     { name: 'Buyer Dashboard', path: '/dashboard/buyer', roles: ['BUYER', 'ADMIN'] },
+    { name: 'Farmer Dashboard', path: '/dashboard/farmer', roles: ['FARMER', 'ADMIN'] },
     { name: 'Distributor Dashboard', path: '/dashboard/distributor', roles: ['DISTRIBUTOR', 'ADMIN'] },
     { name: 'Transporter Dashboard', path: '/dashboard/transporter', roles: ['TRANSPORTER', 'ADMIN'] },
-    { name: 'Agro Expert Dashboard', path: '/dashboard/agro-vet', roles: ['VETERINARIAN', 'ADMIN'] },
+    { name: 'Agro Expert Dashboard', path: '/dashboard/agro-vet', roles: ['AGROEXPERT', 'ADMIN'] },
   ];
 
   return dashboards.filter(dashboard => dashboard.roles.includes(userRole));
@@ -79,11 +79,11 @@ export const getAvailableDashboards = (userRole: UserRole) => {
 
 export const getRoleDisplayName = (role: UserRole): string => {
   const displayNames: Record<UserRole, string> = {
-    FARMER: 'Farmer',
     BUYER: 'Buyer',
+    FARMER: 'Farmer',
     DISTRIBUTOR: 'Distributor',
     TRANSPORTER: 'Transporter',
-    VETERINARIAN: 'Agro Expert',
+    AGROEXPERT: 'Agro Expert',
     ADMIN: 'Administrator',
   };
 
@@ -92,11 +92,11 @@ export const getRoleDisplayName = (role: UserRole): string => {
 
 export const getRoleDescription = (role: UserRole): string => {
   const descriptions: Record<UserRole, string> = {
-    FARMER: 'Agricultural producer who grows and sells crops, livestock, and other farm products',
     BUYER: 'Individual or business that purchases agricultural products from farmers and distributors',
+    FARMER: 'Agricultural producer who grows and sells crops, livestock, and other farm products',
     DISTRIBUTOR: 'Supply chain intermediary who manages inventory and connects farmers with buyers',
     TRANSPORTER: 'Logistics provider who handles transportation and delivery of agricultural products',
-    VETERINARIAN: 'Agricultural expert who sells products, leases equipment, and provides expert advice',
+    AGROEXPERT: 'Agricultural expert who sells products, leases equipment, and provides expert advice',
     ADMIN: 'Platform administrator with full access to all features and user management',
   };
 
@@ -105,11 +105,11 @@ export const getRoleDescription = (role: UserRole): string => {
 
 export const getRoleColor = (role: UserRole): { text: string; bg: string } => {
   const colors: Record<UserRole, { text: string; bg: string }> = {
-    FARMER: { text: 'text-green-600', bg: 'bg-green-100' },
     BUYER: { text: 'text-blue-600', bg: 'bg-blue-100' },
+    FARMER: { text: 'text-green-600', bg: 'bg-green-100' },
     DISTRIBUTOR: { text: 'text-purple-600', bg: 'bg-purple-100' },
     TRANSPORTER: { text: 'text-orange-600', bg: 'bg-orange-100' },
-    VETERINARIAN: { text: 'text-red-600', bg: 'bg-red-100' },
+    AGROEXPERT: { text: 'text-red-600', bg: 'bg-red-100' },
     ADMIN: { text: 'text-gray-600', bg: 'bg-gray-100' },
   };
 
@@ -118,11 +118,11 @@ export const getRoleColor = (role: UserRole): { text: string; bg: string } => {
 
 export const getRoleIcon = (role: UserRole): string => {
   const icons: Record<UserRole, string> = {
-    FARMER: 'Package',
     BUYER: 'ShoppingCart',
+    FARMER: 'Package',
     DISTRIBUTOR: 'Package',
     TRANSPORTER: 'Truck',
-    VETERINARIAN: 'Stethoscope',
+    AGROEXPERT: 'Stethoscope',
     ADMIN: 'Shield',
   };
 

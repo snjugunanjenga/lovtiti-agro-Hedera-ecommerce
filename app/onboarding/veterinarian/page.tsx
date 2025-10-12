@@ -45,7 +45,7 @@ export default function VeterinarianOnboarding() {
 		try {
 			const parsed = veterinarianKycSchema.safeParse({ 
 				...formData, 
-				type: "VETERINARIAN" as const,
+				type: "AGROEXPERT" as const,
 				productSupplierPermits: formData.productSupplierPermits.filter(permit => permit.trim() !== ''),
 				agriculturalExpertiseCert: formData.agriculturalExpertiseCert.filter(cert => cert.trim() !== ''),
 				specialization: formData.specialization.filter(spec => spec.trim() !== ''),
@@ -124,7 +124,7 @@ export default function VeterinarianOnboarding() {
 				<div className="text-center mb-8">
 					<div className="flex items-center justify-center space-x-2 mb-4">
 						<Stethoscope className="h-8 w-8 text-teal-600" />
-						<span className="text-2xl font-bold text-teal-800">Lovitti Agro Mart</span>
+						<span className="text-2xl font-bold text-teal-800">Lovtiti Agro Mart</span>
 					</div>
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">Veterinarian Onboarding</h1>
 					<p className="text-gray-600">Join our expert network and provide agricultural expertise</p>

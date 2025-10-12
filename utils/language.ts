@@ -1,4 +1,4 @@
-// Language utilities for Lovitti Agro Mart
+// Language utilities for Lovtiti Agro Mart
 
 export interface Language {
   code: string;

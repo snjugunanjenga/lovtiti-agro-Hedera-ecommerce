@@ -172,7 +172,7 @@ export default function PrivacyPage() {
         <Card className="mb-8">
           <CardContent className="pt-6">
             <p className="text-gray-700 leading-relaxed">
-              At Lovitti Agro Mart, we are committed to protecting your privacy and ensuring the security 
+              At Lovtiti Agro Mart, we are committed to protecting your privacy and ensuring the security 
               of your personal information. This Privacy Policy explains how we collect, use, disclose, 
               and safeguard your information when you use our decentralized agricultural marketplace platform.
             </p>

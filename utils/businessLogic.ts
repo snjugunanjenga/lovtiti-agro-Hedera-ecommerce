@@ -1,4 +1,4 @@
-// Business Logic for Lovitti Agro Mart
+// Business Logic for Lovtiti Agro Mart
 // Defines the relationships and interactions between different user roles
 
 export type UserRole = 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'VETERINARIAN' | 'ADMIN';

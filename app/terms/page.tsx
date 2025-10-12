@@ -30,7 +30,7 @@ export default function TermsPage() {
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                Welcome to Lovitti Agro Mart, a blockchain-powered agricultural marketplace connecting 
+                Welcome to Lovtiti Agro Mart, a blockchain-powered agricultural marketplace connecting 
                 African farmers with global buyers. These Terms of Service ("Terms") govern your use 
                 of our platform and services.
               </p>
@@ -82,7 +82,7 @@ export default function TermsPage() {
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                Lovitti Agro Mart provides a decentralized marketplace platform that includes:
+                Lovtiti Agro Mart provides a decentralized marketplace platform that includes:
               </p>
               <ul>
                 <li>Product listing and browsing capabilities</li>
@@ -146,7 +146,7 @@ export default function TermsPage() {
             </CardHeader>
             <CardContent className="prose max-w-none">
               <p>
-                Lovitti Agro Mart acts as an intermediary platform. We are not responsible for:
+                Lovtiti Agro Mart acts as an intermediary platform. We are not responsible for:
               </p>
               <ul>
                 <li>Product quality or condition</li>

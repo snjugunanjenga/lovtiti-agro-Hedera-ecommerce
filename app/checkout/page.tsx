@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useWallet } from '@/hooks/useWallet';
 // import { useUser } from '@clerk/nextjs';
 
 interface DeliveryInfo {
@@ -50,6 +51,15 @@ export default function CheckoutPage() {
   // const { user } = useUser();
   const user = null as any; // Temporary for development
   const { items, totalItems, totalPrice, clearCart } = useCart();
+  
+  // Wallet integration
+  const { 
+    isConnected, 
+    wallet, 
+    buyProduct, 
+    isBuyingProduct,
+    error: walletError 
+  } = useWallet();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
@@ -257,26 +267,65 @@ export default function CheckoutPage() {
   };
 
   const processMetaMaskPayment = async (orderData: any) => {
-    // Check if MetaMask is installed
-    if (typeof window !== 'undefined' && !(window as any).ethereum) {
-      throw new Error('MetaMask is not installed. Please install MetaMask to continue.');
+    // Check if wallet is connected
+    if (!isConnected) {
+      throw new Error('Please connect your wallet first');
     }
 
-    const response = await fetch('/api/payments/metamask/create-transaction', {
+    if (!wallet?.address) {
+      throw new Error('Wallet address not found');
+    }
+
+    // Process each item in the cart through the smart contract
+    const purchaseResults = [];
+    
+    for (const item of items) {
+      if (!item.contractProductId) {
+        throw new Error(`Product ${item.name} is not available on the contract`);
+      }
+
+      // Calculate the total value for this item
+      const itemTotal = item.price * item.quantity;
+      const valueInEth = (itemTotal / 100).toString(); // Convert from cents to ETH (simplified)
+
+      // Buy product through smart contract
+      const result = await buyProduct(
+        item.contractProductId,
+        item.quantity,
+        valueInEth,
+        user?.id || 'unknown'
+      );
+
+      if (!result.success) {
+        throw new Error(result.error || `Failed to purchase ${item.name}`);
+      }
+
+      purchaseResults.push({
+        itemId: item.id,
+        contractProductId: item.contractProductId,
+        transactionHash: result.transactionId,
+        amount: itemTotal
+      });
+    }
+
+    // Create order in database with contract information
+    const orderResponse = await fetch('/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
+      body: JSON.stringify({
+        items: purchaseResults,
+        deliveryInfo,
+        paymentMethod: 'agro_contract',
+        totals,
+        contractBuyerAddr: wallet.address
+      })
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to create MetaMask transaction');
+    if (!orderResponse.ok) {
+      throw new Error('Failed to create order in database');
     }
 
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.message || 'MetaMask payment failed');
-    }
+    return purchaseResults;
   };
 
   if (totalItems === 0) {

@@ -99,7 +99,7 @@ The Hedera Hashgraph integration is **successfully implemented and functional** 
 - HBAR payment handling
 - Account balance management
 
-The integration provides a solid foundation for the Lovitti Agro Mart decentralized marketplace, enabling secure, transparent, and efficient agricultural trade transactions on the Hedera network.
+The integration provides a solid foundation for the Lovtiti Agro Mart decentralized marketplace, enabling secure, transparent, and efficient agricultural trade transactions on the Hedera network.
 
 ---
 

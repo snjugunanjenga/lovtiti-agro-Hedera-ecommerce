@@ -1,4 +1,4 @@
-# Lovitti Agro Mart
+# Lovtiti Agro Mart
 
 Marketplace connecting farmers and buyers with Hedera escrow and Stripe payments.
 

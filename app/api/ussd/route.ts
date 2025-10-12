@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     switch (step) {
       case 0:
         // Initial menu
-        response = `CON Welcome to Lovitti Agro Mart
+        response = `CON Welcome to Lovtiti Agro Mart
 1. Browse Products
 2. My Orders
 3. Track Delivery
@@ -71,7 +71,7 @@ Enter your order number to track delivery status.`;
 0. Back`;
             break;
           case '0':
-            response = 'END Thank you for using Lovitti Agro Mart!';
+            response = 'END Thank you for using Lovtiti Agro Mart!';
             break;
           default:
             response = 'END Invalid option. Please try again.';
@@ -300,7 +300,7 @@ Status: Active
 
       case 3:
         // Handle deeper menu levels
-        response = 'END Thank you for using Lovitti Agro Mart! For more options, visit our website or call support.';
+        response = 'END Thank you for using Lovtiti Agro Mart! For more options, visit our website or call support.';
         break;
 
       default:
@@ -331,7 +331,7 @@ export async function GET(request: NextRequest) {
     // Return USSD service status
     return NextResponse.json({
       status: 'active',
-      service: 'Lovitti Agro Mart USSD',
+      service: 'Lovtiti Agro Mart USSD',
       code: '*123#',
       description: 'Agricultural marketplace USSD service',
       features: [

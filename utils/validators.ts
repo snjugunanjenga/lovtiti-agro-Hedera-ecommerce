@@ -8,7 +8,7 @@ const baseKycSchema = z.object({
 	idNumber: z.string().min(5),
 	phone: z.string().min(7),
 	hederaWallet: z.string().min(10),
-	type: z.enum(["FARMER", "DISTRIBUTOR", "TRANSPORTER", "BUYER", "VETERINARIAN"]),
+	type: z.enum(["BUYER", "FARMER", "DISTRIBUTOR", "TRANSPORTER", "AGROEXPERT"]),
 });
 
 // Role-specific KYC requirements
@@ -47,7 +47,7 @@ export const buyerKycSchema = baseKycSchema.extend({
 });
 
 export const veterinarianKycSchema = baseKycSchema.extend({
-	type: z.literal("VETERINARIAN"),
+	type: z.literal("AGROEXPERT"),
 	professionalLicense: z.string().min(1), // Professional veterinary license
 	productSupplierPermits: z.array(z.string()).optional(), // Product supplier permits
 	agriculturalExpertiseCert: z.array(z.string()).optional(), // Agricultural expertise certifications

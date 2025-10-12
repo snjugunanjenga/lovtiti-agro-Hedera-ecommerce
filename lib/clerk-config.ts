@@ -1,4 +1,4 @@
-// Clerk configuration for Lovitti Agro Mart
+// Clerk configuration for Lovtiti Agro Mart
 import { ClerkProvider } from '@clerk/nextjs';
 
 export const clerkConfig = {
@@ -31,7 +31,7 @@ export const clerkConfig = {
     <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background-color: #f9fafb;">
       <div style="text-align: center; padding: 2rem;">
         <div style="width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top: 4px solid #16a34a; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem;"></div>
-        <p style="color: #6b7280; font-size: 0.875rem;">Loading Lovitti Agro Mart...</p>
+        <p style="color: #6b7280; font-size: 0.875rem;">Loading Lovtiti Agro Mart...</p>
       </div>
       <style>
         @keyframes spin {
@@ -79,6 +79,9 @@ if (typeof window !== 'undefined') {
     originalConsoleError.apply(console, args);
   };
 }
+
+
+
 
 
 

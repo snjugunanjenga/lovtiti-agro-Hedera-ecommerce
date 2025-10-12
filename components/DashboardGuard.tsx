@@ -89,8 +89,8 @@ export default function DashboardGuard({
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-gray-900">Available Dashboards:</h4>
               <div className="space-y-1">
-                <p className="text-sm text-gray-600">• Farmer Dashboard</p>
                 <p className="text-sm text-gray-600">• Buyer Dashboard</p>
+                <p className="text-sm text-gray-600">• Farmer Dashboard</p>
                 <p className="text-sm text-gray-600">• Distributor Dashboard</p>
                 <p className="text-sm text-gray-600">• Transporter Dashboard</p>
                 <p className="text-sm text-gray-600">• Agro Expert Dashboard</p>

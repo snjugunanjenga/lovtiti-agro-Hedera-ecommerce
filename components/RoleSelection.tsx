@@ -22,16 +22,16 @@ interface RoleSelectionProps {
 
 const roles: { role: UserRole; icon: any; description: string; features: string[] }[] = [
   {
-    role: 'FARMER',
-    icon: Package,
-    description: 'Agricultural producer who grows and sells crops, livestock, and other farm products',
-    features: ['List products', 'Manage orders', 'Track sales', 'Access analytics']
-  },
-  {
     role: 'BUYER',
     icon: ShoppingCart,
     description: 'Individual or business that purchases agricultural products from farmers and distributors',
     features: ['Browse products', 'Place orders', 'Track purchases', 'Rate farmers']
+  },
+  {
+    role: 'FARMER',
+    icon: Package,
+    description: 'Agricultural producer who grows and sells crops, livestock, and other farm products',
+    features: ['List products', 'Manage orders', 'Track sales', 'Access analytics']
   },
   {
     role: 'DISTRIBUTOR',
@@ -46,7 +46,7 @@ const roles: { role: UserRole; icon: any; description: string; features: string[
     features: ['Route optimization', 'Cargo tracking', 'Fleet management', 'Delivery analytics']
   },
   {
-    role: 'VETERINARIAN',
+    role: 'AGROEXPERT',
     icon: Stethoscope,
     description: 'Agricultural expert who sells products, leases equipment, and provides expert advice',
     features: ['Sell products', 'Lease equipment', 'Expert consultations', 'Knowledge sharing']

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { getBusinessRulesForUser } from '@/utils/businessLogic';
+import { useWallet } from '@/hooks/useWallet';
 
 export default function CreateListingPage() {
   const { user, isLoaded } = useUser();
@@ -43,6 +44,16 @@ export default function CreateListingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+
+  // Wallet integration
+  const { 
+    isConnected, 
+    wallet, 
+    addProduct, 
+    isAddingProduct,
+    isFarmer,
+    error: walletError 
+  } = useWallet();
 
   // Check if user can create listings (Farmers and Agro Experts only)
   const userRole = user?.publicMetadata?.role as string || 'BUYER';
@@ -101,9 +112,21 @@ export default function CreateListingPage() {
     
     if (!validateForm()) return;
 
+    // Check wallet connection and farmer status
+    if (!isConnected) {
+      setErrors({ wallet: 'Please connect your wallet first' });
+      return;
+    }
+
+    if (!isFarmer) {
+      setErrors({ farmer: 'You must be a registered farmer to create products' });
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
+      // Step 1: Create product in database
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: {
@@ -118,14 +141,49 @@ export default function CreateListingPage() {
         }),
       });
 
-      if (response.ok) {
-        router.push('/dashboard/farmer');
-      } else {
+      if (!response.ok) {
         const error = await response.json();
-        console.error('Failed to create listing:', error);
+        throw new Error(error.error || 'Failed to create listing in database');
       }
+
+      const listingResult = await response.json();
+      
+      // Step 2: Add product to smart contract
+      const priceInEth = parseFloat(formData.priceCents) / 100; // Convert to ETH (simplified)
+      const quantity = parseInt(formData.quantity);
+      
+      const contractResult = await addProduct(
+        priceInEth.toString(), 
+        quantity, 
+        user?.id || 'unknown'
+      );
+
+      if (!contractResult.success) {
+        throw new Error(contractResult.error || 'Failed to create product on contract');
+      }
+
+      // Step 3: Update listing with contract information
+      const updateResponse = await fetch(`/api/listings/${listingResult.id}/contract`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contractProductId: contractResult.data?.productId,
+          contractTxHash: contractResult.transactionHash,
+          contractPrice: priceInEth,
+          contractStock: quantity
+        }),
+      });
+
+      if (!updateResponse.ok) {
+        console.warn('Failed to update listing with contract info');
+      }
+
+      router.push('/dashboard/farmer');
     } catch (error) {
       console.error('Error creating listing:', error);
+      setErrors({ submit: error instanceof Error ? error.message : 'An error occurred' });
     } finally {
       setIsSubmitting(false);
     }

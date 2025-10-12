@@ -2,7 +2,7 @@
 
 ## 🚀 Stream Chat Implementation Complete!
 
-This guide will help you set up Stream Chat for in-house messaging and calls between users in your Lovitti Agro Mart application.
+This guide will help you set up Stream Chat for in-house messaging and calls between users in your Lovtiti Agro Mart application.
 
 ## 📋 Prerequisites
 
@@ -94,7 +94,7 @@ The system supports these channel types:
 ## 🔧 Stream Dashboard Configuration
 
 ### **1. App Settings**
-- **App Name**: Lovitti Agro Mart
+- **App Name**: Lovtiti Agro Mart
 - **Environment**: Development/Production
 - **Region**: Choose closest to your users
 

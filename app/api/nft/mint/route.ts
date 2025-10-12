@@ -74,10 +74,10 @@ export async function POST(request: NextRequest) {
         nftId: nft.id,
         stepIndex: 0,
         action: 'NFT_MINTED',
-        location: 'Lovitti Agro Mart',
+        location: 'Lovtiti Agro Mart',
         actorAddress: user.hederaAccountId || '0.0.0',
         metadata: JSON.stringify({
-          mintingPlatform: 'Lovitti Agro Mart',
+          mintingPlatform: 'Lovtiti Agro Mart',
           mintingTime: new Date().toISOString(),
           category,
           royalties

@@ -23,7 +23,7 @@ async function initializeDatabase() {
     console.log(`📊 Current orders in database: ${orderCount}`);
     
     console.log('✅ Database initialization check completed!');
-    console.log('🎯 Your database is ready for the Lovitti Agro Mart application.');
+    console.log('🎯 Your database is ready for the Lovtiti Agro Mart application.');
     
   } catch (error) {
     console.error('❌ Database initialization failed:', error);

@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-This roadmap outlines the complete implementation strategy for transforming Lovitti Agro Mart into a Web3-powered NFT marketplace. The plan spans 16 weeks and includes NFT standards, smart contracts, MetaMask integration, and comprehensive marketplace functionality.
+This roadmap outlines the complete implementation strategy for transforming Lovtiti Agro Mart into a Web3-powered NFT marketplace. The plan spans 16 weeks and includes NFT standards, smart contracts, MetaMask integration, and comprehensive marketplace functionality.
 
 ---
 
@@ -654,8 +654,8 @@ This comprehensive implementation roadmap provides a structured approach to buil
 - Increased income for farmers and better quality for consumers
 - Sustainable and environmentally conscious agricultural practices
 
-This roadmap positions Lovitti Agro Mart as the pioneer in agricultural Web3 innovation, creating lasting value for all stakeholders in the agricultural ecosystem.
+This roadmap positions Lovtiti Agro Mart as the pioneer in agricultural Web3 innovation, creating lasting value for all stakeholders in the agricultural ecosystem.
 
 ---
 
-*This implementation roadmap serves as the definitive guide for transforming Lovitti Agro Mart into a cutting-edge NFT marketplace. All timelines, resources, and metrics are designed for successful execution and long-term sustainability.*
+*This implementation roadmap serves as the definitive guide for transforming Lovtiti Agro Mart into a cutting-edge NFT marketplace. All timelines, resources, and metrics are designed for successful execution and long-term sustainability.*

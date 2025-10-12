@@ -8,7 +8,7 @@ describe('USSD Service', () => {
 				text: '',
 			});
 
-			expect(response).toContain('Welcome to Lovitti Agro Mart');
+			expect(response).toContain('Welcome to Lovtiti Agro Mart');
 			expect(response).toContain('1. Browse listings');
 			expect(response).toContain('2. My orders');
 			expect(response).toContain('3. Help');

@@ -54,7 +54,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Lovitti Agro Mart?
+              Why Choose Lovtiti Agro Mart?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Built for the future of agriculture with cutting-edge technology
@@ -139,7 +139,7 @@ export default function Home() {
                   ))}
                 </div>
                 <p className="text-gray-600 mb-4">
-                  "Lovitti Agro Mart has transformed my farming business. I can now sell directly to international buyers and get fair prices for my crops."
+                  "Lovtiti Agro Mart has transformed my farming business. I can now sell directly to international buyers and get fair prices for my crops."
                 </p>
                 <div className="font-semibold">Sarah Okafor</div>
                 <div className="text-sm text-gray-500">Rice Farmer, Nigeria</div>
@@ -184,7 +184,7 @@ export default function Home() {
             Ready to Transform Your Agricultural Business?
           </h2>
           <p className="text-xl text-green-100 mb-8">
-            Join thousands of farmers already using Lovitti Agro Mart to grow their business
+            Join thousands of farmers already using Lovtiti Agro Mart to grow their business
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/signup">
@@ -209,7 +209,7 @@ export default function Home() {
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <Leaf className="h-8 w-8 text-green-400" />
-                <span className="text-2xl font-bold">Lovitti Agro Mart</span>
+                <span className="text-2xl font-bold">Lovtiti Agro Mart</span>
               </div>
               <p className="text-gray-400 mb-4">
                 Connecting African farmers with global buyers through blockchain technology. 
@@ -314,7 +314,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Lovitti Agro Mart. All rights reserved.</p>
+            <p>&copy; 2024 Lovtiti Agro Mart. All rights reserved.</p>
             <p className="mt-2 text-sm">Empowering African agriculture through blockchain technology</p>
           </div>
         </div>

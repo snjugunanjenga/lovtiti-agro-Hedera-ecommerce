@@ -1,8 +1,8 @@
-# 🚀 Stream Chat Implementation Plan for Lovitti Agro Mart
+# 🚀 Stream Chat Implementation Plan for Lovtiti Agro Mart
 
 ## 📋 Executive Summary
 
-This document outlines the complete implementation plan for integrating Stream Chat into Lovitti Agro Mart, enabling real-time messaging and video/audio calling between users across the agricultural ecosystem.
+This document outlines the complete implementation plan for integrating Stream Chat into Lovtiti Agro Mart, enabling real-time messaging and video/audio calling between users across the agricultural ecosystem.
 
 ## 🎯 Objectives
 
@@ -42,7 +42,7 @@ StreamProvider (Root Provider)
 ## 📁 File Structure Created
 
 ```
-lovitti-agro-mart/
+lovtiti-agro-mart/
 ├── lib/
 │   └── stream.ts                    # Stream configuration & utilities
 ├── app/
@@ -166,7 +166,7 @@ npm install stream-chat stream-chat-react
 ### **Required Settings**
 
 #### **1. App Configuration**
-- **App Name**: Lovitti Agro Mart
+- **App Name**: Lovtiti Agro Mart
 - **Environment**: Development → Production
 - **Region**: Choose closest to African users
 - **Timezone**: UTC+1 (West Africa Time)
@@ -373,6 +373,9 @@ npm install stream-chat stream-chat-react
 Your Stream Chat integration is ready for deployment. Follow the setup guide in `STREAM_SETUP.md` to configure your Stream account and start using real-time messaging and calling features.
 
 The implementation provides a solid foundation for building a comprehensive communication platform for the agricultural ecosystem, enabling seamless collaboration between all stakeholders in the supply chain.
+
+
+
 
 
 

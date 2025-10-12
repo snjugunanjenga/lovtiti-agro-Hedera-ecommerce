@@ -17,11 +17,11 @@ export async function POST(req: Request) {
 
 		// Map the type to the correct role enum
 		const roleMapping: Record<string, string> = {
+			"BUYER": "BUYER",
 			"FARMER": "FARMER",
 			"DISTRIBUTOR": "DISTRIBUTOR", 
 			"TRANSPORTER": "TRANSPORTER",
-			"BUYER": "BUYER",
-			"VETERINARIAN": "VETERINARIAN"
+			"AGROEXPERT": "AGROEXPERT"
 		};
 
 		const userRole = roleMapping[type] || "FARMER";

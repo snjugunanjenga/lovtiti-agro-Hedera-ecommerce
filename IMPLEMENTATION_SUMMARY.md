@@ -1,7 +1,7 @@
-# Lovitti Agro Mart - Implementation Summary
+# Lovtiti Agro Mart - Implementation Summary
 
 ## 🎯 Project Overview
-This document summarizes the comprehensive implementation of the Lovitti Agro Mart multi-role KYC verification system and Hedera wallet integration as requested in the prompts.
+This document summarizes the comprehensive implementation of the Lovtiti Agro Mart multi-role KYC verification system and Hedera wallet integration as requested in the prompts.
 
 ## ✅ Completed Features
 
@@ -235,7 +235,7 @@ npm run deploy:mainnet
 
 **ALL TASKS COMPLETED SUCCESSFULLY** ✅
 
-The Lovitti Agro Mart project now has:
+The Lovtiti Agro Mart project now has:
 1. ✅ Complete multi-role KYC verification system
 2. ✅ Full Hedera wallet integration with supply chain tracking
 3. ✅ Comprehensive smart contracts for all business operations

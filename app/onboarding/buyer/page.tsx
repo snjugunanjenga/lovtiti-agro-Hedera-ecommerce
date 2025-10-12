@@ -85,7 +85,7 @@ export default function BuyerOnboarding() {
 				<div className="text-center mb-8">
 					<div className="flex items-center justify-center space-x-2 mb-4">
 						<ShoppingCart className="h-8 w-8 text-blue-600" />
-						<span className="text-2xl font-bold text-blue-800">Lovitti Agro Mart</span>
+						<span className="text-2xl font-bold text-blue-800">Lovtiti Agro Mart</span>
 					</div>
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">Buyer Onboarding</h1>
 					<p className="text-gray-600">Join our marketplace and start buying fresh agricultural products</p>

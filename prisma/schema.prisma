@@ -35,6 +35,13 @@ model User {
 	clientEquipment      EquipmentLease[] @relation("clientEquipment")
 	agroVetAdvice        ExpertAdvice[]  @relation("agroVetAdvice")
 	clientAdvice         ExpertAdvice[]  @relation("clientAdvice")
+	
+	// Smart contract integration
+	contractAddress    String?  @unique // Ethereum wallet address
+	contractFarmerId   String?  @unique // Contract farmer ID
+	isContractFarmer   Boolean  @default(false)
+	contractBalance    Decimal? @db.Decimal(20, 8) // Balance in contract
+	contractCreatedAt  DateTime?
 }
 
 model Profile {
@@ -75,6 +82,14 @@ model Listing {
 	seller            User     @relation(fields: [sellerId], references: [id])
 	sellerId          String
 	orders            Order[]
+	
+	// Smart contract integration
+	contractProductId String?  @unique // Product ID in smart contract
+	contractPrice    Decimal? @db.Decimal(20, 8) // Price in contract (ETH)
+	contractStock     Int?     // Stock in contract
+	contractTxHash    String?  // Transaction hash when created in contract
+	contractCreatedAt DateTime?
+	
 	createdAt         DateTime @default(now())
 	updatedAt         DateTime @updatedAt
 }
@@ -93,6 +108,23 @@ model Order {
 	deliveryDate DateTime?
 	trackingNumber String?
 	notes        String?
+	
+	// Smart contract integration
+	contractTxHash    String?  @unique // Transaction hash from contract purchase
+	contractAmount    Decimal? @db.Decimal(20, 8) // Amount paid in contract (ETH)
+	contractBuyerAddr String?  // Buyer's contract address
+	contractSellerAddr String? // Seller's contract address
+	contractPurchasedAt DateTime?
+	
+	// Enhanced delivery tracking
+	deliveryStatus    DeliveryStatus @default(PENDING)
+	estimatedDelivery DateTime?
+	actualDelivery   DateTime?
+	deliveryNotes    String?
+	deliveryProof    String[] // Photos/videos of delivery
+	deliveryRating   Int?     // 1-5 rating
+	deliveryFeedback String?
+	
 	createdAt    DateTime   @default(now())
 	updatedAt    DateTime   @updatedAt
 	
@@ -219,20 +251,20 @@ model ExpertAdvice {
 }
 
 enum Role {
+	BUYER
 	FARMER
 	DISTRIBUTOR
 	TRANSPORTER
-	BUYER
-	VETERINARIAN
+	AGROEXPERT
 	ADMIN
 }
 
 enum ProfileType {
+	BUYER
 	FARMER
 	DISTRIBUTOR
 	TRANSPORTER
-	BUYER
-	VETERINARIAN
+	AGROEXPERT
 }
 
 enum KycStatus {
@@ -251,6 +283,18 @@ enum OrderStatus {
 	DISPUTED
 	REFUNDED
 	CANCELLED
+}
+
+enum DeliveryStatus {
+	PENDING
+	CONFIRMED
+	PREPARING
+	SHIPPED
+	IN_TRANSIT
+	OUT_FOR_DELIVERY
+	DELIVERED
+	FAILED_DELIVERY
+	RETURNED
 }
 
 enum MessageType {
@@ -298,8 +342,6 @@ model NFT {
   transactions    NFTTransaction[]
   supplyChainSteps SupplyChainStep[]
   qualityChecks   QualityCheck[]
-  serviceBookings ServiceBooking[]
-  equipmentLeases EquipmentLease[]
 }
 
 model NFTListing {
@@ -373,41 +415,6 @@ model QualityCheck {
   createdAt   DateTime @default(now())
 }
 
-model ServiceBooking {
-  id              String   @id @default(cuid())
-  serviceNftId    String
-  serviceNft      NFT      @relation(fields: [serviceNftId], references: [id])
-  clientAddress   String
-  startTime       DateTime
-  endTime         DateTime
-  amount          Decimal  @db.Decimal(20, 8)
-  currency        String
-  status          String   // BOOKED, IN_PROGRESS, COMPLETED, CANCELLED
-  feedback        String?
-  rating          Int?     // 1-5
-  location        String?
-  requirements    String?
-  createdAt       DateTime @default(now())
-}
-
-model EquipmentLease {
-  id              String   @id @default(cuid())
-  equipmentNftId  String
-  equipmentNft    NFT      @relation(fields: [equipmentNftId], references: [id])
-  lesseeAddress   String
-  startDate       DateTime
-  endDate         DateTime
-  dailyRate       Decimal  @db.Decimal(20, 8)
-  totalAmount     Decimal  @db.Decimal(20, 8)
-  deposit         Decimal  @db.Decimal(20, 8)
-  status          String   // ACTIVE, COMPLETED, CANCELLED
-  deliveryAddress String
-  pickupAddress   String
-  insurance       Boolean  @default(true)
-  training        Boolean  @default(false)
-  maintenance     Boolean  @default(false)
-  createdAt       DateTime @default(now())
-}
 
 model EscrowTransaction {
   id              String   @id @default(cuid())
@@ -433,4 +440,18 @@ model EscrowTransaction {
   feedback        String?
   createdAt       DateTime @default(now())
   expiresAt       DateTime
+}
+
+// Smart contract events tracking
+model ContractEvent {
+  id              String   @id @default(cuid())
+  eventType       String   // farmerJoined, productCreated, productBought, stockUpdated, priceIncreased
+  contractAddress String
+  transactionHash String   @unique
+  blockNumber     BigInt
+  logIndex        Int
+  eventData       String   // JSON string containing event parameters
+  processed       Boolean  @default(false)
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
 }

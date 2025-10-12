@@ -1,9 +1,11 @@
-// Payment utilities for Lovitti Agro Mart
+// Payment utilities for Lovtiti Agro Mart
+import { AgroContractService, createAgroContractService } from './agroContract';
+import { BuyProductParams } from '../types/agro-contract';
 
 export interface PaymentMethod {
   id: string;
   name: string;
-  type: 'stripe' | 'mpesa' | 'crypto';
+  type: 'stripe' | 'mpesa' | 'crypto' | 'agro-contract';
   currency: string;
   icon: string;
   description: string;
@@ -25,6 +27,11 @@ export interface PaymentRequest {
     name: string;
   };
   metadata?: Record<string, any>;
+  // Agro contract specific fields
+  productId?: string;
+  walletAddress?: string;
+  privateKey?: string;
+  userId?: string;
 }
 
 export interface PaymentResponse {
@@ -125,6 +132,16 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
     description: 'Pay with Tether USD (USDT)',
     enabled: true,
     fees: { percentage: 0.0, fixed: 0.00 }
+  },
+  {
+    id: 'agro_contract',
+    name: 'Agro Contract (ETH)',
+    type: 'agro-contract',
+    currency: 'ETH',
+    icon: '🌾',
+    description: 'Pay directly through the Agro smart contract',
+    enabled: true,
+    fees: { percentage: 0.0, fixed: 0.00 }
   }
 ];
 
@@ -136,7 +153,7 @@ export const getPaymentMethodsByCurrency = (currency: string): PaymentMethod[] =
   );
 };
 
-export const getPaymentMethodsByType = (type: 'stripe' | 'mpesa' | 'crypto'): PaymentMethod[] => {
+export const getPaymentMethodsByType = (type: 'stripe' | 'mpesa' | 'crypto' | 'agro-contract'): PaymentMethod[] => {
   return PAYMENT_METHODS.filter(method => method.type === type && method.enabled);
 };
 
@@ -237,20 +254,31 @@ export const processMpesaPayment = async (request: PaymentRequest): Promise<Paym
   }
 };
 
-// Cryptocurrency Payment Integration
-export const processCryptoPayment = async (request: PaymentRequest): Promise<PaymentResponse> => {
+// Agro Contract Payment Integration
+export const processAgroContractPayment = async (request: PaymentRequest): Promise<PaymentResponse> => {
   try {
-    const response = await fetch('/api/payments/crypto', {
+    // Validate required fields for agro contract payment
+    if (!request.productId || !request.walletAddress || !request.privateKey || !request.userId) {
+      return {
+        success: false,
+        error: 'Missing required fields for agro contract payment: productId, walletAddress, privateKey, userId',
+        status: 'failed'
+      };
+    }
+
+    const response = await fetch('/api/agro/purchase/buy', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        productId: request.productId,
         amount: request.amount,
-        currency: request.currency,
-        payment_method: request.paymentMethod,
-        order_id: request.orderId,
-        customer_email: request.customerInfo.email,
+        value: request.amount, // Assuming amount is in wei/ETH
+        walletAddress: request.walletAddress,
+        privateKey: request.privateKey,
+        userId: request.userId,
+        orderId: request.orderId,
         metadata: request.metadata
       })
     });
@@ -260,14 +288,13 @@ export const processCryptoPayment = async (request: PaymentRequest): Promise<Pay
     if (data.success) {
       return {
         success: true,
-        transactionId: data.transaction_id,
-        paymentUrl: data.payment_url,
-        status: 'pending'
+        transactionId: data.data.transactionHash,
+        status: 'completed'
       };
     } else {
       return {
         success: false,
-        error: data.error || 'Payment failed',
+        error: data.error || 'Agro contract payment failed',
         status: 'failed'
       };
     }
@@ -299,6 +326,8 @@ export const processPayment = async (request: PaymentRequest): Promise<PaymentRe
       return await processMpesaPayment(request);
     case 'crypto':
       return await processCryptoPayment(request);
+    case 'agro-contract':
+      return await processAgroContractPayment(request);
     default:
       return {
         success: false,

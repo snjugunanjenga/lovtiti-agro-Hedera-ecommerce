@@ -10,7 +10,7 @@ import "@/lib/suppress-warnings";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-	title: "Lovitti Agro Mart - Blockchain-Powered Agricultural Marketplace",
+	title: "Lovtiti Agro Mart - Blockchain-Powered Agricultural Marketplace",
 	description: "Connecting African farmers, buyers, distributors, transporters, and agro experts through blockchain technology",
 	keywords: "agriculture, marketplace, blockchain, farmers, buyers, Hedera, Africa",
 };

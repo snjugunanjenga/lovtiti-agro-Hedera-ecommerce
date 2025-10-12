@@ -135,7 +135,7 @@ export default function AboutPage() {
   ];
 
   const milestones = [
-    { year: '2020', title: 'Company Founded', description: 'Lovitti Agro Mart was established with a vision to transform African agriculture.' },
+    { year: '2020', title: 'Company Founded', description: 'Lovtiti Agro Mart was established with a vision to transform African agriculture.' },
     { year: '2021', title: 'First 100 Farmers', description: 'We onboarded our first 100 farmers across Nigeria and Ghana.' },
     { year: '2022', title: 'Blockchain Integration', description: 'Successfully integrated Hedera Hashgraph for transparent transactions.' },
     { year: '2023', title: 'Multi-Country Expansion', description: 'Expanded operations to Kenya, Uganda, and Tanzania.' },
@@ -154,7 +154,7 @@ export default function AboutPage() {
             </div>
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-            About <span className="text-green-600">Lovitti Agro Mart</span>
+            About <span className="text-green-600">Lovtiti Agro Mart</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             We are revolutionizing African agriculture through blockchain technology, 
@@ -400,7 +400,7 @@ export default function AboutPage() {
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <Leaf className="h-8 w-8 text-green-400" />
-                <span className="text-2xl font-bold">Lovitti Agro Mart</span>
+                <span className="text-2xl font-bold">Lovtiti Agro Mart</span>
               </div>
               <p className="text-gray-400 mb-4">
                 Connecting African farmers with global buyers through blockchain technology. 
@@ -471,7 +471,7 @@ export default function AboutPage() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Lovitti Agro Mart. All rights reserved.</p>
+            <p>&copy; 2024 Lovtiti Agro Mart. All rights reserved.</p>
             <p className="mt-2 text-sm">Empowering African agriculture through blockchain technology</p>
           </div>
         </div>

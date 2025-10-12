@@ -1,7 +1,7 @@
-# Environment Variables Documentation - Lovitti Agro Mart
+# Environment Variables Documentation - Lovtiti Agro Mart
 
 ## Overview
-This document outlines all environment variables required for the Lovitti Agro Mart platform, supporting the comprehensive agricultural ecosystem with multiple user types and blockchain integration.
+This document outlines all environment variables required for the Lovtiti Agro Mart platform, supporting the comprehensive agricultural ecosystem with multiple user types and blockchain integration.
 
 ## Required Environment Variables
 

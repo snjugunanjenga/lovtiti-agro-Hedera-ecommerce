@@ -190,7 +190,7 @@ export default function UserActivityDemoPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">User Activity Logging Demo</h1>
           <p className="text-gray-600 mt-2">
-            This page demonstrates user interaction logging in the Lovitti Agro Mart platform.
+            This page demonstrates user interaction logging in the Lovtiti Agro Mart platform.
             Check the browser console to see detailed logs of user activities.
           </p>
         </div>
@@ -354,6 +354,9 @@ export default function UserActivityDemoPage() {
     </div>
   );
 }
+
+
+
 
 
 

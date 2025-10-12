@@ -1,4 +1,4 @@
-// NFT Service for Lovitti Agro Mart Marketplace
+// NFT Service for Lovtiti Agro Mart Marketplace
 import { walletManager, WalletAccount } from "./walletService";
 import { 
   BaseNFT, 

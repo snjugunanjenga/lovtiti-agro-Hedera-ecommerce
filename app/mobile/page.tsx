@@ -119,7 +119,7 @@ function MobileContent() {
 
   const handleUSSD = () => {
     // In production, this would initiate USSD session
-    alert('USSD Menu: Dial *123# to access Lovitti Agro Mart services');
+    alert('USSD Menu: Dial *123# to access Lovtiti Agro Mart services');
   };
 
   const handleCall = (number: string) => {
@@ -282,7 +282,7 @@ function MobileContent() {
               <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
               <h3 className="font-semibold text-green-900 mb-1">USSD Access</h3>
               <p className="text-sm text-green-700 mb-3">
-                Access Lovitti Agro Mart via USSD on any phone
+                Access Lovtiti Agro Mart via USSD on any phone
               </p>
               <div className="bg-white rounded-lg p-3 mb-3">
                 <p className="text-lg font-mono font-bold text-green-800">*123#</p>

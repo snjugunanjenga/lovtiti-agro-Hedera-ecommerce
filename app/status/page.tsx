@@ -113,7 +113,7 @@ export default function StatusPage() {
           </Link>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">System Status</h1>
           <p className="text-xl text-gray-600 max-w-3xl">
-            Real-time status of all Lovitti Agro Mart services. We're committed to providing 
+            Real-time status of all Lovtiti Agro Mart services. We're committed to providing 
             reliable, high-performance services for our agricultural marketplace.
           </p>
         </div>

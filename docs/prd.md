@@ -1,7 +1,7 @@
 Product Requirements Document (PRD)
 
 ## 1. Project Overview
-**Title:** Lovitti Agro Mart  
+**Title:** Lovtiti Agro Mart  
 **Vision:** A comprehensive blockchain-powered agricultural ecosystem that connects African farmers, distributors, transporters, buyers, and agro experts through a transparent, Hedera Hashgraph-based platform. The platform enables full supply chain traceability, secure transactions, and efficient agricultural product distribution across Africa.  
 **Objective:** Build a scalable, accessible web platform that empowers all stakeholders in the agricultural value chain by reducing post-harvest losses, ensuring fair pricing, providing transparent logistics, and enabling veterinary services through a blockchain-backed system with complete supply chain visibility.## 2. Problem Statement
 **Agricultural Supply Chain Challenges:**

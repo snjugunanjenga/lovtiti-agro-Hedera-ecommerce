@@ -143,7 +143,7 @@ export default function TransporterOnboarding() {
 				<div className="text-center mb-8">
 					<div className="flex items-center justify-center space-x-2 mb-4">
 						<Truck className="h-8 w-8 text-orange-600" />
-						<span className="text-2xl font-bold text-orange-800">Lovitti Agro Mart</span>
+						<span className="text-2xl font-bold text-orange-800">Lovtiti Agro Mart</span>
 					</div>
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">Transporter Onboarding</h1>
 					<p className="text-gray-600">Join our logistics network and start transporting agricultural products</p>

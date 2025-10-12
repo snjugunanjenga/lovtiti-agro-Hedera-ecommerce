@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Leaf, User, MapPin, Phone, CreditCard, Globe, CheckCircle } from 'lucide-react';
+import { Leaf, User, MapPin, Phone, CreditCard, Globe, CheckCircle, Wallet } from 'lucide-react';
 import { kycSchema } from "@/utils/validators";
+import { useWallet } from '@/hooks/useWallet';
 
 export default function FarmerOnboarding() {
 	const [formData, setFormData] = useState({
@@ -25,10 +26,22 @@ export default function FarmerOnboarding() {
 	const [error, setError] = useState<string | null>(null);
 	const router = useRouter();
 
+	// Wallet integration
+	const { 
+		connectWallet, 
+		isConnected, 
+		wallet, 
+		createFarmerAccount, 
+		isCreatingFarmer,
+		isFarmer,
+		error: walletError 
+	} = useWallet();
+
 	const steps = [
 		{ id: 1, title: 'Personal Info', icon: User },
 		{ id: 2, title: 'Location', icon: MapPin },
-		{ id: 3, title: 'Wallet Setup', icon: CreditCard },
+		{ id: 3, title: 'Wallet Setup', icon: Wallet },
+		{ id: 4, title: 'Contract Registration', icon: CreditCard },
 	];
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -43,6 +56,7 @@ export default function FarmerOnboarding() {
 				return;
 			}
 
+			// Step 1: Submit KYC data
 			const response = await fetch('/api/kyc/submit', {
 				method: 'POST',
 				headers: {
@@ -51,16 +65,55 @@ export default function FarmerOnboarding() {
 				body: JSON.stringify(parsed.data),
 			});
 
-			if (response.ok) {
-				const json = await response.json();
-				setStatus(json.profile?.kycStatus ?? "PENDING");
-				router.push('/dashboard/farmer');
-			} else {
-				setError("Failed to submit KYC.");
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || 'Failed to submit KYC data');
 			}
-		} catch (error) {
-			console.error('Error submitting KYC:', error);
-			setError("An error occurred. Please try again.");
+
+			const kycResult = await response.json();
+			setStatus('KYC data submitted successfully!');
+
+			// Step 2: Connect wallet if not already connected
+			if (!isConnected) {
+				await connectWallet();
+				if (!isConnected) {
+					throw new Error('Failed to connect wallet');
+				}
+			}
+
+			// Step 3: Create farmer account on contract
+			if (!isFarmer) {
+				const farmerResult = await createFarmerAccount(kycResult.userId);
+				if (!farmerResult.success) {
+					throw new Error(farmerResult.error || 'Failed to create farmer account on contract');
+				}
+				setStatus('Farmer account created on contract successfully!');
+			}
+
+			// Step 4: Update user with contract address
+			if (wallet?.address) {
+				const updateResponse = await fetch('/api/users/update-contract', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						userId: kycResult.userId,
+						contractAddress: wallet.address,
+						isContractFarmer: true
+					}),
+				});
+
+				if (!updateResponse.ok) {
+					throw new Error('Failed to update user contract information');
+				}
+			}
+
+			setStatus('Farmer onboarding completed successfully!');
+			setTimeout(() => {
+				router.push('/dashboard/farmer');
+			}, 2000);
+
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'An error occurred');
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -85,7 +138,7 @@ export default function FarmerOnboarding() {
 				<div className="text-center mb-8">
 					<div className="flex items-center justify-center space-x-2 mb-4">
 						<Leaf className="h-8 w-8 text-green-600" />
-						<span className="text-2xl font-bold text-green-800">Lovitti Agro Mart</span>
+						<span className="text-2xl font-bold text-green-800">Lovtiti Agro Mart</span>
 					</div>
 					<h1 className="text-3xl font-bold text-gray-900 mb-2">Farmer Onboarding</h1>
 					<p className="text-gray-600">Join our marketplace and start selling your agricultural products</p>

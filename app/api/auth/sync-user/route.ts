@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth, clerkClient } from '@clerk/nextjs/server';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import { z } from 'zod';
 
 const prisma = new PrismaClient();
+
+// Valid roles enum
+const validRoles = ['BUYER', 'FARMER', 'DISTRIBUTOR', 'TRANSPORTER', 'AGROEXPERT', 'ADMIN'] as const;
+
+// Function to validate and normalize role
+function validateRole(role: string): Role {
+  if (validRoles.includes(role as any)) {
+    return role as Role;
+  }
+  // Default to BUYER if role is invalid
+  console.warn(`Invalid role '${role}' provided, defaulting to BUYER`);
+  return 'BUYER' as Role;
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,22 +37,23 @@ export async function POST(req: NextRequest) {
 
     // Extract user data
     const email = clerkUser.emailAddresses[0]?.emailAddress || '';
-    const role = (clerkUser.publicMetadata?.role as string) || 'BUYER';
+    const roleString = (clerkUser.publicMetadata?.role as string) || 'BUYER';
+    const validatedRole = validateRole(roleString);
 
-    console.log('📋 User data:', { userId, email, role });
+    console.log('📋 User data:', { userId, email, role: validatedRole });
 
     // Create or update user in database
     const user = await prisma.user.upsert({
       where: { id: userId },
       update: {
         email,
-        role: role as any,
+        role: validatedRole,
         updatedAt: new Date(),
       },
       create: {
         id: userId,
         email,
-        role: role as any,
+        role: validatedRole,
       },
     });
 
@@ -97,6 +112,9 @@ export async function GET() {
     await prisma.$disconnect();
   }
 }
+
+
+
 
 
 

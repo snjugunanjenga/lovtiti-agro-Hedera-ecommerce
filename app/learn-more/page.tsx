@@ -95,7 +95,7 @@ export default function LearnMorePage() {
               <span className="text-green-600 block">Blockchain Technology</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Lovitti Agro Mart is revolutionizing agricultural trade by connecting African farmers 
+              Lovtiti Agro Mart is revolutionizing agricultural trade by connecting African farmers 
               with global buyers through a secure, transparent, and efficient marketplace.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -140,7 +140,7 @@ export default function LearnMorePage() {
         <div className="mb-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Lovitti Agro Mart?
+              Why Choose Lovtiti Agro Mart?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               Our platform combines cutting-edge technology with agricultural expertise 
@@ -287,7 +287,7 @@ export default function LearnMorePage() {
             Ready to Join the Future of Agriculture?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Start your journey with Lovitti Agro Mart today
+            Start your journey with Lovtiti Agro Mart today
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 py-6">

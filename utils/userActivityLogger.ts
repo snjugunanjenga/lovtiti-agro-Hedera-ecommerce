@@ -1,4 +1,4 @@
-// User Activity Logger for Lovitti Agro Mart
+// User Activity Logger for Lovtiti Agro Mart
 // Tracks and logs user interactions across the platform
 
 import { PrismaClient } from '@prisma/client';
@@ -303,6 +303,9 @@ export const logError = (userId: string, userRole: string, userEmail: string, er
 
 // Export the singleton instance
 export const userActivityLogger = UserActivityLogger.getInstance();
+
+
+
 
 
 

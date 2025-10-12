@@ -1,4 +1,4 @@
-// Currency utilities for Lovitti Agro Mart
+// Currency utilities for Lovtiti Agro Mart
 
 export interface Currency {
   code: string;
