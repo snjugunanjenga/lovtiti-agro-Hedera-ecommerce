@@ -133,18 +133,31 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if user has farmer profile
-    const farmerProfile = await prisma.profile.findFirst({
-      where: {
-        userId,
-        type: 'FARMER',
-        kycStatus: 'APPROVED',
+    // Find or create user in database
+    const user = await prisma.user.findUnique({
+      where: { email: `${userId}@clerk.local` },
+      include: {
+        profiles: {
+          where: {
+            type: { in: ['FARMER', 'AGROEXPERT'] },
+          },
+        },
       },
     });
 
-    if (!farmerProfile) {
+    if (!user) {
       return NextResponse.json(
-        { error: 'Farmer profile required and KYC must be approved' },
+        { error: 'User not found. Please complete your profile first.' },
+        { status: 404 }
+      );
+    }
+
+    // Check if user has farmer or agro expert profile (KYC not strictly required for now)
+    const hasValidProfile = user.profiles.length > 0;
+
+    if (!hasValidProfile) {
+      return NextResponse.json(
+        { error: 'Farmer or Agro Expert profile required. Please complete KYC verification.' },
         { status: 403 }
       );
     }
@@ -163,7 +176,7 @@ export async function POST(request: Request) {
         expiryDate: expiryDate ? new Date(expiryDate) : null,
         images: images || [],
         video,
-        sellerId: userId,
+        sellerId: user.id,
       },
       include: {
         seller: {

@@ -21,26 +21,38 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative min-h-[80vh] px-4 sm:px-6 lg:px-8 overflow-hidden flex items-center">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
+          style={{
+            backgroundImage: 'url(/hero-bg.png)',
+          }}
+        />
+        
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50/10 to-emerald-100/80" />
+        
+        {/* Content */}
+        <div className="relative max-w-7xl mx-auto z-10">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 drop-shadow-sm">
               Connecting African Farmers with
               <span className="text-green-600 block">Global Buyers</span>
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto drop-shadow-sm">
               A decentralized marketplace powered by blockchain technology, enabling secure, 
               transparent, and fair trade for African agricultural products.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/signup">
-                <Button size="lg" className="text-lg px-8 py-6">
+                <Button size="lg" className="text-lg px-8 py-6 shadow-lg">
                   Start Trading
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/auth/signup">
-                <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+                <Button variant="outline" size="lg" className="text-lg px-8 py-6 shadow-lg bg-white/90 backdrop-blur-sm">
                   Join the Platform
                 </Button>
               </Link>
@@ -193,7 +205,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/onboarding/farmer">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-white hover:bg-white hover:text-green-600">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-white text-gray-500 hover:bg-white hover:text-green-600">
                 Learn More
               </Button>
             </Link>
@@ -202,7 +214,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-white text-black py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-8">
             {/* Company Info */}
@@ -222,7 +234,7 @@ export default function Home() {
                   </Button>
                 </Link>
                 <Link href="/learn-more" className="text-gray-400 hover:text-white">
-                  <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800">
+                  <Button variant="outline" size="sm" className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white">
                     Learn More
                   </Button>
                 </Link>
@@ -233,10 +245,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-green-400">Farmers</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/onboarding/farmer" className="hover:text-white transition-colors">Join as Farmer</Link></li>
-                <li><Link href="/dashboard/farmer" className="hover:text-white transition-colors">Farmer Dashboard</Link></li>
-                <li><Link href="/listings/create" className="hover:text-white transition-colors">List Products</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/onboarding/farmer" className="hover:text-gray-500 transition-colors">Join as Farmer</Link></li>
+                <li><Link href="/dashboard/farmer" className="hover:text-gray-500 transition-colors">Farmer Dashboard</Link></li>
+                <li><Link href="/listings/create" className="hover:text-gray-500 transition-colors">List Products</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -244,10 +256,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-blue-400">Buyers</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/onboarding/buyer" className="hover:text-white transition-colors">Join as Buyer</Link></li>
-                <li><Link href="/dashboard/buyer" className="hover:text-white transition-colors">Buyer Dashboard</Link></li>
-                <li><Link href="/listings/browse" className="hover:text-white transition-colors">Browse Products</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/onboarding/buyer" className="hover:text-gray-500 transition-colors">Join as Buyer</Link></li>
+                <li><Link href="/dashboard/buyer" className="hover:text-gray-500 transition-colors">Buyer Dashboard</Link></li>
+                <li><Link href="/listings/browse" className="hover:text-gray-500 transition-colors">Browse Products</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -255,10 +267,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-purple-400">Distributors</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Join as Distributor</Link></li>
-                <li><Link href="/dashboard/distributor" className="hover:text-white transition-colors">Distributor Dashboard</Link></li>
-                <li><Link href="/listings/browse" className="hover:text-white transition-colors">Manage Inventory</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-gray-500 transition-colors">Join as Distributor</Link></li>
+                <li><Link href="/dashboard/distributor" className="hover:text-gray-500 transition-colors">Distributor Dashboard</Link></li>
+                <li><Link href="/listings/browse" className="hover:text-gray-500 transition-colors">Manage Inventory</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -266,10 +278,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-orange-400">Transporters</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Join as Transporter</Link></li>
-                <li><Link href="/dashboard/transporter" className="hover:text-white transition-colors">Transporter Dashboard</Link></li>
-                <li><Link href="/listings/browse" className="hover:text-white transition-colors">Find Deliveries</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-gray-500 transition-colors">Join as Transporter</Link></li>
+                <li><Link href="/dashboard/transporter" className="hover:text-gray-500 transition-colors">Transporter Dashboard</Link></li>
+                <li><Link href="/listings/browse" className="hover:text-gray-500 transition-colors">Find Deliveries</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -277,10 +289,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-red-400">Agro Experts</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/auth/signup" className="hover:text-white transition-colors">Join as Agro Expert</Link></li>
-                <li><Link href="/dashboard/agro-vet" className="hover:text-white transition-colors">Agro Expert Dashboard</Link></li>
-                <li><Link href="/listings/create" className="hover:text-white transition-colors">Sell Products</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-gray-500 transition-colors">Join as Agro Expert</Link></li>
+                <li><Link href="/dashboard/agro-vet" className="hover:text-gray-500 transition-colors">Agro Expert Dashboard</Link></li>
+                <li><Link href="/listings/create" className="hover:text-gray-500 transition-colors">Sell Products</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
               </ul>
             </div>
           </div>
@@ -288,27 +300,27 @@ export default function Home() {
           {/* Additional Links */}
           <div className="grid md:grid-cols-3 gap-8 mt-12 pt-8 border-t border-gray-800">
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Platform</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-600">Platform</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/listings/browse" className="hover:text-white transition-colors">Marketplace</Link></li>
-                <li><Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+                <li><Link href="/listings/browse" className="hover:text-gray-500 transition-colors">Marketplace</Link></li>
+                <li><Link href="/pricing" className="hover:text-gray-500 transition-colors">Pricing</Link></li>
+                <li><Link href="/about" className="hover:text-gray-500 transition-colors">About Us</Link></li>
+                <li><Link href="/contact" className="hover:text-gray-500 transition-colors">Contact</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Support</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-600">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/help" className="hover:text-gray-500 transition-colors">Help Center</Link></li>
+                <li><Link href="/privacy" className="hover:text-gray-500 transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-gray-500 transition-colors">Terms of Service</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Resources</h3>
+              <h3 className="text-lg font-semibold mb-4 text-gray-600">Resources</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/learn-more" className="hover:text-white transition-colors">Documentation</Link></li>
-                <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link href="/learn-more" className="hover:text-gray-500 transition-colors">Documentation</Link></li>
+                <li><Link href="/blog" className="hover:text-gray-500 transition-colors">Blog</Link></li>
               </ul>
             </div>
           </div>

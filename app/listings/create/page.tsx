@@ -57,7 +57,7 @@ export default function CreateListingPage() {
 
   // Check if user can create listings (Farmers and Agro Experts only)
   const userRole = user?.publicMetadata?.role as string || 'BUYER';
-  const canCreateListings = ['FARMER', 'VETERINARIAN', 'ADMIN'].includes(userRole);
+  const canCreateListings = ['FARMER', 'AGROEXPERT', 'ADMIN'].includes(userRole);
 
   const categories = [
     'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 'Herbs', 
@@ -112,21 +112,11 @@ export default function CreateListingPage() {
     
     if (!validateForm()) return;
 
-    // Check wallet connection and farmer status
-    if (!isConnected) {
-      setErrors({ wallet: 'Please connect your wallet first' });
-      return;
-    }
-
-    if (!isFarmer) {
-      setErrors({ farmer: 'You must be a registered farmer to create products' });
-      return;
-    }
-
     setIsSubmitting(true);
+    setErrors({});
     
     try {
-      // Step 1: Create product in database
+      // Create product in database
       const response = await fetch('/api/listings', {
         method: 'POST',
         headers: {
@@ -136,54 +126,61 @@ export default function CreateListingPage() {
           ...formData,
           priceCents: Math.round(parseFloat(formData.priceCents) * 100),
           quantity: parseFloat(formData.quantity),
-          harvestDate: formData.harvestDate ? new Date(formData.harvestDate) : null,
-          expiryDate: formData.expiryDate ? new Date(formData.expiryDate) : null,
+          harvestDate: formData.harvestDate ? new Date(formData.harvestDate).toISOString() : null,
+          expiryDate: formData.expiryDate ? new Date(formData.expiryDate).toISOString() : null,
         }),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Failed to create listing in database');
+        throw new Error(error.error || 'Failed to create listing');
       }
 
       const listingResult = await response.json();
+      console.log('✅ Listing created:', listingResult);
       
-      // Step 2: Add product to smart contract
-      const priceInEth = parseFloat(formData.priceCents) / 100; // Convert to ETH (simplified)
-      const quantity = parseInt(formData.quantity);
-      
-      const contractResult = await addProduct(
-        priceInEth.toString(), 
-        quantity, 
-        user?.id || 'unknown'
-      );
+      // Optional: Add product to smart contract if wallet is connected
+      if (isConnected && isFarmer) {
+        try {
+          const priceInEth = parseFloat(formData.priceCents) / 100;
+          const quantity = parseInt(formData.quantity);
+          
+          const contractResult = await addProduct(
+            priceInEth.toString(), 
+            quantity, 
+            user?.id || 'unknown'
+          );
 
-      if (!contractResult.success) {
-        throw new Error(contractResult.error || 'Failed to create product on contract');
+          if (contractResult.success) {
+            console.log('✅ Product added to smart contract');
+            
+            // Update listing with contract information
+            await fetch(`/api/listings/${listingResult.id}/contract`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                contractProductId: contractResult.transactionHash,
+                contractTxHash: contractResult.transactionHash,
+                contractPrice: priceInEth,
+                contractStock: quantity
+              }),
+            });
+          }
+        } catch (contractError) {
+          console.warn('⚠️ Smart contract integration skipped:', contractError);
+          // Continue anyway - listing is created in database
+        }
       }
 
-      // Step 3: Update listing with contract information
-      const updateResponse = await fetch(`/api/listings/${listingResult.id}/contract`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contractProductId: contractResult.data?.productId,
-          contractTxHash: contractResult.transactionHash,
-          contractPrice: priceInEth,
-          contractStock: quantity
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        console.warn('Failed to update listing with contract info');
-      }
-
+      // Success - redirect to dashboard
+      alert('✅ Listing created successfully!');
       router.push('/dashboard/farmer');
     } catch (error) {
-      console.error('Error creating listing:', error);
+      console.error('❌ Error creating listing:', error);
       setErrors({ submit: error instanceof Error ? error.message : 'An error occurred' });
+      alert('❌ Error: ' + (error instanceof Error ? error.message : 'An error occurred'));
     } finally {
       setIsSubmitting(false);
     }
@@ -521,12 +518,45 @@ export default function CreateListingPage() {
             </CardContent>
           </Card>
 
+          {/* Error Display */}
+          {errors.submit && (
+            <Card className="border-red-200 bg-red-50">
+              <CardContent className="pt-6">
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-red-800">Error Creating Listing</h4>
+                    <p className="text-sm text-red-700 mt-1">{errors.submit}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Wallet Status */}
+          {!isConnected && (
+            <Card className="border-yellow-200 bg-yellow-50">
+              <CardContent className="pt-6">
+                <div className="flex items-start space-x-3">
+                  <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                  <div>
+                    <h4 className="text-sm font-medium text-yellow-800">Wallet Not Connected</h4>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Smart contract features will be skipped. Your listing will still be created in the database.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Submit Button */}
           <div className="flex justify-end space-x-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => router.back()}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
@@ -536,7 +566,7 @@ export default function CreateListingPage() {
               className="flex items-center space-x-2"
             >
               <Save className="h-4 w-4" />
-              <span>{isSubmitting ? 'Creating...' : 'Create Listing'}</span>
+              <span>{isSubmitting ? 'Creating Listing...' : 'Create Listing'}</span>
             </Button>
           </div>
         </form>
