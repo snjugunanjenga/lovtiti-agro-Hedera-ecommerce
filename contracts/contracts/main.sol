@@ -16,13 +16,16 @@ contract agro {
     mapping(uint => product) public products; 
     mapping(address => farmerstruct) public farmer;
     uint nextid = 1;
+    uint t_in_id = 1;
+    uint t_out_id = 1;
 
     //events
     event productCreated(uint indexed productId, uint price, address farmer, uint amount);
     event farmerJoined(address farmer);
     event stockUpdated(uint amount, uint pid);
     event priceIncreased(uint price, uint pid);
-    event productBought(uint indexed productId, address buyer, address farmer, uint amount);
+    event productBought(uint indexed productId, address buyer, address farmer, uint amount, uint txid);
+    event farmerEarnt(uint amount, address farmer, uint txid);
 
     bool private locked;
     modifier nonReentrant() {
@@ -33,7 +36,7 @@ contract agro {
     }
 
     //functions
-    function addProduct( uint price, uint amount) public {
+    function addProduct( uint price, uint amount) public returns (uint) {
         require(price > 0, "price must be > 0"); 
         require(amount > 0, "stock must be > 0");
         require(farmer[msg.sender].exists != false, "you are not a farmer");
@@ -43,6 +46,7 @@ contract agro {
         farmer[msg.sender].products.push(nextid); // 0 placeholder for random generated number
         emit productCreated(nextid, price, msg.sender, amount);
         nextid++;
+        return (nextid-1);
     }
     function increasePrice( uint price, uint pid) public {
         require(price > 0, "price must be > 0"); 
@@ -61,7 +65,7 @@ contract agro {
         farmer[msg.sender] = farmerstruct(new uint[](0), 0, true);
         emit farmerJoined(msg.sender);
     }
-    function buyproduct(uint pid, uint amount) public payable {
+    function buyproduct(uint pid, uint amount) public payable returns (uint) {
         // Implement the logic for buying a product here
         require(amount > 0, "stock must be > 0");
         require(products[pid].owner != address(0), "product does not exist");
@@ -70,14 +74,19 @@ contract agro {
         require((products[pid].price)*amount <= msg.value, "insufficient funds");
         products[pid].stock -= amount;
         farmer[products[pid].owner].balance += (products[pid].price)*amount;
-        emit productBought(pid, msg.sender, products[pid].owner, amount);
+        emit productBought(pid, msg.sender, products[pid].owner, amount, t_in_id);
+        t_in_id++;
+        return (t_in_id-1);
     }
-    function withdrawBalance() public nonReentrant() {
+    function withdrawBalance() public nonReentrant() returns (uint) {
         require(farmer[msg.sender].balance > 0, "no balance to withdraw");
         uint amount = farmer[msg.sender].balance;
         farmer[msg.sender].balance = 0;
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success, "withdrawal failed");
+        emit farmerEarnt(amount, msg.sender, t_out_id);
+        t_out_id++;
+        return (t_out_id-1);
     }
 
     //view functions
