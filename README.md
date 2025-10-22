@@ -1,3 +1,7 @@
+🌾 Lovtiti Agro Mart
+🔗 Live Demo
+Click here to preview Lovtiti Agro Mart
+
 ❗ Problem Statement
 African farmers face post-harvest losses, limited market access, and unfair pricing due to middlemen. Lovtiti Agro Mart solves this by offering a decentralized platform that connects farmers directly to buyers using Hedera blockchain.
 
