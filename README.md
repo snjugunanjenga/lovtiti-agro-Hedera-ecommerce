@@ -1,116 +1,130 @@
-🌾 Lovtiti Agro Mart
+<p align="center">
+  <img src="https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/blob/main/public/lovtiti-logo.png?raw=true" alt="Lovtiti Agro Mart Logo" width="200"/>
+</p>
 
-🔗 Live Demo
-Click here to preview Lovtiti Agro Mart
+# 🌾 Lovtiti Agro Mart
 
-❗ Problem Statement
-African farmers face post-harvest losses, limited market access, and unfair pricing due to middlemen. Lovtiti Agro Mart solves this by offering a decentralized platform that connects farmers directly to buyers using Hedera blockchain.
+🔗 **Live Demo**  
+[Click here to preview Lovtiti Agro Mart](#)
 
-💔 Why This Matters
+---
 
-In many rural communities, farmers work tirelessly for months — planting, watering, and hoping. But when harvest time comes, they often face heartbreaking losses. Crops rot in the field because buyers never show up. Livestock is sold at unfair prices just to survive. Fishermen return with full nets but no market. Beekeepers watch their honey spoil without access to buyers.
+## ❗ Challenge We’re Solving
 
-These stories aren’t rare — they’re daily realities. Lovitti Agro Mart was born from this pain. It’s a platform built to restore hope, dignity, and income to the people who feed our continent.
+Across Africa, countless farmers face devastating losses after harvest. Their produce spoils, their livestock is undervalued, and their hard work is often exploited by middlemen. Limited access to fair markets and transparent pricing keeps them trapped in cycles of poverty.
 
-🌍 Project Vision
-** Lovitti Agro Mart was born from the heartbreak of harvests lost and hopes crushed. Across Africa, farmers, fisherfolk, beekeepers, and livestock keepers pour their lives into the land and sea — only to be met with unfair prices, spoiled goods, and no access to buyers. Lovitti is our answer.
+**Lovtiti Agro Mart** is our solution: a decentralized marketplace that connects farmers directly to buyers using Hedera blockchain technology. No middlemen. No guesswork. Just trust, transparency, and fair trade.
 
-It’s a decentralized marketplace where every producer — from cassava growers to catfish farmers — can connect directly with buyers, backed by blockchain and powered by Hedera. With HARAR guiding every transaction, we bring history, availability, reviews, authentication, and real-time updates into the hands of those who need it most.
+---
 
-Lovitti isn’t just a platform. It’s a movement to restore dignity, income, and control to the people who feed our continent.
+## 💔 Why It Matters
 
-👥 Team Members
+In rural communities, the story is heartbreakingly familiar:
 
-Mary Josephine Gatogoh – Team Lead & Project Strategist
-Visionary founder guiding the project from concept to execution, with a focus on impact and inclusion.
+- Crops rot because buyers never arrive.
+- Livestock is sold at unfair prices just to make ends meet.
+- Fishermen return with full nets but no market.
+- Beekeepers watch their honey spoil without access to buyers.
 
-Shia – UI/UX Designer
-Responsible for crafting intuitive and culturally resonant user interfaces that reflect the heart of African agriculture.
+These aren’t isolated incidents—they’re daily realities. **Lovtiti Agro Mart** was born from this pain. It’s more than a platform; it’s a movement to restore dignity, income, and control to the people who feed our continent.
 
-Padmore Edusei – Frontend Developer
-Built the digital storefront using React.js, ensuring smooth user interaction and wallet integration.
+---
 
-Carita – Backend Developer
-Architected the server-side logic and database integration for secure, scalable performance.
+## 🌍 Project Vision
 
-Captain AI – Backend Developer
-Supported backend development with route structuring, authentication, and system stability.
+Lovtiti Agro Mart is built for every grower, fisher, and keeper across Africa. Whether you’re harvesting cassava or raising catfish, our platform connects you directly to buyers—securely, transparently, and fairly.
 
-Gurpratap – Smart Contract Developer
-Engineered Hedera-powered smart contracts to enable secure, traceable, and trust-based transactions.
-- Handles secure transactions, smart contracts, and decentralized identity
-- Ensures transparency and trust between buyers and sellers
+Powered by Hedera and guided by our HARAR framework, we bring:
 
-### 🔹 Database
-- Uses **MongoDB**
-- Stores user profiles, product listings, transaction logs, and reviews
+- 📜 **History** of every product
+- 📦 **Availability** in real time
+- ⭐ **Reviews** from trusted buyers
+- ✅ **Authentication** of origin
+- 🔔 **Real-time updates** on every transaction
 
+Lovtiti isn’t just tech—it’s empowerment.
 
-## 🔐 How HARAR & HBAR Work Together in a Transaction
-Imagine a buyer named Amina wants to purchase tomatoes from a farmer named Kofi. Here’s how Lovitti Agro Mart uses HARAR and HBAR to make that transaction seamless and trustworthy:
+---
 
+## 👥 Team Members
 
-🅷 History of Product (HARAR)
-- Amina views the entire lifecycle of the tomatoes: harvest date, handling process, and previous transactions.
-- This history is stored immutably on the Hedera Hashgraph using HBAR to anchor the data.
+Lovtiti Agro Mart is built by a passionate, cross-functional team committed to transforming agriculture through blockchain:
 
-🅰 Availability of Product (HARAR)
-- Real-time inventory shows how many crates are available.
-- Updates are written to the blockchain using HBAR microtransactions, ensuring accuracy and transparency.
+- **Mary Josephine Gatogoh** — *Team Lead & Project Strategist*  
+  Visionary founder driving the project from concept to execution, focused on impact and inclusion.
 
-🆁 Reviews and Ratings (HARAR)
-- Amina checks feedback from other buyers.
-- Each review is timestamped and stored on-chain, secured by HBAR to prevent tampering.
+- **Shia** — *UI/UX Designer*  
+  Designs intuitive, culturally resonant interfaces that reflect the soul of African agriculture.
 
-🅰 Authentication of Product (HARAR)
-- Kofi’s tomatoes carry a digital certificate verified by Lovitti’s smart contract.
-- The certificate is validated using HBAR-powered smart contract calls, confirming origin and legitimacy.
+- **Padmore Edusei** — *Frontend Developer*  
+  Built the digital storefront using React.js, ensuring smooth user experience and wallet integration.
 
-🆁 Real-Time Updates (HARAR)
-- Amina receives live updates: payment confirmation, dispatch time, and delivery tracking.
-- Each update is logged on the Hedera network using HBAR, creating a transparent audit trail.
+- **Carita** — *Backend Developer*  
+  Engineered the server-side logic and database architecture for secure, scalable performance.
 
-💸 Role of HBAR in Lovitti Agro Mart
+- **Captain AI** — *Backend Developer*  
+  Structured routes, authentication, and system stability to support seamless operations.
 
-- Transaction Fees: Every blockchain interaction—whether storing data or executing smart contracts—is paid for using HBAR.
-- Smart Contract Execution: HARAR logic is embedded in smart contracts that run on Hedera, powered by HBAR.
-- Security & Speed: HBAR ensures fast, low-cost, and secure transactions—ideal for agricultural micro-payments.
+- **Gurpratap** — *Smart Contract Developer*  
+  Developed Hedera-powered smart contracts for secure, traceable, and trust-based transactions.
 
-🌍 Why This Matters
+---
 
-By combining HARAR’s transparency with HBAR’s blockchain power, Lovitti Agro Mart creates a marketplace where:
-- Farmers are trusted
-- Buyers are informed
-- Every transaction is secure, traceable, and fair
+## 🔐 How HARAR & HBAR Power Every Transaction
 
+Let’s walk through a real example:
+
+**Buyer:** Amina  
+**Seller:** Kofi (Tomato Farmer)
+
+### 🅷 History  
+Amina sees the full lifecycle of Kofi’s tomatoes—harvest date, handling, and past transactions—anchored immutably on Hedera.
+
+### 🅰 Availability  
+Real-time inventory shows how many crates are ready. Updates are logged using HBAR microtransactions.
+
+### 🆁 Reviews  
+Amina reads feedback from other buyers. Each review is timestamped and stored on-chain for transparency.
+
+### 🅰 Authentication  
+Kofi’s tomatoes carry a digital certificate verified by Lovtiti’s smart contract—ensuring origin and quality.
+
+### 🆁 Real-Time Updates  
+Amina receives live notifications: payment confirmation, dispatch time, and delivery tracking—all recorded on Hedera.
+
+---
+
+## 💸 Role of HBAR in Lovtiti Agro Mart
+
+- 💰 **Transaction Fees**: Every blockchain action is powered by HBAR.
+- ⚙️ **Smart Contract Execution**: HARAR logic runs on Hedera, secured by HBAR.
+- 🔒 **Security & Speed**: Fast, low-cost, and reliable—perfect for micro-payments in agriculture.
+
+---
+
+## 🧠 Database Architecture
+
+- **MongoDB** stores:
+  - User profiles
+  - Product listings
+  - Transaction logs
+  - Buyer reviews
+
+---
+
+## 📍 Target Users
+
+- Smallholder farmers across Africa  
+- Local cooperatives and agricultural networks  
+- Buyers seeking traceable, ethically sourced produce
+
+---
+
+## 🧪 Getting Started
+
+```bash
 # Install dependencies
 npm install
 
 # Start the development server
 npm run dev
-
-## 📍 Target Users
-- Smallholder farmers across Africa
-- Restaurants, retailers, and households
-- NGOs and cooperatives
-
-## 🎯 Goals
-- Empower farmers with digital tools
-- Reduce food waste and fraud
-- Promote fair trade and transparency
-
-## 🚀 Roadmap
-- Add multilingual support for rural communities
-- Integrate weather and crop advisory services
-- Launch mobile app version
-- Partner with local cooperatives and NGOs
-
-## 📽️ Demo Video
-Take a closer look at how Lovtiti Agro Mart is changing the game for African farmers. This short video captures the heart of our mission — connecting hardworking farmers directly to buyers, cutting out middlemen, and using blockchain to bring fairness and transparency to the agricultural market.
-
-👉 Watch the Demo
-
-Every frame reflects our commitment to empowering communities, reducing waste, and building a future where farmers thrive.
-
-Watch the Lovtiti Agro Mart introduction on YouTube:  
-👉 [Lovtiti Agro Mart– Empowering African Farmers with Blockchain 🌍🌾](https://youtube.com/shorts/x08zn9PGgPI?si=aoeDDMDtZrZEfhji )
