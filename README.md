@@ -1,4 +1,38 @@
+❗ Problem Statement
+African farmers face post-harvest losses, limited market access, and unfair pricing due to middlemen. Lovtiti Agro Mart solves this by offering a decentralized platform that connects farmers directly to buyers using Hedera blockchain.
 
+💔 Why This Matters
+
+In many rural communities, farmers work tirelessly for months — planting, watering, and hoping. But when harvest time comes, they often face heartbreaking losses. Crops rot in the field because buyers never show up. Livestock is sold at unfair prices just to survive. Fishermen return with full nets but no market. Beekeepers watch their honey spoil without access to buyers.
+
+These stories aren’t rare — they’re daily realities. Lovitti Agro Mart was born from this pain. It’s a platform built to restore hope, dignity, and income to the people who feed our continent.
+
+🌍 Project Vision
+** Lovitti Agro Mart was born from the heartbreak of harvests lost and hopes crushed. Across Africa, farmers, fisherfolk, beekeepers, and livestock keepers pour their lives into the land and sea — only to be met with unfair prices, spoiled goods, and no access to buyers. Lovitti is our answer.
+
+It’s a decentralized marketplace where every producer — from cassava growers to catfish farmers — can connect directly with buyers, backed by blockchain and powered by Hedera. With HARAR guiding every transaction, we bring history, availability, reviews, authentication, and real-time updates into the hands of those who need it most.
+
+Lovitti isn’t just a platform. It’s a movement to restore dignity, income, and control to the people who feed our continent.
+
+👥 Team Members
+
+Mary Josephine Gatogoh – Team Lead & Project Strategist
+Visionary founder guiding the project from concept to execution, with a focus on impact and inclusion.
+
+Shia – UI/UX Designer
+Responsible for crafting intuitive and culturally resonant user interfaces that reflect the heart of African agriculture.
+
+Padmore Edusei – Frontend Developer
+Built the digital storefront using React.js, ensuring smooth user interaction and wallet integration.
+
+Carita – Backend Developer
+Architected the server-side logic and database integration for secure, scalable performance.
+
+Captain AI – Backend Developer
+Supported backend development with route structuring, authentication, and system stability.
+
+Gurpratap – Smart Contract Developer
+Engineered Hedera-powered smart contracts to enable secure, traceable, and trust-based transactions.
 - Handles secure transactions, smart contracts, and decentralized identity
 - Ensures transparency and trust between buyers and sellers
 
