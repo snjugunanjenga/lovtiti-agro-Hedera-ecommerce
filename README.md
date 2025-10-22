@@ -1,39 +1,87 @@
-# Lovtiti Agro Mart
+# 🌾 Lovtiti Agro Mart
 
-Marketplace connecting farmers and buyers with Hedera escrow and Stripe payments.
+**Decentralized Marketplace for African Farmers — Powered by Hedera & Blockchain**
 
-## Tech
-- Next.js 14 (app dir) + TypeScript + TailwindCSS
-- Prisma + PostgreSQL (Neon)
-- Clerk auth (stubs)
-- Hedera & Stripe helpers (stubs)
-- Express backend to simulate USSD
+---
 
-## Getting Started
-1. Install deps:
-```bash
-npm ci
-```
-2. Set env vars in `.env` (see below).
-3. Setup DB:
-```bash
-npx prisma migrate dev --name init
-```
-4. Run web app:
-```bash
-npm run dev
-```
-5. Run USSD server:
-```bash
-node --loader ts-node/esm backend/server.ts
-```
+## 🚀 Project Vision
 
-## Env
-```
-DATABASE_URL="postgresql://user:pass@host:port/db?sslmode=require"
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_..."
-CLERK_SECRET_KEY="sk_..."
-STRIPE_SECRET_KEY="sk_..."
-HEDERA_ACCOUNT_ID="..."
-HEDERA_PRIVATE_KEY="..."
-```
+Lovtiti Agro Mart was born from the heartbreak of harvests lost and hopes crushed. In many African communities, farmers work tirelessly yet face unfair pricing, middlemen exploitation, and limited market access. Consumers, meanwhile, pay high prices for low-quality produce.
+
+We envision a transparent, decentralized marketplace where farmers can sell directly to buyers—backed by blockchain, smart contracts, and stablecoin payments. With Lovtiti, we bring **fairness, traceability, and empowerment** to agriculture.
+
+---
+
+## 🌍 Why This Matters
+
+- 🧑‍🌾 **Empowers Farmers**: Transparent pricing and direct access to buyers.
+- 🛒 **Benefits Consumers**: Affordable, traceable, and fresh produce.
+- 🔗 **Blockchain-Backed**: Smart contracts ensure secure, tamper-proof transactions.
+- 💸 **No Middlemen**: Payments handled via Hedera escrow and Stripe integration.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer        | Technology                          |
+|--------------|-------------------------------------|
+| Frontend     | Next.js (React + TypeScript), TailwindCSS |
+| Backend      | Express.js, Hedera SDK, Stripe API  |
+| Blockchain   | Solidity Smart Contracts, Hedera Mirror Node |
+| Payments     | USD Stablecoin, Stripe              |
+| Storage      | IPFS (Decentralized Storage)        |
+| Dev Tools    | Yarn, PostCSS, ESLint               |
+
+---
+
+## 📦 Features
+
+- 🧾 Farmer registration & product listing
+- 📍 Location-based filtering
+- 🔐 Smart contract escrow for secure payments
+- 💳 Stripe integration with stablecoin support
+- 📈 Real-time transaction tracking
+- 🧠 Tokenomics (coming soon)
+
+---
+
+## 👥 Team Members
+
+Lovtiti Agro Mart is built by a passionate, cross-functional team committed to transforming agriculture through technology and inclusion:
+
+- **Mary Josephine Gatogoh** — *Team Lead & Project Strategist*  
+  Visionary founder guiding the project from concept to execution, with a focus on impact and inclusion.
+
+- **Shia** — *UI/UX Designer*  
+  Crafted intuitive and culturally resonant user interfaces that reflect the heart of African agriculture.
+
+- **Padmore Edusei** — *Frontend Developer*  
+  Built the digital storefront using React.js, ensuring smooth user interaction and wallet integration.
+
+- **Carita** — *Backend Developer*  
+  Architected the server-side logic and database integration for secure, scalable performance.
+
+- **Captain AI** — *Backend Developer*  
+  Supported backend development with route structuring, authentication, and system stability.
+
+- **Gurpratap** — *Smart Contract Developer*  
+  Engineered Hedera-powered smart contracts to enable secure, traceable, and trust-based transactions.
+
+---
+
+## 🧪 Getting Started
+
+To run Lovtiti Agro Mart locally:
+
+```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/lovtiti-agro-mart-Hedera-ecommerce.git
+
+# Navigate into the project
+cd lovtiti-agro-mart-Hedera-ecommerce
+
+# Install dependencies
+yarn install
+
+# Start the development server
+yarn dev
