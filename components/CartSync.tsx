@@ -13,3 +13,6 @@ export default function CartSync() {
   // This component doesn't render anything, it just handles cart synchronization
   return null;
 }
+
+
+
