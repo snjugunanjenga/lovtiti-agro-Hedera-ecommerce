@@ -382,7 +382,7 @@ export class CommunityService {
       await this.storeForumPost(post);
       
       // Award community points for contribution
-      await this.awardContributionReward(author, 'FORUM_POST');
+      await this.awardContributionReward(author, 'KNOWLEDGE_SHARE');
       
       console.log(`Created forum post ${post.id}: ${title}`);
       return post;
@@ -421,7 +421,7 @@ export class CommunityService {
       await this.updateForumPost(post);
       
       // Award community points for helpful reply
-      await this.awardContributionReward(author, 'FORUM_REPLY');
+      await this.awardContributionReward(author, 'COMMUNITY_HELP');
       
       console.log(`Added reply to forum post ${postId}`);
       return reply;

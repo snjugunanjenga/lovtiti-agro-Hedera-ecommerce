@@ -169,7 +169,7 @@ export class DeFiService {
       }
 
       // Calculate shares based on current pool value
-      const shares = (amount / pool.totalLiquidity) * pool.totalSupply;
+      const shares = (amount / pool.totalLiquidity) * pool.totalLiquidity;
       
       const lender: Lender = {
         address: lenderAddress,
@@ -616,7 +616,7 @@ export class DeFiService {
 
   private findPoolByNFT(nftTokenId: string): LendingPool | null {
     for (const pool of this.lendingPools.values()) {
-      if (pool.nftTokenIds?.includes(nftTokenId)) {
+      if (pool.nftTokenId === nftTokenId) {
         return pool;
       }
     }

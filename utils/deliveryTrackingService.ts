@@ -177,7 +177,7 @@ export class DeliveryTrackingService {
           where: { 
             deliveryStatus: 'DELIVERED',
             actualDelivery: { not: null },
-            createdAt: { not: null }
+            createdAt: { not: null as any }
           },
           select: {
             createdAt: true,

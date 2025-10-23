@@ -211,7 +211,7 @@ export const useWallet = (): UseWalletResult => {
     try {
       const result = await walletManager.getFarmerProducts();
       if (result.success) {
-        setFarmerProducts(result.data);
+        setFarmerProducts(result.data || []);
       }
     } catch (err) {
       console.error('Error getting farmer products:', err);

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { contractMonitoringService } from '../../../utils/contractMonitoringService';
+import { contractMonitoringService } from '@/utils/contractMonitoringService';
 
 /**
  * GET /api/contract/stats

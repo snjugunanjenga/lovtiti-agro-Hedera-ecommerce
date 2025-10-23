@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AgroContractService, createAgroContractService } from '../../../../utils/agroContract';
-import { AddProductParams, UpdateStockParams, IncreasePriceParams } from '../../../../types/agro-contract';
+import { AgroContractService, createAgroContractService } from '@/utils/agroContract';
+import { AddProductParams, UpdateStockParams, IncreasePriceParams } from '@/types/agro-contract';
 
 // Initialize contract service
 const contractService = createAgroContractService(

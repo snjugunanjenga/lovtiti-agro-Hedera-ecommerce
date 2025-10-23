@@ -1,6 +1,7 @@
 // NFT Detail Component with comprehensive metadata display
 import React, { useState } from 'react';
-import { useNFT, useSupplyChain, useWallet } from '@/hooks';
+import { useNFT, useSupplyChain } from '@/hooks/useNFT';
+import { useWallet } from '@/hooks/useWallet';
 import { BaseNFT, NFTListing } from '@/types/nft';
 
 interface NFTDetailProps {
@@ -12,7 +13,7 @@ interface NFTDetailProps {
 export function NFTDetail({ tokenId, listing, onClose }: NFTDetailProps) {
   const { nft, isLoading, error } = useNFT(tokenId);
   const { supplyChain } = useSupplyChain(tokenId);
-  const { walletAccount, isConnected } = useWallet();
+  const { wallet, isConnected } = useWallet();
   const [activeTab, setActiveTab] = useState<'details' | 'supply-chain' | 'history' | 'analytics'>('details');
   const [showBuyModal, setShowBuyModal] = useState(false);
 
@@ -44,8 +45,8 @@ export function NFTDetail({ tokenId, listing, onClose }: NFTDetailProps) {
   }
 
   const attributes = nft.metadata.attributes;
-  const isOwner = walletAccount?.hederaAccountId === nft.owner;
-  const isCreator = walletAccount?.hederaAccountId === nft.creator;
+  const isOwner = wallet?.address === nft.owner;
+  const isCreator = wallet?.address === nft.creator;
 
   const getCategoryIcon = (category: string) => {
     switch (category) {

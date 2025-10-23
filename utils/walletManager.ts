@@ -358,12 +358,4 @@ export const getFarmerInfo = () => walletManager.getFarmerInfo();
 export const getFarmerProducts = () => walletManager.getFarmerProducts();
 
 // Type declarations for window.ethereum
-declare global {
-  interface Window {
-    ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>;
-      on: (event: string, callback: (...args: any[]) => void) => void;
-      removeAllListeners: (event: string) => void;
-    };
-  }
-}
+// Global window interface declaration removed to avoid conflicts

@@ -47,7 +47,7 @@ export const buyerKycSchema = baseKycSchema.extend({
 });
 
 export const veterinarianKycSchema = baseKycSchema.extend({
-	type: z.literal("AGROEXPERT"),
+	type: z.literal("VETERINARIAN"),
 	professionalLicense: z.string().min(1), // Professional veterinary license
 	productSupplierPermits: z.array(z.string()).optional(), // Product supplier permits
 	agriculturalExpertiseCert: z.array(z.string()).optional(), // Agricultural expertise certifications

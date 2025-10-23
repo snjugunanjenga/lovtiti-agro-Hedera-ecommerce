@@ -15,7 +15,8 @@ import {
   NFTTransaction,
   EscrowTransaction,
   ServiceBooking,
-  EquipmentLease
+  EquipmentLease,
+  RoyaltyInfo
 } from "../types/nft";
 
 export interface NFTServiceConfig {
@@ -50,7 +51,7 @@ export class NFTService {
   // NFT Minting Functions
   public async mintProductNFT(
     metadata: NFTMetadata,
-    royalties: { percentage: number; recipient: string }
+    royalties: RoyaltyInfo
   ): Promise<MintNFTResponse> {
     if (!this.walletAccount) {
       throw new Error("Wallet not connected");
@@ -82,13 +83,13 @@ export class NFTService {
 
       return response;
     } catch (error) {
-      throw new Error(`Failed to mint product NFT: ${error.message}`);
+      throw new Error(`Failed to mint product NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
   public async mintServiceNFT(
     metadata: NFTMetadata,
-    royalties: { percentage: number; recipient: string }
+    royalties: RoyaltyInfo
   ): Promise<MintNFTResponse> {
     if (!this.walletAccount) {
       throw new Error("Wallet not connected");
@@ -120,13 +121,13 @@ export class NFTService {
 
       return response;
     } catch (error) {
-      throw new Error(`Failed to mint service NFT: ${error.message}`);
+      throw new Error(`Failed to mint service NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
   public async mintEquipmentNFT(
     metadata: NFTMetadata,
-    royalties: { percentage: number; recipient: string }
+    royalties: RoyaltyInfo
   ): Promise<MintNFTResponse> {
     if (!this.walletAccount) {
       throw new Error("Wallet not connected");
@@ -158,7 +159,7 @@ export class NFTService {
 
       return response;
     } catch (error) {
-      throw new Error(`Failed to mint equipment NFT: ${error.message}`);
+      throw new Error(`Failed to mint equipment NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -180,7 +181,7 @@ export class NFTService {
 
       return response.listing;
     } catch (error) {
-      throw new Error(`Failed to list NFT: ${error.message}`);
+      throw new Error(`Failed to list NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -201,7 +202,7 @@ export class NFTService {
 
       return response.transaction;
     } catch (error) {
-      throw new Error(`Failed to buy NFT: ${error.message}`);
+      throw new Error(`Failed to buy NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -219,7 +220,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to cancel listing");
       }
     } catch (error) {
-      throw new Error(`Failed to cancel listing: ${error.message}`);
+      throw new Error(`Failed to cancel listing: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -236,7 +237,7 @@ export class NFTService {
 
       return response.nft;
     } catch (error) {
-      throw new Error(`Failed to get NFT: ${error.message}`);
+      throw new Error(`Failed to get NFT: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -272,7 +273,7 @@ export class NFTService {
         pagination: response.pagination,
       };
     } catch (error) {
-      throw new Error(`Failed to get listings: ${error.message}`);
+      throw new Error(`Failed to get listings: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -293,7 +294,7 @@ export class NFTService {
 
       return response.nfts;
     } catch (error) {
-      throw new Error(`Failed to get user NFTs: ${error.message}`);
+      throw new Error(`Failed to get user NFTs: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -322,7 +323,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to add supply chain step");
       }
     } catch (error) {
-      throw new Error(`Failed to add supply chain step: ${error.message}`);
+      throw new Error(`Failed to add supply chain step: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -338,7 +339,7 @@ export class NFTService {
 
       return response.supplyChain;
     } catch (error) {
-      throw new Error(`Failed to get supply chain history: ${error.message}`);
+      throw new Error(`Failed to get supply chain history: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -366,7 +367,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to verify supply chain step");
       }
     } catch (error) {
-      throw new Error(`Failed to verify supply chain step: ${error.message}`);
+      throw new Error(`Failed to verify supply chain step: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -399,7 +400,7 @@ export class NFTService {
 
       return response.booking;
     } catch (error) {
-      throw new Error(`Failed to book service: ${error.message}`);
+      throw new Error(`Failed to book service: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -427,7 +428,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to complete service");
       }
     } catch (error) {
-      throw new Error(`Failed to complete service: ${error.message}`);
+      throw new Error(`Failed to complete service: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -464,7 +465,7 @@ export class NFTService {
 
       return response.lease;
     } catch (error) {
-      throw new Error(`Failed to lease equipment: ${error.message}`);
+      throw new Error(`Failed to lease equipment: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -481,7 +482,7 @@ export class NFTService {
 
       return response.escrow;
     } catch (error) {
-      throw new Error(`Failed to get escrow status: ${error.message}`);
+      throw new Error(`Failed to get escrow status: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -509,7 +510,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to update delivery status");
       }
     } catch (error) {
-      throw new Error(`Failed to update delivery status: ${error.message}`);
+      throw new Error(`Failed to update delivery status: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -527,7 +528,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to confirm delivery");
       }
     } catch (error) {
-      throw new Error(`Failed to confirm delivery: ${error.message}`);
+      throw new Error(`Failed to confirm delivery: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -553,7 +554,7 @@ export class NFTService {
         throw new Error(response.error?.message || "Failed to release escrow");
       }
     } catch (error) {
-      throw new Error(`Failed to release escrow: ${error.message}`);
+      throw new Error(`Failed to release escrow: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -570,7 +571,7 @@ export class NFTService {
 
       return response.analytics;
     } catch (error) {
-      throw new Error(`Failed to get marketplace analytics: ${error.message}`);
+      throw new Error(`Failed to get marketplace analytics: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -591,7 +592,7 @@ export class NFTService {
 
       return response.portfolio;
     } catch (error) {
-      throw new Error(`Failed to get user portfolio: ${error.message}`);
+      throw new Error(`Failed to get user portfolio: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -609,7 +610,7 @@ export class NFTService {
       const result = await response.json();
       return result.Hash;
     } catch (error) {
-      throw new Error(`Failed to upload to IPFS: ${error.message}`);
+      throw new Error(`Failed to upload to IPFS: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -637,7 +638,7 @@ export class NFTService {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || `HTTP ${response.status}`);
+      throw new Error((error instanceof Error ? error.message : 'Unknown error') || `HTTP ${response.status}`);
     }
 
     return await response.json();
@@ -707,3 +708,6 @@ export const defaultNFTServiceConfig: NFTServiceConfig = {
   ipfsGateway: "https://ipfs.io",
   apiBaseUrl: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api/nft",
 };
+
+// Default singleton instance
+export const nftService = createNFTService(defaultNFTServiceConfig);

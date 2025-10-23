@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AgroContractService, createAgroContractService } from '../../../../utils/agroContract';
+import { AgroContractService, createAgroContractService } from '@/utils/agroContract';
 
 // Initialize contract service
 const contractService = createAgroContractService(

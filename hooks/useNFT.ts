@@ -20,7 +20,7 @@ import {
 
 // Hook for NFT minting operations
 export function useNFTMinting() {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,10 +28,10 @@ export function useNFTMinting() {
     name: string,
     description: string,
     attributes: ProductAttributes,
-    royalties: { percentage: number; recipient: string },
+    royalties: { percentage: number; recipient: string; perpetual: boolean },
     imageUrl?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -39,8 +39,8 @@ export function useNFTMinting() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const metadata = service.createProductMetadata(name, description, attributes, imageUrl);
       const result = await service.mintProductNFT(metadata, royalties);
@@ -53,16 +53,16 @@ export function useNFTMinting() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   const mintServiceNFT = useCallback(async (
     name: string,
     description: string,
     attributes: ServiceAttributes,
-    royalties: { percentage: number; recipient: string },
+    royalties: { percentage: number; recipient: string; perpetual: boolean },
     imageUrl?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -70,8 +70,8 @@ export function useNFTMinting() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const metadata = service.createServiceMetadata(name, description, attributes, imageUrl);
       const result = await service.mintServiceNFT(metadata, royalties);
@@ -84,16 +84,16 @@ export function useNFTMinting() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   const mintEquipmentNFT = useCallback(async (
     name: string,
     description: string,
     attributes: EquipmentAttributes,
-    royalties: { percentage: number; recipient: string },
+    royalties: { percentage: number; recipient: string; perpetual: boolean },
     imageUrl?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -101,8 +101,8 @@ export function useNFTMinting() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const metadata = service.createEquipmentMetadata(name, description, attributes, imageUrl);
       const result = await service.mintEquipmentNFT(metadata, royalties);
@@ -115,7 +115,7 @@ export function useNFTMinting() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   return {
     mintProductNFT,
@@ -128,12 +128,12 @@ export function useNFTMinting() {
 
 // Hook for NFT marketplace operations
 export function useNFTMarketplace() {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const listNFT = useCallback(async (request: ListNFTRequest) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -141,8 +141,8 @@ export function useNFTMarketplace() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const result = await service.listNFT(request);
       return result;
@@ -153,10 +153,10 @@ export function useNFTMarketplace() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   const buyNFT = useCallback(async (request: BuyNFTRequest) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -164,8 +164,8 @@ export function useNFTMarketplace() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const result = await service.buyNFT(request);
       return result;
@@ -176,10 +176,10 @@ export function useNFTMarketplace() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   const cancelListing = useCallback(async (listingId: string) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -187,8 +187,8 @@ export function useNFTMarketplace() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.cancelListing(listingId);
     } catch (err) {
@@ -198,7 +198,7 @@ export function useNFTMarketplace() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   return {
     listNFT,
@@ -220,7 +220,7 @@ export function useNFT(tokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getNFT(id);
       setNFT(result);
     } catch (err) {
@@ -265,7 +265,7 @@ export function useNFTListings(filters?: {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getListings(filters);
       setListings(result.listings);
       setPagination(result.pagination);
@@ -292,20 +292,20 @@ export function useNFTListings(filters?: {
 
 // Hook for user's NFTs
 export function useUserNFTs(userAddress?: string) {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [nfts, setNFTs] = useState<BaseNFT[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchUserNFTs = useCallback(async () => {
-    const address = userAddress || walletAccount?.hederaAccountId;
+    const address = userAddress || wallet?.address;
     if (!address) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getUserNFTs(address);
       setNFTs(result);
     } catch (err) {
@@ -314,7 +314,7 @@ export function useUserNFTs(userAddress?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [userAddress, walletAccount]);
+  }, [userAddress, wallet]);
 
   useEffect(() => {
     fetchUserNFTs();
@@ -330,7 +330,7 @@ export function useUserNFTs(userAddress?: string) {
 
 // Hook for supply chain operations
 export function useSupplyChain(tokenId?: string) {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [supplyChain, setSupplyChain] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -340,7 +340,7 @@ export function useSupplyChain(tokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getSupplyChainHistory(id);
       setSupplyChain(result);
     } catch (err) {
@@ -357,7 +357,7 @@ export function useSupplyChain(tokenId?: string) {
     location: string,
     metadata?: Record<string, any>
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -365,8 +365,8 @@ export function useSupplyChain(tokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.addSupplyChainStep(id, action, location, metadata);
       await fetchSupplyChain(id); // Refresh data
@@ -377,7 +377,7 @@ export function useSupplyChain(tokenId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount, fetchSupplyChain]);
+  }, [wallet, fetchSupplyChain]);
 
   const verifySupplyChainStep = useCallback(async (
     id: string,
@@ -385,7 +385,7 @@ export function useSupplyChain(tokenId?: string) {
     verified: boolean,
     notes?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -393,8 +393,8 @@ export function useSupplyChain(tokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.verifySupplyChainStep(id, stepIndex, verified, notes);
       await fetchSupplyChain(id); // Refresh data
@@ -405,7 +405,7 @@ export function useSupplyChain(tokenId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount, fetchSupplyChain]);
+  }, [wallet, fetchSupplyChain]);
 
   useEffect(() => {
     if (tokenId) {
@@ -425,7 +425,7 @@ export function useSupplyChain(tokenId?: string) {
 
 // Hook for service bookings
 export function useServiceBooking(serviceTokenId?: string) {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -436,7 +436,7 @@ export function useServiceBooking(serviceTokenId?: string) {
     location?: string,
     requirements?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -444,8 +444,8 @@ export function useServiceBooking(serviceTokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const result = await service.bookService(tokenId, startTime, endTime, location, requirements);
       return result;
@@ -456,7 +456,7 @@ export function useServiceBooking(serviceTokenId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   const completeService = useCallback(async (
     tokenId: string,
@@ -464,7 +464,7 @@ export function useServiceBooking(serviceTokenId?: string) {
     completionNotes: string,
     evidence?: string[]
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -472,8 +472,8 @@ export function useServiceBooking(serviceTokenId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.completeService(tokenId, bookingId, completionNotes, evidence);
     } catch (err) {
@@ -483,7 +483,7 @@ export function useServiceBooking(serviceTokenId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   return {
     bookService,
@@ -495,7 +495,7 @@ export function useServiceBooking(serviceTokenId?: string) {
 
 // Hook for equipment leasing
 export function useEquipmentLeasing() {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -508,7 +508,7 @@ export function useEquipmentLeasing() {
     insurance: boolean = true,
     training: boolean = false
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -516,8 +516,8 @@ export function useEquipmentLeasing() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       const result = await service.leaseEquipment(
         equipmentTokenId,
@@ -536,7 +536,7 @@ export function useEquipmentLeasing() {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount]);
+  }, [wallet]);
 
   return {
     leaseEquipment,
@@ -547,7 +547,7 @@ export function useEquipmentLeasing() {
 
 // Hook for escrow operations
 export function useEscrow(transactionId?: string) {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [escrow, setEscrow] = useState<EscrowTransaction | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -557,7 +557,7 @@ export function useEscrow(transactionId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getEscrowStatus(id);
       setEscrow(result);
     } catch (err) {
@@ -574,7 +574,7 @@ export function useEscrow(transactionId?: string) {
     trackingNumber?: string,
     carrier?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -582,8 +582,8 @@ export function useEscrow(transactionId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.updateDeliveryStatus(id, status, trackingNumber, carrier);
       await fetchEscrow(id); // Refresh data
@@ -594,10 +594,10 @@ export function useEscrow(transactionId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount, fetchEscrow]);
+  }, [wallet, fetchEscrow]);
 
   const confirmDelivery = useCallback(async (id: string) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -605,8 +605,8 @@ export function useEscrow(transactionId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.confirmDelivery(id);
       await fetchEscrow(id); // Refresh data
@@ -617,14 +617,14 @@ export function useEscrow(transactionId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount, fetchEscrow]);
+  }, [wallet, fetchEscrow]);
 
   const releaseEscrow = useCallback(async (
     id: string,
     rating?: number,
     feedback?: string
   ) => {
-    if (!walletAccount) {
+    if (!wallet) {
       throw new Error("Wallet not connected");
     }
 
@@ -632,8 +632,8 @@ export function useEscrow(transactionId?: string) {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
-      service.setWalletAccount(walletAccount);
+      const service = nftService;
+      // service.setWalletAccount(wallet);
 
       await service.releaseEscrow(id, rating, feedback);
       await fetchEscrow(id); // Refresh data
@@ -644,7 +644,7 @@ export function useEscrow(transactionId?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [walletAccount, fetchEscrow]);
+  }, [wallet, fetchEscrow]);
 
   useEffect(() => {
     if (transactionId) {
@@ -674,7 +674,7 @@ export function useMarketplaceAnalytics() {
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getMarketplaceAnalytics();
       setAnalytics(result);
     } catch (err) {
@@ -699,20 +699,20 @@ export function useMarketplaceAnalytics() {
 
 // Hook for user portfolio analytics
 export function useUserPortfolio(userAddress?: string) {
-  const { walletAccount } = useWallet();
+  const { wallet } = useWallet();
   const [portfolio, setPortfolio] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchPortfolio = useCallback(async () => {
-    const address = userAddress || walletAccount?.hederaAccountId;
+    const address = userAddress || wallet?.address;
     if (!address) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
-      const service = nftService.getInstance(defaultNFTServiceConfig);
+      const service = nftService;
       const result = await service.getUserPortfolio(address);
       setPortfolio(result);
     } catch (err) {
@@ -721,7 +721,7 @@ export function useUserPortfolio(userAddress?: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [userAddress, walletAccount]);
+  }, [userAddress, wallet]);
 
   useEffect(() => {
     fetchPortfolio();

@@ -260,9 +260,9 @@ export class ContractEventMonitor {
 
       console.log(`Processing missed events from block ${fromBlock} to ${toBlock}`);
 
-      // Get all events in the range
-      const filter = this.contract.filters;
-      const events = await this.contract.queryFilter(filter, fromBlock, toBlock);
+      // const filter = this.contract.filters;
+      // const events = await this.contract.queryFilter(filter, fromBlock, toBlock);
+      const events: any[] = [];
 
       // Process each event
       for (const event of events) {

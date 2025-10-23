@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { applicationStartupService } from '../../../utils/applicationStartupService';
+import { applicationStartupService } from '@/utils/applicationStartupService';
 
 /**
  * POST /api/system/initialize

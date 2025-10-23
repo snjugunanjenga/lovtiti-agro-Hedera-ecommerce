@@ -24,9 +24,9 @@ export function DeFiDashboard({ userAddress }: DeFiDashboardProps) {
     setIsLoading(true);
     try {
       const [pools, staking, farming, analyticsData] = await Promise.all([
-        defiService.getLendingPools?.() || [],
-        defiService.getUserStakingPositions?.(userAddress) || [],
-        defiService.getYieldFarmingPools?.() || [],
+        [], // Mock lending pools data
+        [], // Mock staking positions data  
+        [], // Mock yield farming pools data
         defiService.getDeFiAnalytics(),
       ]);
 

@@ -74,6 +74,7 @@ export function NFTCreator({ onMintSuccess, onClose }: NFTCreatorProps) {
           {
             percentage: parseFloat(formData.royaltyPercentage) || 2.5,
             recipient: formData.royaltyRecipient || '',
+            perpetual: true
           },
           formData.imageUrl
         );
@@ -127,6 +128,7 @@ export function NFTCreator({ onMintSuccess, onClose }: NFTCreatorProps) {
           {
             percentage: parseFloat(formData.royaltyPercentage) || 2.5,
             recipient: formData.royaltyRecipient || '',
+            perpetual: true
           },
           formData.imageUrl
         );
@@ -185,6 +187,7 @@ export function NFTCreator({ onMintSuccess, onClose }: NFTCreatorProps) {
           {
             percentage: parseFloat(formData.royaltyPercentage) || 2.5,
             recipient: formData.royaltyRecipient || '',
+            perpetual: true
           },
           formData.imageUrl
         );

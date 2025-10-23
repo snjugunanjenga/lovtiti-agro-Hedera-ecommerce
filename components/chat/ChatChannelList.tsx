@@ -26,7 +26,7 @@ export default function ChatChannelList({ onChannelSelect }: ChatChannelListProp
   };
 
   const sort = {
-    last_message_at: -1,
+    last_message_at: 'desc' as const,
   };
 
   const options = {
@@ -67,18 +67,10 @@ export default function ChatChannelList({ onChannelSelect }: ChatChannelListProp
         <div className="h-full">
           <ChannelList
             filters={filters}
-            sort={sort}
             options={options}
             showChannelSearch
             additionalChannelSearchProps={{
               searchForChannels: true,
-              searchQuery: searchQuery,
-              searchPlaceholder: 'Search conversations...',
-            }}
-            setActiveChannel={(channel) => {
-              if (onChannelSelect && channel) {
-                onChannelSelect(channel.id, channel.type);
-              }
             }}
           />
         </div>

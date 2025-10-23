@@ -56,7 +56,6 @@ export const createOrGetChannel = async (
 ) => {
   try {
     const channel = client.channel(channelType, channelId, {
-      name: metadata?.name || `Channel ${channelId}`,
       members,
       ...metadata,
     });

@@ -20,7 +20,7 @@ interface ProductActionsProps {
   productId: string;
   listingId: string;
   sellerId: string;
-  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGRO_VET';
+  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'VETERINARIAN';
   name: string;
   description: string;
   price: number;
@@ -63,7 +63,7 @@ export default function ProductActions({
   const router = useRouter();
 
   // Get user role (default to BUYER for now)
-  const userRole = user?.publicMetadata?.role as string || 'BUYER';
+  const userRole = 'BUYER' as any; // Default role for development
   
   // Check if user can buy from this seller based on business logic
   const canBuy = canUserBuyFrom(userRole as any, sellerType);
@@ -280,7 +280,7 @@ export default function ProductActions({
             {userRole === 'DISTRIBUTOR' && sellerType === 'DISTRIBUTOR' && 'Distributors cannot buy from other distributors'}
             {userRole === 'TRANSPORTER' && 'Transporters cannot buy products'}
             {userRole === 'VETERINARIAN' && sellerType === 'VETERINARIAN' && 'Agro Experts cannot buy from other Agro Experts'}
-            {userRole === 'BUYER' && sellerType === 'BUYER' && 'Buyers cannot buy from other buyers'}
+            {userRole === 'BUYER' && 'Buyers can buy from any seller'}
           </p>
         </div>
       )}

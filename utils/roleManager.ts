@@ -1,6 +1,6 @@
 // Role management utilities for Lovtiti Agro Mart
 
-export type UserRole = 'BUYER' | 'FARMER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'AGROEXPERT' | 'ADMIN';
+export type UserRole = 'BUYER' | 'FARMER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'AGROEXPERT' | 'VETERINARIAN' | 'ADMIN';
 
 export interface RolePermissions {
   canAccessDashboard: (role: UserRole, dashboard: string) => boolean;
@@ -46,6 +46,13 @@ export const ROLE_PERMISSIONS: Record<UserRole, RolePermissions> = {
     canAccessAnalytics: () => true,
     canManageUsers: () => false,
   },
+  VETERINARIAN: {
+    canAccessDashboard: (role, dashboard) => dashboard === 'veterinarian' || dashboard === 'admin',
+    canCreateListings: () => true,
+    canManageOrders: () => true,
+    canAccessAnalytics: () => true,
+    canManageUsers: () => false,
+  },
   ADMIN: {
     canAccessDashboard: () => true,
     canCreateListings: () => true,
@@ -72,6 +79,7 @@ export const getAvailableDashboards = (userRole: UserRole) => {
     { name: 'Distributor Dashboard', path: '/dashboard/distributor', roles: ['DISTRIBUTOR', 'ADMIN'] },
     { name: 'Transporter Dashboard', path: '/dashboard/transporter', roles: ['TRANSPORTER', 'ADMIN'] },
     { name: 'Agro Expert Dashboard', path: '/dashboard/agro-vet', roles: ['AGROEXPERT', 'ADMIN'] },
+    { name: 'Veterinarian Dashboard', path: '/dashboard/veterinarian', roles: ['VETERINARIAN', 'ADMIN'] },
   ];
 
   return dashboards.filter(dashboard => dashboard.roles.includes(userRole));
@@ -84,6 +92,7 @@ export const getRoleDisplayName = (role: UserRole): string => {
     DISTRIBUTOR: 'Distributor',
     TRANSPORTER: 'Transporter',
     AGROEXPERT: 'Agro Expert',
+    VETERINARIAN: 'Veterinarian',
     ADMIN: 'Administrator',
   };
 
@@ -97,6 +106,7 @@ export const getRoleDescription = (role: UserRole): string => {
     DISTRIBUTOR: 'Supply chain intermediary who manages inventory and connects farmers with buyers',
     TRANSPORTER: 'Logistics provider who handles transportation and delivery of agricultural products',
     AGROEXPERT: 'Agricultural expert who sells products, leases equipment, and provides expert advice',
+    VETERINARIAN: 'Animal health specialist who provides veterinary services and livestock care',
     ADMIN: 'Platform administrator with full access to all features and user management',
   };
 
@@ -110,6 +120,7 @@ export const getRoleColor = (role: UserRole): { text: string; bg: string } => {
     DISTRIBUTOR: { text: 'text-purple-600', bg: 'bg-purple-100' },
     TRANSPORTER: { text: 'text-orange-600', bg: 'bg-orange-100' },
     AGROEXPERT: { text: 'text-red-600', bg: 'bg-red-100' },
+    VETERINARIAN: { text: 'text-pink-600', bg: 'bg-pink-100' },
     ADMIN: { text: 'text-gray-600', bg: 'bg-gray-100' },
   };
 
@@ -123,6 +134,7 @@ export const getRoleIcon = (role: UserRole): string => {
     DISTRIBUTOR: 'Package',
     TRANSPORTER: 'Truck',
     AGROEXPERT: 'Stethoscope',
+    VETERINARIAN: 'Heart',
     ADMIN: 'Shield',
   };
 

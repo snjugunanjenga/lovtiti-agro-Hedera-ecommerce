@@ -8,7 +8,7 @@ export interface CartItem {
   productId: string;
   listingId: string;
   sellerId: string;
-  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGROEXPERT';
+  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGROEXPERT' | 'VETERINARIAN';
   name: string;
   description: string;
   price: number;

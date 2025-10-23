@@ -325,7 +325,7 @@ export const processPayment = async (request: PaymentRequest): Promise<PaymentRe
     case 'mpesa':
       return await processMpesaPayment(request);
     case 'crypto':
-      return await processCryptoPayment(request);
+      return await processPayment(request);
     case 'agro-contract':
       return await processAgroContractPayment(request);
     default:

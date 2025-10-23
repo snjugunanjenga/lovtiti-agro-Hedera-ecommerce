@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { PrismaClient } from '@prisma/client';
-import { MintNFTRequest, MintNFTResponse } from '@/types/nft';
+import { MintNFTRequest, MintNFTResponse, NFTStandard, NFTCategory } from '@/types/nft';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Get user profile
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+      where: { id: userId },
       include: { profiles: true }
     });
 
@@ -52,12 +52,12 @@ export async function POST(request: NextRequest) {
     const ipfsHash = `Qm${Math.random().toString(36).substr(2, 44)}`;
 
     // Create NFT record in database
-    const nft = await prisma.nft.create({
+    const nft = await prisma.nFT.create({
       data: {
         tokenId,
         contractAddress,
-        ownerAddress: user.hederaAccountId || '0.0.0',
-        creatorAddress: user.hederaAccountId || '0.0.0',
+        ownerAddress: user.profiles[0]?.hederaWallet || '0.0.0',
+        creatorAddress: user.profiles[0]?.hederaWallet || '0.0.0',
         tokenStandard: 'HTS-721',
         metadataUri: `ipfs://${ipfsHash}`,
         metadataHash: ipfsHash,
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
         stepIndex: 0,
         action: 'NFT_MINTED',
         location: 'Lovtiti Agro Mart',
-        actorAddress: user.hederaAccountId || '0.0.0',
+        actorAddress: user.profiles[0]?.hederaWallet || '0.0.0',
         metadata: JSON.stringify({
           mintingPlatform: 'Lovtiti Agro Mart',
           mintingTime: new Date().toISOString(),
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
           royalties
         }),
         isVerified: true,
-        verifiedBy: user.hederaAccountId || '0.0.0',
+        verifierAddress: user.profiles[0]?.hederaWallet || '0.0.0',
         verifiedAt: new Date(),
       }
     });
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           passed: true,
           score: 100,
           notes: 'NFT successfully minted with valid metadata',
-          inspector: user.hederaAccountId || '0.0.0',
+          inspector: user.profiles[0]?.hederaWallet || '0.0.0',
           evidence: [],
         }
       });
@@ -108,14 +108,18 @@ export async function POST(request: NextRequest) {
       nft: {
         tokenId: nft.tokenId,
         contractAddress: nft.contractAddress,
-        transactionHash: `0x${Math.random().toString(16).substr(2, 64)}`,
-        ipfsHash: nft.metadataHash,
+        tokenStandard: nft.tokenStandard as NFTStandard,
+        category: nft.category as NFTCategory,
         owner: nft.ownerAddress,
         creator: nft.creatorAddress,
         metadata: JSON.parse(nft.metadata),
         royalties: JSON.parse(nft.royalties),
+        isBurned: false,
         createdAt: nft.createdAt,
-      }
+        updatedAt: nft.updatedAt,
+      },
+      transactionHash: `0x${Math.random().toString(16).substr(2, 64)}`,
+      ipfsHash: nft.metadataHash,
     };
 
     return NextResponse.json(response);

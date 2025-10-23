@@ -1,6 +1,7 @@
 // Advanced NFT Trading Interface
 import React, { useState } from 'react';
-import { useNFTMarketplace, useWallet } from '@/hooks';
+import { useNFTMarketplace } from '@/hooks/useNFT';
+import { useWallet } from '@/hooks/useWallet';
 import { NFTListing, BuyNFTRequest } from '@/types/nft';
 
 interface NFTTradingProps {
@@ -10,7 +11,7 @@ interface NFTTradingProps {
 }
 
 export function NFTTrading({ listing, onSuccess, onClose }: NFTTradingProps) {
-  const { walletAccount, isConnected, connectWallet } = useWallet();
+  const { wallet, isConnected, connectWallet } = useWallet();
   const { buyNFT, isLoading, error } = useNFTMarketplace();
   const [step, setStep] = useState<'review' | 'payment' | 'confirm'>('review');
   const [paymentMethod, setPaymentMethod] = useState<'HBAR' | 'USD'>('HBAR');
@@ -26,7 +27,7 @@ export function NFTTrading({ listing, onSuccess, onClose }: NFTTradingProps) {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const handleBuy = async () => {
-    if (!walletAccount) {
+    if (!wallet) {
       connectWallet();
       return;
     }
@@ -72,7 +73,7 @@ export function NFTTrading({ listing, onSuccess, onClose }: NFTTradingProps) {
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">NFT:</span>
-            <span className="font-medium">{listing.nft?.metadata?.name}</span>
+            <span className="font-medium">{listing.description || 'Untitled NFT'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Price:</span>
@@ -84,7 +85,7 @@ export function NFTTrading({ listing, onSuccess, onClose }: NFTTradingProps) {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Seller:</span>
-            <span className="font-medium">{listing.sellerAddress}</span>
+            <span className="font-medium">{listing.seller}</span>
           </div>
           {insurance && (
             <div className="flex justify-between">
@@ -389,12 +390,12 @@ interface AuctionBiddingProps {
 }
 
 export function AuctionBidding({ listing, onBidSuccess, onClose }: AuctionBiddingProps) {
-  const { walletAccount, isConnected, connectWallet } = useWallet();
-  const [bidAmount, setBidAmount] = useState(listing.currentBid + 1);
+  const { wallet, isConnected, connectWallet } = useWallet();
+  const [bidAmount, setBidAmount] = useState((listing.currentBid || 0) + 1);
   const [isPlacingBid, setIsPlacingBid] = useState(false);
 
   const handlePlaceBid = async () => {
-    if (!walletAccount) {
+    if (!wallet) {
       connectWallet();
       return;
     }
@@ -477,21 +478,21 @@ export function AuctionBidding({ listing, onBidSuccess, onClose }: AuctionBiddin
                   type="number"
                   value={bidAmount}
                   onChange={(e) => setBidAmount(parseFloat(e.target.value) || 0)}
-                  min={listing.currentBid + 1}
+                  min={(listing.currentBid || 0) + 1}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 pr-12"
                 />
                 <span className="absolute right-3 top-2 text-gray-500">{listing.currency}</span>
               </div>
             </label>
             <p className="text-sm text-gray-600">
-              Minimum bid: {listing.currentBid + 1} {listing.currency}
+              Minimum bid: {(listing.currentBid || 0) + 1} {listing.currency}
             </p>
           </div>
 
           <button
             onClick={handlePlaceBid}
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-            disabled={!isConnected || isPlacingBid || bidAmount <= listing.currentBid}
+            disabled={!isConnected || isPlacingBid || bidAmount <= (listing.currentBid || 0)}
           >
             {!isConnected ? 'Connect Wallet' : isPlacingBid ? 'Placing Bid...' : 'Place Bid'}
           </button>

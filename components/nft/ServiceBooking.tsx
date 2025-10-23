@@ -1,7 +1,8 @@
 // Service Booking Platform with Time-Slot Management
 import React, { useState, useEffect } from 'react';
-import { useServiceBooking, useWallet } from '@/hooks';
-import { BaseNFT, ServiceBooking as ServiceBookingType } from '@/types/nft';
+import { useServiceBooking } from '@/hooks/useNFT';
+import { useWallet } from '@/hooks/useWallet';
+import { BaseNFT, ServiceBooking as ServiceBookingType, ServiceAttributes } from '@/types/nft';
 
 interface ServiceBookingProps {
   serviceNFT: BaseNFT;
@@ -10,7 +11,7 @@ interface ServiceBookingProps {
 }
 
 export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: ServiceBookingProps) {
-  const { walletAccount, isConnected, connectWallet } = useWallet();
+  const { wallet, isConnected, connectWallet } = useWallet();
   const { bookService, isLoading, error } = useServiceBooking();
   const [step, setStep] = useState<'calendar' | 'details' | 'confirm'>('calendar');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -22,6 +23,7 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
 
   const attributes = serviceNFT.metadata.attributes;
   const isService = attributes.type === 'SERVICE';
+  const serviceAttributes = isService ? attributes as ServiceAttributes : null;
 
   // Generate time slots for selected date
   const generateTimeSlots = (date: string) => {
@@ -46,15 +48,15 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
 
   // Calculate estimated cost
   useEffect(() => {
-    if (attributes.type === 'SERVICE' && duration > 0) {
-      const hourlyRate = attributes.pricing.basePrice;
+    if (serviceAttributes && duration > 0) {
+      const hourlyRate = serviceAttributes.pricing.basePrice;
       const totalCost = hourlyRate * duration;
       setEstimatedCost(totalCost);
     }
-  }, [duration, attributes]);
+  }, [duration, serviceAttributes]);
 
   const handleBooking = async () => {
-    if (!walletAccount || !selectedDate || !selectedTimeSlot) return;
+    if (!wallet || !selectedDate || !selectedTimeSlot) return;
 
     try {
       const startTime = new Date(`${selectedDate}T${selectedTimeSlot}`);
@@ -129,19 +131,19 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">Service Type:</span>
-            <span className="font-medium">{attributes.serviceType}</span>
+            <span className="font-medium">{serviceAttributes?.serviceType || 'Unknown'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Provider:</span>
-            <span className="font-medium">{attributes.provider.name}</span>
+            <span className="font-medium">{serviceAttributes?.provider.name || 'Unknown'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Rating:</span>
-            <span className="font-medium">{attributes.provider.rating}/5 ⭐</span>
+            <span className="font-medium">{serviceAttributes?.provider.rating || 0}/5 ⭐</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Rate:</span>
-            <span className="font-medium">{attributes.pricing.basePrice} {attributes.pricing.currency} per {attributes.pricing.unit}</span>
+            <span className="font-medium">{serviceAttributes?.pricing.basePrice || 0} {serviceAttributes?.pricing.currency || 'USD'} per {serviceAttributes?.pricing.unit || 'hour'}</span>
           </div>
         </div>
       </div>
@@ -205,7 +207,7 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">Base Rate:</span>
-            <span className="font-medium">{attributes.pricing.basePrice} {attributes.pricing.currency}</span>
+            <span className="font-medium">{serviceAttributes?.pricing.basePrice || 0} {serviceAttributes?.pricing.currency || 'USD'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Duration:</span>
@@ -213,12 +215,12 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Service Fee (5%):</span>
-            <span className="font-medium">{(estimatedCost * 0.05).toFixed(2)} {attributes.pricing.currency}</span>
+            <span className="font-medium">{(estimatedCost * 0.05).toFixed(2)} {serviceAttributes?.pricing.currency || 'USD'}</span>
           </div>
           <hr />
           <div className="flex justify-between text-lg font-semibold">
             <span>Total:</span>
-            <span>{(estimatedCost * 1.05).toFixed(2)} {attributes.pricing.currency}</span>
+            <span>{(estimatedCost * 1.05).toFixed(2)} {serviceAttributes?.pricing.currency || 'USD'}</span>
           </div>
         </div>
       </div>
@@ -240,11 +242,11 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">Service:</span>
-            <span className="font-medium">{attributes.serviceType}</span>
+            <span className="font-medium">{serviceAttributes?.serviceType || 'Unknown'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Provider:</span>
-            <span className="font-medium">{attributes.provider.name}</span>
+            <span className="font-medium">{serviceAttributes?.provider.name || 'Unknown'}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Date & Time:</span>
@@ -262,7 +264,7 @@ export function ServiceBooking({ serviceNFT, onBookingSuccess, onClose }: Servic
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Total Cost:</span>
-            <span className="font-medium">{(estimatedCost * 1.05).toFixed(2)} {attributes.pricing.currency}</span>
+            <span className="font-medium">{(estimatedCost * 1.05).toFixed(2)} {serviceAttributes?.pricing.currency || 'USD'}</span>
           </div>
         </div>
       </div>
@@ -425,12 +427,12 @@ export function ServiceProviderDashboard({ serviceNFT }: ServiceProviderDashboar
     const mockBookings: ServiceBookingType[] = [
       {
         id: '1',
-        serviceNftId: serviceNFT.tokenId,
-        clientAddress: '0.0.123456',
+        serviceTokenId: serviceNFT.tokenId,
+        client: '0.0.123456',
         startTime: new Date('2024-01-20T09:00:00'),
         endTime: new Date('2024-01-20T11:00:00'),
         amount: 100,
-        currency: 'HBAR',
+        currency: 'USD',
         status: 'BOOKED',
         location: 'Lagos, Nigeria',
         requirements: 'Need help with soil analysis',
@@ -438,17 +440,15 @@ export function ServiceProviderDashboard({ serviceNFT }: ServiceProviderDashboar
       },
       {
         id: '2',
-        serviceNftId: serviceNFT.tokenId,
-        clientAddress: '0.0.789012',
+        serviceTokenId: serviceNFT.tokenId,
+        client: '0.0.789012',
         startTime: new Date('2024-01-22T14:00:00'),
         endTime: new Date('2024-01-22T16:00:00'),
         amount: 150,
-        currency: 'HBAR',
+        currency: 'USD',
         status: 'COMPLETED',
         location: 'Abuja, Nigeria',
-        requirements: 'Crop consultation',
-        rating: 5,
-        feedback: 'Excellent service!',
+        requirements: 'Equipment maintenance',
         createdAt: new Date(),
       },
     ];
@@ -462,7 +462,7 @@ export function ServiceProviderDashboard({ serviceNFT }: ServiceProviderDashboar
           <div className="flex justify-between items-start mb-4">
             <div>
               <h3 className="font-semibold text-gray-900">Booking #{booking.id}</h3>
-              <p className="text-sm text-gray-600">Client: {booking.clientAddress}</p>
+              <p className="text-sm text-gray-600">Client: {booking.client}</p>
             </div>
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${
               booking.status === 'BOOKED' ? 'bg-blue-100 text-blue-800' :

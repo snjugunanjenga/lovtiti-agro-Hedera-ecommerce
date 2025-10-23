@@ -262,7 +262,7 @@ export class DAOService {
         case 'PROPOSAL':
           result = await this.executeGeneralProposal(proposal);
           break;
-        case 'TREASURY':
+        case 'BUDGET_REQUEST':
           if (proposal.treasuryRequest) {
             result = await this.executeTreasuryRequest(proposal.treasuryRequest);
           }

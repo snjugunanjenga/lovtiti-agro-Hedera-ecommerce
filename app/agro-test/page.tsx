@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useWallet } from '../hooks/useWallet';
+import { useWallet } from '@/hooks/useWallet';
 
 export default function AgroContractTestPage() {
   const {
@@ -211,7 +211,7 @@ export default function AgroContractTestPage() {
             <div className="space-y-4">
               <button
                 onClick={handleCreateFarmer}
-                disabled={isCreatingFarmer || isFarmer}
+                disabled={isCreatingFarmer || isFarmer === true}
                 className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 disabled:opacity-50"
               >
                 {isCreatingFarmer ? 'Creating...' : 'Create Farmer Account'}

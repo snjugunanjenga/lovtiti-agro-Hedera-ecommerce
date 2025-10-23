@@ -137,7 +137,7 @@ export default function DebugUserPage() {
               <p><strong>Email:</strong> {user.emailAddresses[0]?.emailAddress}</p>
               <p><strong>First Name:</strong> {user.firstName}</p>
               <p><strong>Last Name:</strong> {user.lastName}</p>
-              <p><strong>Role (Metadata):</strong> {user.publicMetadata?.role || 'Not set'}</p>
+              <p><strong>Role (Metadata):</strong> {String(user.publicMetadata?.role) || 'Not set'}</p>
               <p><strong>Created:</strong> {user.createdAt?.toLocaleString()}</p>
             </div>
           </CardContent>

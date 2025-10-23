@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deliveryTrackingService, DeliveryUpdate } from '../../../utils/deliveryTrackingService';
+import { deliveryTrackingService, DeliveryUpdate } from '@/utils/deliveryTrackingService';
 
 /**
  * POST /api/delivery/update

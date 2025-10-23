@@ -1,5 +1,5 @@
 // AI Service for Analytics and Price Prediction
-import { iotService, defiService, daoService } from './index';
+// import { iotService, defiService, daoService } from './index';
 
 export interface MarketTrend {
   timeframe: '1H' | '4H' | '1D' | '1W' | '1M';
@@ -554,10 +554,10 @@ export class AIService {
   // Additional helper methods would be implemented here...
   private async getSupplyChainData(nftTokenId: string): Promise<any> { return {}; }
   private async getMarketDataForNFT(nftTokenId: string): Promise<any> { return {}; }
-  private async calculateRarity(nftData: any): Promise<string> { return 'RARE'; }
+  private async calculateRarity(nftData: any): Promise<'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY'> { return 'RARE'; }
   private async calculateQualityScore(nftData: any, supplyChainData: any): Promise<number> { return 85; }
   private async calculateSustainabilityScore(nftData: any): Promise<number> { return 90; }
-  private async assessMarketDemand(nftData: any, marketData: any): Promise<string> { return 'MEDIUM'; }
+  private async assessMarketDemand(nftData: any, marketData: any): Promise<'LOW' | 'MEDIUM' | 'HIGH'> { return 'MEDIUM'; }
   private async assessSupplyChainHealth(supplyChainData: any): Promise<number> { return 95; }
   private async calculatePriceVolatility(nftTokenId: string): Promise<number> { return 15; }
   private async calculateLiquidityScore(nftTokenId: string): Promise<number> { return 80; }
