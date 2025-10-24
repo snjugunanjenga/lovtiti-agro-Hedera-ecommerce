@@ -1,5 +1,5 @@
 // Wallet Integration Service for MetaMask and Hedera
-import { Client, PrivateKey, AccountId, AccountCreateTransaction, Hbar } from "@hashgraph/sdk";
+import { Client, PrivateKey, AccountId, AccountCreateTransaction, Hbar, AccountBalanceQuery } from "@hashgraph/sdk";
 
 export interface WalletAccount {
   ethereumAddress: string;
@@ -82,7 +82,7 @@ export class MetaMaskService {
         },
       };
     } catch (error) {
-      throw new Error(`Failed to connect wallet: ${error.message}`);
+      throw new Error(`Failed to connect wallet: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
@@ -103,7 +103,7 @@ export class MetaMaskService {
 
       return signature;
     } catch (error) {
-      throw new Error(`Failed to sign message: ${error.message}`);
+      throw new Error(`Failed to sign message: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -115,7 +115,7 @@ export class MetaMaskService {
       });
     } catch (error) {
       // If network doesn't exist, add it
-      if (error.code === 4902) {
+      if ((error as any).code === 4902) {
         await this.addNetwork();
       } else {
         throw error;
@@ -178,24 +178,26 @@ export class MetaMaskService {
       localStorage.setItem(
         `hedera_account_${ethereumAddress}`,
         JSON.stringify({
-          accountId: accountId.toString(),
+          accountId: accountId?.toString() || '',
           privateKeyString: privateKey.toString(),
         })
       );
 
       return {
-        accountId: accountId.toString(),
+        accountId: accountId?.toString() || '',
         privateKey,
       };
     } catch (error) {
-      throw new Error(`Failed to create Hedera account: ${error.message}`);
+      throw new Error(`Failed to create Hedera account: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   private async getHederaBalance(accountId: string): Promise<string> {
     try {
       const client = Client.forTestnet();
-      const balance = await client.getAccountBalance(AccountId.fromString(accountId));
+      const balance = await new AccountBalanceQuery()
+        .setAccountId(AccountId.fromString(accountId))
+        .execute(client);
       return balance.hbars.toString();
     } catch (error) {
       console.error("Failed to get Hedera balance:", error);
@@ -242,16 +244,18 @@ export class HederaService {
         network,
       };
     } catch (error) {
-      throw new Error(`Failed to connect to Hedera: ${error.message}`);
+      throw new Error(`Failed to connect to Hedera: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
   public async getAccountBalance(accountId: string): Promise<string> {
     try {
-      const balance = await this.client.getAccountBalance(AccountId.fromString(accountId));
+      const balance = await new AccountBalanceQuery()
+        .setAccountId(AccountId.fromString(accountId))
+        .execute(this.client);
       return balance.hbars.toString();
     } catch (error) {
-      throw new Error(`Failed to get account balance: ${error.message}`);
+      throw new Error(`Failed to get account balance: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -270,9 +274,9 @@ export class HederaService {
       const response = await transaction.execute(connection.client);
       const receipt = await response.getReceipt(connection.client);
       
-      return receipt.transactionId.toString();
+      return response.transactionId.toString();
     } catch (error) {
-      throw new Error(`Failed to transfer HBAR: ${error.message}`);
+      throw new Error(`Failed to transfer HBAR: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
@@ -317,7 +321,7 @@ export class BridgeService {
 
       return bridgeTransaction;
     } catch (error) {
-      throw new Error(`Bridge failed: ${error.message}`);
+      throw new Error(`Bridge failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -348,7 +352,7 @@ export class BridgeService {
 
       return bridgeTransaction;
     } catch (error) {
-      throw new Error(`Bridge failed: ${error.message}`);
+      throw new Error(`Bridge failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -424,7 +428,7 @@ export class WalletManager {
       this.currentAccount = account;
       return account;
     } catch (error) {
-      throw new Error(`Failed to connect wallet: ${error.message}`);
+      throw new Error(`Failed to connect wallet: ${error instanceof Error ? error instanceof Error ? error.message : 'Unknown error' : 'Unknown error'}`);
     }
   }
 
