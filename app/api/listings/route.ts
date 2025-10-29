@@ -98,10 +98,56 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     console.error('Error fetching listings:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch listings' },
-      { status: 500 }
-    );
+    // Graceful fallback for local dev when DB is not configured
+    const message = String((error as any)?.message || '');
+    const looksLikePrismaInit =
+      message.includes('PrismaClientInitializationError') ||
+      message.includes('database string is invalid') ||
+      message.includes('P1000') ||
+      message.includes('P1001') ||
+      message.includes('Error parsing connection string');
+
+    if (process.env.NODE_ENV !== 'production' && looksLikePrismaInit) {
+      const mockListings = Array.from({ length: 12 }).map((_, idx) => ({
+        id: `mock-${idx + 1}`,
+        title: `Sample Produce ${idx + 1}`,
+        description: 'Delicious and fresh produce from local farmers',
+        productDescription: 'High-quality agricultural product suitable for export and local markets.',
+        priceCents: 1500 + idx * 100,
+        quantity: 10 + idx,
+        unit: 'kg',
+        category: ['Vegetables', 'Fruits', 'Grains'][idx % 3],
+        location: ['Lagos', 'Kano', 'Abuja'][idx % 3],
+        images: [],
+        video: null,
+        isVerified: true,
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        seller: {
+          id: `seller-mock-${idx + 1}`,
+          email: `seller${idx + 1}@mock.dev`,
+          profiles: [
+            {
+              fullName: `Farmer ${idx + 1}`,
+              country: 'NG',
+            },
+          ],
+        },
+      }));
+
+      return NextResponse.json({
+        listings: mockListings,
+        pagination: {
+          page: 1,
+          limit: mockListings.length,
+          total: mockListings.length,
+          pages: 1,
+        },
+      });
+    }
+
+    return NextResponse.json({ error: 'Failed to fetch listings' }, { status: 500 });
   }
 }
 

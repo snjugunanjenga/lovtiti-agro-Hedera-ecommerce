@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { hasValidClerkKeys } from "@/lib/clerk-config";
 import { 
   Leaf,
   ShoppingCart,
@@ -40,6 +41,128 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDashboardDropdownOpen, setIsDashboardDropdownOpen] = useState(false);
+  const clerkKeysValid = hasValidClerkKeys();
+
+  // If Clerk keys are not valid, do NOT call useUser (would throw) –
+  // render a simplified Navbar without auth-dependent UI.
+  if (!clerkKeysValid) {
+    const navigation = [
+      { name: 'Marketplace', href: '/listings/browse', public: true },
+      { name: 'Services', href: '/services', public: true },
+      { name: 'Pricing', href: '/pricing', public: true },
+      { name: 'Learn More', href: '/learn-more', public: true },
+    ];
+
+    const isActive = (href: string) => {
+      if (href === '/') {
+        return pathname === '/';
+      }
+      return pathname.startsWith(href);
+    };
+
+    return (
+      <nav className="bg-white/95 backdrop-blur-md border-b border-green-200 sticky top-0 z-50 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2 group">
+              <div className="relative">
+                <Leaf className="h-8 w-8 text-green-600 group-hover:text-green-700 transition-colors" />
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
+              <span className="text-2xl font-bold text-green-800 group-hover:text-green-900 transition-colors">
+                Lovtiti Agro Mart
+              </span>
+            </Link>
+
+            {/* Desktop Navigation (no auth state) */}
+            <div className="hidden lg:flex items-center space-x-8">
+              {navigation.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? 'text-green-600 bg-green-50 shadow-sm'
+                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              {/* Fallback auth actions */}
+              <div className="hidden md:flex items-center space-x-4">
+                <Link href="/auth/login">
+                  <Button variant="outline" className="hover:bg-green-50 hover:border-green-300 transition-all duration-200">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/auth/signup">
+                  <Button className="bg-green-600 hover:bg-green-700 transition-all duration-200 shadow-sm">
+                    Get Started
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="h-4 w-4" />
+                ) : (
+                  <Menu className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden border-t border-green-200 py-4 bg-white/95 backdrop-blur-md">
+              <div className="space-y-2">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`block px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
+                      isActive(item.href)
+                        ? 'text-green-600 bg-green-50 shadow-sm'
+                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+
+                {/* Mobile auth */}
+                <div className="mt-4 pt-4 border-t border-green-200 space-y-2">
+                  <Link href="/auth/login" className="block">
+                    <Button variant="outline" className="w-full hover:bg-green-50 hover:border-green-300 transition-all duration-200">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup" className="block">
+                    <Button className="w-full bg-green-600 hover:bg-green-700 transition-all duration-200 shadow-sm">
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+    );
+  }
+
+  // Keys are valid – safe to use Clerk hooks
   const { user } = useUser();
   const [dbRole, setDbRole] = useState<string | null>(null);
   const { totalItems } = useCart();
