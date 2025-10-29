@@ -9,8 +9,8 @@ export default function LoginPage() {
 	const [ok, setOk] = useState(false);
 
 	// Check if Clerk keys are properly configured
-	const hasValidClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-		process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== 'pk_test_placeholder_key_for_development_only';
+	const hasValidClerkKeys = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
+		process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) !== undefined
 
 	return (
 		<main className="p-8 flex flex-col items-center gap-6">

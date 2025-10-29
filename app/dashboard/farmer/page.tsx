@@ -42,6 +42,12 @@ function FarmerDashboardContent() {
   };
 
 
+  const recentListings = [
+    { id: 1, name: 'Fresh Tomatoes', price: 1000, quantity: 100, status: 'Active' },
+    { id: 2, name: 'Organic Rice', price: 800, quantity: 50, status: 'Active' },
+    { id: 3, name: 'Cocoa Beans', price: 600, quantity: 25, status: 'Active' },
+    { id: 4, name: 'Fertilizer Mix', price: 420, quantity: 100, status: 'Active' },
+  ];
 
   const recentOrders = [
     { id: 1, buyer: 'John Doe', product: 'Fresh Tomatoes', quantity: 20, total: 10000, status: 'Pending' },
@@ -282,7 +288,7 @@ function FarmerDashboardContent() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentListings.map((listing) => (
+                  {recentListings?.map((listing) => (
                     <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{listing.name}</h4>
