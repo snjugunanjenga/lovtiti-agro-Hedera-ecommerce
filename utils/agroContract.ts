@@ -1,0 +1,497 @@
+// Agro Contract Service for Lovtiti Agro Mart
+import { ethers } from 'ethers';
+import { 
+  AGRO_CONTRACT_ABI, 
+  ContractConfig, 
+  AddProductParams, 
+  BuyProductParams, 
+  UpdateStockParams, 
+  IncreasePriceParams, 
+  WithdrawBalanceParams,
+  ContractResponse,
+  FarmerInfo,
+  ProductInfo,
+  Product,
+  FarmerStruct,
+  BaseContractParams
+} from '../types/agro-contract';
+
+export class AgroContractService {
+  private config: ContractConfig;
+  private provider: ethers.Provider;
+  private contract: ethers.Contract & {
+    createFarmer(): Promise<ethers.ContractTransactionResponse>;
+    addProduct(price: bigint, amount: bigint): Promise<ethers.ContractTransactionResponse>;
+    increasePrice(price: bigint, pid: bigint): Promise<ethers.ContractTransactionResponse>;
+    updateStock(stock: bigint, pid: bigint): Promise<ethers.ContractTransactionResponse>;
+    buyproduct(pid: bigint, amount: bigint): Promise<ethers.ContractTransactionResponse>;
+    withdrawBalance(): Promise<ethers.ContractTransactionResponse>;
+    whoFarmer(user: string): Promise<[bigint[], bigint, boolean]>;
+    viewProducts(farmer: string): Promise<[bigint, string, bigint, bigint][]>;
+    products(id: bigint): Promise<[bigint, string, bigint, bigint]>;
+    farmer(address: string): Promise<[bigint[], bigint, boolean]>;
+  };
+
+  /**
+   * Helper to get contract with signer, handling both injected signer and private key cases
+   */
+  private async getContractWithSigner(params: BaseContractParams): Promise<typeof this.contract> {
+    if (params.signer) {
+      // Use provided signer (preferred for MetaMask/injected wallet)
+      return this.contract.connect(params.signer) as typeof this.contract;
+    } else if (params.privateKey) {
+      // Fallback to private key (for testing/server ops only)
+      if (!params.privateKey) throw new Error('Private key is required when signer is not provided');
+      const wallet = new ethers.Wallet(params.privateKey, this.provider);
+      return this.contract.connect(wallet) as typeof this.contract;
+    } else {
+      throw new Error('Either signer or privateKey must be provided');
+    }
+  }
+
+  constructor(config: ContractConfig) {
+    this.config = config;
+
+    const envRpc =
+      config.rpcUrl ||
+      process.env.NEXT_PUBLIC_RPC_URL ||
+      process.env.RPC_URL;
+
+    if (envRpc) {
+      this.provider = new ethers.JsonRpcProvider(envRpc);
+    } else {
+      switch (config.network) {
+        case 'mainnet':
+          this.provider = new ethers.JsonRpcProvider('https://mainnet.hashio.io/api');
+          break;
+        case 'testnet':
+          this.provider = new ethers.JsonRpcProvider('https://testnet.hashio.io/api');
+          break;
+        case 'local':
+          this.provider = new ethers.JsonRpcProvider('http://localhost:8545');
+          break;
+        default:
+          throw new Error('Unsupported network');
+      }
+    }
+
+    if (!config.address) {
+      throw new Error('Contract address is required to initialize AgroContractService');
+    }
+
+    this.contract = new ethers.Contract(
+      config.address,
+      config.abi ?? AGRO_CONTRACT_ABI,
+      this.provider
+    ) as ethers.Contract & {
+      createFarmer(): Promise<ethers.ContractTransactionResponse>;
+      addProduct(price: bigint, amount: bigint): Promise<ethers.ContractTransactionResponse>;
+      increasePrice(price: bigint, pid: bigint): Promise<ethers.ContractTransactionResponse>;
+      updateStock(stock: bigint, pid: bigint): Promise<ethers.ContractTransactionResponse>;
+      buyproduct(pid: bigint, amount: bigint): Promise<ethers.ContractTransactionResponse>;
+      withdrawBalance(): Promise<ethers.ContractTransactionResponse>;
+      whoFarmer(user: string): Promise<[bigint[], bigint, boolean]>;
+      viewProducts(farmer: string): Promise<[bigint, string, bigint, bigint][]>;
+      products(id: bigint): Promise<[bigint, string, bigint, bigint]>;
+      farmer(address: string): Promise<[bigint[], bigint, boolean]>;
+    };
+  }
+
+  /**
+   * Create a farmer account on the contract
+   * This should be called during user signup for farmers
+   */
+  async createFarmer(signer: ethers.Signer): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = this.contract.connect(signer) as typeof this.contract;
+
+      // Call the createFarmer function on the smart contract
+      const tx = await contractWithSigner.createFarmer();
+      const receipt = await tx.wait();
+      
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          farmerAddress: await signer.getAddress(),
+          transactionHash: receipt.hash,
+        }
+      };
+    } catch (error) {
+      console.error('Error creating farmer:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Add a product to the marketplace
+   */
+  async addProduct(params: AddProductParams): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = await this.getContractWithSigner(params);
+
+      const tx = await contractWithSigner.addProduct(params.price, params.amount);
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      let createdProductId: bigint | null = null;
+      const iface = this.contract.interface;
+
+      if (receipt.logs) {
+        for (const log of receipt.logs) {
+          try {
+            const parsed = iface.parseLog(log);
+            if (parsed?.name === 'productCreated' || parsed?.name === 'ProductCreated') {
+              const idArg = parsed.args?.productId ?? parsed.args?.[0];
+              if (idArg !== undefined) {
+                createdProductId =
+                  typeof idArg === 'bigint'
+                    ? idArg
+                    : BigInt(idArg.toString());
+                break;
+              }
+            }
+          } catch {
+            // ignore logs that don't belong to this contract
+          }
+        }
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          productId: createdProductId,
+          price: params.price,
+          amount: params.amount,
+          farmerAddress: params.walletAddress,
+          hederaAccountId: params.hederaAccountId
+        }
+      };
+    } catch (error) {
+      console.error('Error adding product:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Buy a product from the marketplace
+   */
+  async buyProduct(params: BuyProductParams): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = await this.getContractWithSigner(params);
+
+      const overrides = { value: params.value };
+      const tx = await (contractWithSigner.buyproduct as (
+        pid: bigint,
+        amount: bigint,
+        overrides?: ethers.Overrides
+      ) => Promise<ethers.ContractTransactionResponse>)(
+        params.productId,
+        params.amount,
+        overrides
+      );
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          productId: params.productId,
+          amount: params.amount,
+          buyerAddress: params.walletAddress,
+          value: params.value,
+          hederaAccountId: params.hederaAccountId
+        }
+      };
+    } catch (error) {
+      console.error('Error buying product:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Update product stock
+   */
+  async updateStock(params: UpdateStockParams): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = await this.getContractWithSigner(params);
+
+      const tx = await contractWithSigner.updateStock(params.stock, params.productId);
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          productId: params.productId,
+          newStock: params.stock,
+          hederaAccountId: params.hederaAccountId
+        }
+      };
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Increase product price
+   */
+  async increasePrice(params: IncreasePriceParams): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = await this.getContractWithSigner(params);
+
+      const tx = await contractWithSigner.increasePrice(params.price, params.productId);
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          productId: params.productId,
+          newPrice: params.price,
+          hederaAccountId: params.hederaAccountId
+        }
+      };
+    } catch (error) {
+      console.error('Error increasing price:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Withdraw farmer balance
+   */
+  async withdrawBalance(params: WithdrawBalanceParams): Promise<ContractResponse> {
+    try {
+      const contractWithSigner = await this.getContractWithSigner(params);
+
+      const tx = await contractWithSigner.withdrawBalance();
+      const receipt = await tx.wait();
+
+      if (!receipt) {
+        throw new Error('Transaction failed - no receipt received');
+      }
+
+      return {
+        success: true,
+        transactionHash: receipt.hash,
+        gasUsed: receipt.gasUsed,
+        data: {
+          farmerAddress: params.walletAddress,
+          withdrawnAmount: BigInt(0), // TODO: Get actual amount from event
+          hederaAccountId: params.hederaAccountId
+        }
+      };
+    } catch (error) {
+      console.error('Error withdrawing balance:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Get farmer information
+   */
+  async getFarmerInfo(farmerAddress: string): Promise<ContractResponse<FarmerInfo>> {
+    try {
+      const [products, balance, exists] = await this.contract.whoFarmer(farmerAddress);
+      
+      return {
+        success: true,
+        data: {
+          address: farmerAddress,
+          products,
+          balance,
+          exists
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Get farmer's products
+   */
+  async getFarmerProducts(farmerAddress: string): Promise<ContractResponse<ProductInfo[]>> {
+    try {
+      const products: [bigint, string, bigint, bigint][] = await this.contract.viewProducts(farmerAddress);
+      
+      const productInfos: ProductInfo[] = products.map(([price, owner, stock, id]) => ({
+        price,
+        owner,
+        stock,
+        id,
+        farmerAddress
+      }));
+
+      return {
+        success: true,
+        data: productInfos
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Get specific product information
+   */
+  async getProduct(productId: bigint): Promise<ContractResponse<ProductInfo>> {
+    try {
+      const [price, owner, stock, id] = await this.contract.products(productId);
+      
+      return {
+        success: true,
+        data: {
+          price,
+          owner,
+          stock,
+          id,
+          farmerAddress: owner
+        }
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Check if an address is a registered farmer
+   */
+  async isFarmer(address: string): Promise<ContractResponse<boolean>> {
+    try {
+      const [, , exists] = await this.contract.farmer(address);
+      
+      return {
+        success: true,
+        data: exists
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Estimate gas for a transaction
+   */
+  async estimateGas(method: string, params: any[]): Promise<ContractResponse<bigint>> {
+    try {
+      const gasEstimate = await this.contract[method].estimateGas(...params);
+      
+      return {
+        success: true,
+        data: gasEstimate
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+
+  /**
+   * Get contract events
+   */
+  async getEvents(eventName: string, fromBlock?: number, toBlock?: number): Promise<ContractResponse<any[]>> {
+    try {
+      const filter = this.contract.filters[eventName]();
+      const events = await this.contract.queryFilter(filter, fromBlock, toBlock);
+      
+      return {
+        success: true,
+        data: events
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error occurred'
+      };
+    }
+  }
+}
+
+// Factory function to create contract service instance
+export function createAgroContractService(
+  contractAddress: string,
+  network: 'mainnet' | 'testnet' | 'local' = 'testnet',
+  rpcUrl?: string
+): AgroContractService {
+  const config: ContractConfig = {
+    address: contractAddress,
+    abi: AGRO_CONTRACT_ABI,
+    network,
+    rpcUrl: rpcUrl || process.env.NEXT_PUBLIC_RPC_URL || process.env.RPC_URL
+  };
+
+  return new AgroContractService(config);
+}
+
+// Default contract configuration
+const resolveContractAddress = () =>
+  process.env.NEXT_PUBLIC_CONTRACT ||
+  process.env.NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS ||
+  '';
+
+export const DEFAULT_CONTRACT_CONFIG: ContractConfig = {
+  address: resolveContractAddress(),
+  abi: AGRO_CONTRACT_ABI,
+  network: (process.env.NEXT_PUBLIC_NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet',
+  rpcUrl: process.env.NEXT_PUBLIC_RPC_URL || process.env.RPC_URL
+};

@@ -1,0 +1,182 @@
+// Datasource
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Generator
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  role      Role      @default(BUYER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  profiles  Profile[]
+  listings  Listing[]
+  ordersAsBuyer Order[] @relation("buyer")
+}
+
+model Profile {
+  id           String      @id @default(cuid())
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String
+  type         ProfileType
+  fullName     String
+  kycStatus    KycStatus   @default(PENDING)
+  country      String      @default("")
+  address      String      @default("")
+  phone        String      @default("")
+  idNumber     String      @default("")
+  hederaWallet String      @default("")
+  metadata     Json?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@unique([userId, type], name: "userId_type")
+}
+
+model Listing {
+  id                 String    @id @default(cuid())
+  seller             User      @relation(fields: [sellerId], references: [id])
+  sellerId           String
+  title              String
+  description        String
+  productDescription String?
+  priceCents         Int
+  currency           String    @default("USD")
+  quantity           Float
+  unit               String    @default("kg")
+  category           String
+  images             String[]  @default([])
+  certifications     String[]  @default([])
+  video              String?
+  location           String?
+  harvestDate        DateTime?
+  expiryDate         DateTime?
+  isActive           Boolean   @default(true)
+  isVerified         Boolean   @default(false)
+  contractProductId  String?   @unique
+  contractTxHash     String?
+  contractPrice      Decimal?  @db.Decimal(65, 30)
+  contractStock      Int?
+  contractCreatedAt  DateTime?
+  contractMetadata   Json?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  orders             Order[]
+}
+
+model Order {
+  id                  String           @id @default(cuid())
+  buyer               User             @relation("buyer", fields: [buyerId], references: [id])
+  buyerId             String
+  listing             Listing          @relation(fields: [listingId], references: [id])
+  listingId           String
+  status              OrderStatus      @default(PENDING)
+  deliveryStatus      DeliveryStatus   @default(PENDING)
+  amountCents         Int
+  currency            String           @default("USD")
+  deliveryAddress     String?
+  deliveryDate        DateTime?
+  estimatedDelivery   DateTime?
+  actualDelivery      DateTime?
+  trackingNumber      String?
+  deliveryNotes       String?
+  deliveryProof       String[]         @default([])
+  deliveryRating      Int?
+  deliveryFeedback    String?
+  notes               String?
+  contractTxHash      String?          @unique
+  contractAmount      Decimal?         @db.Decimal(65, 30)
+  contractBuyerAddr   String?
+  contractSellerAddr  String?
+  contractPurchasedAt DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  trackingUpdates     TrackingUpdate[]
+}
+
+model TrackingUpdate {
+  id        String         @id @default(cuid())
+  order     Order          @relation(fields: [orderId], references: [id])
+  orderId   String
+  location  String
+  latitude  Float?
+  longitude Float?
+  status    DeliveryStatus
+  notes     String?
+  metadata  Json?
+  timestamp DateTime       @default(now())
+}
+
+model ContractEvent {
+  id              String    @id @default(cuid())
+  eventType       String
+  contractAddress String
+  transactionHash String
+  blockNumber     BigInt
+  logIndex        Int
+  eventData       String
+  processed       Boolean   @default(false)
+  processedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@unique([transactionHash, logIndex])
+  @@index([eventType])
+  @@index([processed])
+}
+
+enum Role {
+  FARMER
+  DISTRIBUTOR
+  TRANSPORTER
+  BUYER
+  AGROEXPERT
+  VETERINARIAN
+  ADMIN
+}
+
+enum ProfileType {
+  FARMER
+  DISTRIBUTOR
+  TRANSPORTER
+  BUYER
+  AGROEXPERT
+  VETERINARIAN
+  ADMIN
+}
+
+enum KycStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  IN_TRANSIT
+  DELIVERED
+  COMPLETED
+  DISPUTED
+  REFUNDED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED_DELIVERY
+  RETURNED
+  CANCELLED
+}
