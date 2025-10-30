@@ -56,7 +56,7 @@ export default function Navbar() {
 
   // If Clerk keys are not valid, do NOT call useUser (would throw) –
   // render a simplified Navbar without auth-dependent UI.
-  if (!isLoadedUser || !isSignedInUser || !userUser || !isMounted) {
+  if (!clerkKeysValid) {
     const navigation = [
       { name: "Marketplace", href: "/listings/browse", public: true },
       { name: "Services", href: "/services", public: true },
