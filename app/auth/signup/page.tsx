@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { SignUp } from "@clerk/nextjs";
+import { useState, useEffect } from 'react';
+import { SignUp, useUser } from "@clerk/nextjs";
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import RoleSelection from '@/components/RoleSelection';
 import { UserRole } from '@/utils/roleManager';
-import { ArrowLeft, User, Shield } from 'lucide-react';
+import { ArrowLeft, User, Shield, Loader2 } from 'lucide-react';
+import { getRoleDashboardPath } from '@/utils/dashboardRoutes';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const { user, isLoaded, isSignedIn } = useUser();
   const [step, setStep] = useState<'role' | 'signup'>('role');
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +20,42 @@ export default function SignupPage() {
   // Check if Clerk keys are properly configured
   const hasValidClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
     process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== 'pk_test_placeholder_key_for_development_only';
+
+  // Redirect if user is already signed in
+  useEffect(() => {
+    if (isLoaded && isSignedIn && user) {
+      // Get user's role and redirect to their dashboard
+      const userRole = user.publicMetadata?.role as string | undefined;
+      const dashboardPath = getRoleDashboardPath(userRole || 'BUYER');
+
+      console.log('User already signed in, redirecting to:', dashboardPath);
+      router.push(dashboardPath);
+    }
+  }, [isLoaded, isSignedIn, user, router]);
+
+  // Show loading while checking authentication
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is signed in, show loading while redirecting
+  if (isSignedIn) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-blue-50">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+          <p className="text-gray-600">You're already signed in. Redirecting to your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleRoleSelect = (role: UserRole) => {
     setSelectedRole(role);
@@ -92,9 +132,11 @@ export default function SignupPage() {
             
             <div className="space-y-4">
               {hasValidClerkKeys ? (
-                <SignUp 
+                <SignUp
                   routing="hash"
                   afterSignUpUrl={`/auth/signup/success?role=${selectedRole ?? 'buyer'}`}
+                  signInUrl="/auth/login"
+                  forceRedirectUrl={`/auth/signup/success?role=${selectedRole ?? 'buyer'}`}
                   appearance={{
                     elements: {
                       formButtonPrimary: "bg-green-600 hover:bg-green-700 text-white",

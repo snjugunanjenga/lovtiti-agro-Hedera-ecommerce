@@ -1,21 +1,76 @@
 'use client';
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, useUser } from "@clerk/nextjs";
 import { isOfflineWalletPresent, loginOfflineWithPrivateKey } from "@/utils/hedera";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { getRoleDashboardPath } from "@/utils/dashboardRoutes";
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
+	const searchParams = useSearchParams();
+	const router = useRouter();
+	const { user, isLoaded, isSignedIn } = useUser();
 	const [privKey, setPrivKey] = useState("");
 	const [password, setPassword] = useState("");
 	const [ok, setOk] = useState(false);
+
+	// Get redirect URL from query params
+	const redirectUrl = searchParams.get('redirect') || null;
 
 	// Check if Clerk keys are properly configured
 	const hasValidClerkKeys = (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
 		process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) !== undefined
 
+	// Redirect if user is already signed in
+	useEffect(() => {
+		if (isLoaded && isSignedIn && user) {
+			// If there's a redirect URL, use that
+			if (redirectUrl) {
+				router.push(redirectUrl);
+				return;
+			}
+
+			// Otherwise, get user's role and redirect to their dashboard
+			const userRole = user.publicMetadata?.role as string | undefined;
+			const dashboardPath = getRoleDashboardPath(userRole || 'BUYER');
+
+			console.log('User already signed in, redirecting to:', dashboardPath);
+			router.push(dashboardPath);
+		}
+	}, [isLoaded, isSignedIn, user, redirectUrl, router]);
+
+	// Show loading while checking authentication
+	if (!isLoaded) {
+		return (
+			<main className="min-h-screen flex items-center justify-center">
+				<div className="text-center">
+					<Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+					<p className="text-gray-600">Checking authentication...</p>
+				</div>
+			</main>
+		);
+	}
+
+	// If user is signed in, show loading while redirecting
+	if (isSignedIn) {
+		return (
+			<main className="min-h-screen flex items-center justify-center">
+				<div className="text-center">
+					<Loader2 className="h-8 w-8 animate-spin text-green-600 mx-auto mb-4" />
+					<p className="text-gray-600">You're already signed in. Redirecting...</p>
+				</div>
+			</main>
+		);
+	}
+
 	return (
 		<main className="p-8 flex flex-col items-center gap-6">
 			{hasValidClerkKeys ? (
-				<SignIn routing="hash" />
+				<SignIn
+					routing="hash"
+					afterSignInUrl={redirectUrl}
+					signUpUrl="/auth/signup"
+				/>
 			) : (
 				<div className="w-full max-w-md border rounded p-6 text-center">
 					<h2 className="text-xl font-semibold mb-4">Authentication Setup Required</h2>

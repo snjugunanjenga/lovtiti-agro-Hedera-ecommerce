@@ -134,7 +134,7 @@ const getAgroContractService = (): AgroContractService | null => {
 
 const ensureHederaNetwork = async () => {
   if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('MetaMask is not installed.');
+    throw new Error('No Ethereum wallet detected. Please install MetaMask or another compatible wallet.');
   }
 
   try {
@@ -143,11 +143,19 @@ const ensureHederaNetwork = async () => {
       params: [{ chainId: HEDERA_CHAIN_ID_HEX }],
     });
   } catch (error: any) {
+    // Error code 4902 means the chain hasn't been added yet
     if (error?.code === 4902) {
-      await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [HEDERA_TESTNET_PARAMS],
-      });
+      try {
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [HEDERA_TESTNET_PARAMS],
+        });
+      } catch (addError) {
+        throw new Error('Failed to add Hedera Testnet to your wallet. Please add it manually.');
+      }
+    } else if (error?.code === 4001) {
+      // User rejected the request
+      throw new Error('You rejected the network switch request. Please switch to Hedera Testnet manually.');
     } else {
       throw error;
     }
@@ -418,8 +426,13 @@ export const useWallet = (): UseWalletResult => {
       return null;
     }
 
-    if (!window.ethereum) {
-      setError('MetaMask is not installed. Please install it to continue.');
+    // Check if MetaMask or any Ethereum provider is available
+    const hasEthereumProvider = typeof window.ethereum !== 'undefined';
+
+    if (!hasEthereumProvider) {
+      const errorMsg = 'No wallet detected. Please install MetaMask or another Ethereum-compatible wallet to continue.';
+      setError(errorMsg);
+      console.error(errorMsg);
       return null;
     }
 
