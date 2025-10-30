@@ -32,13 +32,14 @@ export default function SignupPage() {
   };
 
   const handleSignUpSuccess = async () => {
+    console.log('🎉 Clerk signup success triggered');
     if (selectedRole) {
       try {
         console.log('🎯 User signup successful, assigning role:', selectedRole);
-        
+
         // Wait a moment for Clerk to fully initialize the user
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        console.log('⌛ Sending request to /api/auth/assign-role...');
         // Save the role to the user's metadata and database
         const response = await fetch('/api/auth/assign-role', {
           method: 'POST',
@@ -47,23 +48,23 @@ export default function SignupPage() {
           },
           body: JSON.stringify({ role: selectedRole }),
         });
-
+        console.log('📬 assign-role response status:', response.status);
         if (response.ok) {
           const data = await response.json();
           console.log('✅ Role assigned successfully:', data);
-          
+
           // Wait a moment for the role to be processed
           await new Promise(resolve => setTimeout(resolve, 1000));
-          
+
           // Sync user to database
           const syncResponse = await fetch('/api/auth/sync-user', {
             method: 'POST',
           });
-          
+          console.log('📬 sync-user response status:', syncResponse.status);
           if (syncResponse.ok) {
-            console.log('✅ User synced to database');
+            console.log('User synced to database');
           }
-          
+
           // Redirect to the appropriate dashboard based on role
           const dashboardPath = selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole.toLowerCase()}`;
           window.location.href = dashboardPath;
@@ -97,7 +98,7 @@ export default function SignupPage() {
               Connect with Africa's agricultural ecosystem
             </p>
           </div>
-          
+
           <RoleSelection
             selectedRole={selectedRole}
             onRoleSelect={handleRoleSelect}
@@ -137,10 +138,10 @@ export default function SignupPage() {
                 Change Role
               </Button>
             </div>
-            
+
             <div className="space-y-4">
               {hasValidClerkKeys ? (
-                <SignUp 
+                <SignUp
                   routing="hash"
                   afterSignUpUrl={selectedRole === 'VETERINARIAN' ? '/dashboard/agro-vet' : `/dashboard/${selectedRole?.toLowerCase() || 'farmer'}`}
                   appearance={{
