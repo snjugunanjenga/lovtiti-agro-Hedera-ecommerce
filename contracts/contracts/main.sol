@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract agro {
+contract agro is Ownable {
+
+     constructor() Ownable(msg.sender) {}
     // storage
     struct product {
         uint price;
@@ -65,6 +69,12 @@ contract agro {
         farmer[msg.sender] = farmerstruct(new uint[](0), 0, true);
         emit farmerJoined(msg.sender);
     }
+
+    function registerFarmer(address farmerAddress) public onlyOwner nonReentrant {
+    require(farmer[farmerAddress].exists == false, "farmer already exists");
+    farmer[farmerAddress] = farmerstruct(new uint[](0), 0, true);
+    emit farmerJoined(farmerAddress);
+}
     function buyproduct(uint pid, uint amount) public payable returns (uint) {
         // Implement the logic for buying a product here
         require(amount > 0, "stock must be > 0");
