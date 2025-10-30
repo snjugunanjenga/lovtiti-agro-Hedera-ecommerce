@@ -2,12 +2,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Leaf, 
-  Globe, 
-  Shield, 
-  Users, 
-  Zap, 
+import {
+  Leaf,
+  Globe,
+  Shield,
+  Users,
+  Zap,
   TrendingUp,
   ArrowRight,
   CheckCircle,
@@ -80,7 +80,7 @@ export default function LearnMorePage() {
   const stats = [
     { number: '10,000+', label: 'Active Farmers', icon: Leaf },
     { number: '50,000+', label: 'Products Listed', icon: BarChart3 },
-    { number: '₦500M+', label: 'Transaction Volume', icon: TrendingUp },
+    { number: 'ℏ500M+', label: 'Transaction Volume', icon: TrendingUp },
     { number: '99.9%', label: 'Uptime Guarantee', icon: Shield }
   ];
 
@@ -95,7 +95,7 @@ export default function LearnMorePage() {
               <span className="text-green-600 block">Blockchain Technology</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Lovtiti Agro Mart is revolutionizing agricultural trade by connecting African farmers 
+              Lovtiti Agro Mart is revolutionizing agricultural trade by connecting African farmers
               with global buyers through a secure, transparent, and efficient marketplace.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -143,11 +143,11 @@ export default function LearnMorePage() {
               Why Choose Lovtiti Agro Mart?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Our platform combines cutting-edge technology with agricultural expertise 
+              Our platform combines cutting-edge technology with agricultural expertise
               to create the future of farming commerce.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon;
@@ -180,7 +180,7 @@ export default function LearnMorePage() {
               Our platform creates value for all participants in the agricultural ecosystem.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {benefits.map((benefit, index) => {
               const Icon = benefit.icon;
@@ -248,7 +248,7 @@ export default function LearnMorePage() {
               Simple steps to start trading on our platform
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-green-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">

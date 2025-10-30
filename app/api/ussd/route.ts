@@ -81,55 +81,55 @@ Enter your order number to track delivery status.`;
       case 2:
         const category = input[0];
         const subChoice = input[1];
-        
+
         if (category === '1') {
           // Browse Products
           switch (subChoice) {
             case '1':
               response = `CON Vegetables Available
-1. Tomatoes - ₦500/kg
-2. Onions - ₦300/kg
-3. Carrots - ₦400/kg
+1. Tomatoes - ℏ500/kg
+2. Onions - ℏ300/kg
+3. Carrots - ℏ400/kg
 4. Order Now
 0. Back`;
               break;
             case '2':
               response = `CON Fruits Available
-1. Mangoes - ₦800/kg
-2. Bananas - ₦200/kg
-3. Oranges - ₦350/kg
+1. Mangoes - ℏ800/kg
+2. Bananas - ℏ200/kg
+3. Oranges - ℏ350/kg
 4. Order Now
 0. Back`;
               break;
             case '3':
               response = `CON Grains Available
-1. Rice - ₦800/kg
-2. Maize - ₦600/kg
-3. Wheat - ₦700/kg
+1. Rice - ℏ800/kg
+2. Maize - ℏ600/kg
+3. Wheat - ℏ700/kg
 4. Order Now
 0. Back`;
               break;
             case '4':
               response = `CON Livestock Available
-1. Cattle - ₦150,000
-2. Goats - ₦25,000
-3. Poultry - ₦5,000
+1. Cattle - ℏ150,000
+2. Goats - ℏ25,000
+3. Poultry - ℏ5,000
 4. Order Now
 0. Back`;
               break;
             case '5':
               response = `CON Seeds Available
-1. Tomato Seeds - ₦2,500
-2. Rice Seeds - ₦3,000
-3. Maize Seeds - ₦2,000
+1. Tomato Seeds - ℏ2,500
+2. Rice Seeds - ℏ3,000
+3. Maize Seeds - ℏ2,000
 4. Order Now
 0. Back`;
               break;
             case '6':
               response = `CON Equipment Available
-1. Tractor - ₦50,000/day
-2. Irrigation - ₦30,000/day
-3. Harvesting - ₦75,000/day
+1. Tractor - ℏ50,000/day
+2. Irrigation - ℏ30,000/day
+3. Harvesting - ℏ75,000/day
 4. Lease Now
 0. Back`;
               break;
@@ -317,7 +317,7 @@ Status: Active
   } catch (error) {
     console.error('USSD processing error:', error);
     return NextResponse.json(
-      { 
+      {
         response: 'END Sorry, there was an error processing your request. Please try again later.',
         error: 'USSD processing failed'
       },

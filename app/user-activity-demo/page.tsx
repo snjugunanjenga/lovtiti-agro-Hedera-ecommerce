@@ -15,13 +15,13 @@ export default function UserActivityDemoPage() {
     const userId = 'user-' + Date.now();
     const userRole = 'FARMER';
     const userEmail = 'farmer@example.com';
-    
+
     console.log('🆕 USER REGISTRATION EVENT:');
     console.log('User ID:', userId);
     console.log('Role:', userRole);
     console.log('Email:', userEmail);
     console.log('Timestamp:', new Date().toISOString());
-    
+
     // Log registration activity
     logUserLogin(userId, userRole, userEmail, {
       registrationMethod: 'clerk',
@@ -44,7 +44,7 @@ export default function UserActivityDemoPage() {
     const userId = 'user-' + Date.now();
     const userRole = 'BUYER';
     const userEmail = 'buyer@example.com';
-    
+
     console.log('🛒 CART INTERACTION EVENT:');
     console.log('User ID:', userId);
     console.log('Role:', userRole);
@@ -52,10 +52,10 @@ export default function UserActivityDemoPage() {
     console.log('Action: Add to Cart');
     console.log('Product: Fresh Organic Tomatoes');
     console.log('Quantity: 5 kg');
-    console.log('Price: ₦2,500');
+    console.log('Price: ℏ2,500');
     console.log('Seller: John Farmer');
     console.log('Timestamp:', new Date().toISOString());
-    
+
     logCartActivity(userId, userRole, userEmail, 'CART_ADD', {
       productId: 'prod-tomatoes-001',
       listingId: 'listing-tomatoes-001',
@@ -78,7 +78,7 @@ export default function UserActivityDemoPage() {
     const userId = 'user-' + Date.now();
     const userRole = 'FARMER';
     const userEmail = 'farmer@example.com';
-    
+
     console.log('📝 LISTING CREATION EVENT:');
     console.log('User ID:', userId);
     console.log('Role:', userRole);
@@ -86,11 +86,11 @@ export default function UserActivityDemoPage() {
     console.log('Action: Create Listing');
     console.log('Product: Organic Maize');
     console.log('Category: Grains');
-    console.log('Price: ₦1,800/kg');
+    console.log('Price: ℏ1,800/kg');
     console.log('Quantity: 100 kg');
     console.log('Location: Kano, Nigeria');
     console.log('Timestamp:', new Date().toISOString());
-    
+
     logListingActivity(userId, userRole, userEmail, 'LISTING_CREATE', {
       listingId: 'listing-maize-001',
       productName: 'Organic Maize',
@@ -112,7 +112,7 @@ export default function UserActivityDemoPage() {
     const userId = 'user-' + Date.now();
     const userRole = 'DISTRIBUTOR';
     const userEmail = 'distributor@example.com';
-    
+
     console.log('📊 DASHBOARD ACCESS EVENT:');
     console.log('User ID:', userId);
     console.log('Role:', userRole);
@@ -120,7 +120,7 @@ export default function UserActivityDemoPage() {
     console.log('Dashboard: Distributor Dashboard');
     console.log('Section: Inventory Management');
     console.log('Timestamp:', new Date().toISOString());
-    
+
     logDashboardAccess(userId, userRole, userEmail, 'Distributor Dashboard', {
       section: 'inventory',
       timestamp: new Date().toISOString()
@@ -134,7 +134,7 @@ export default function UserActivityDemoPage() {
     const userId = 'admin-' + Date.now();
     const userRole = 'ADMIN';
     const userEmail = 'admin@lovittiagro.com';
-    
+
     console.log('🔧 ADMIN ACTION EVENT:');
     console.log('User ID:', userId);
     console.log('Role:', userRole);
@@ -143,7 +143,7 @@ export default function UserActivityDemoPage() {
     console.log('Target User: farmer@example.com');
     console.log('Status: Approved');
     console.log('Timestamp:', new Date().toISOString());
-    
+
     userActivityLogger.logActivity({
       userId,
       userRole,
@@ -166,7 +166,7 @@ export default function UserActivityDemoPage() {
     const recentActivities = userActivityLogger.getRecentActivities(10);
     const activityStats = userActivityLogger.getActivityStats();
     const sessionStats = authLogger.getSessionStats();
-    
+
     setActivities(recentActivities);
     setStats({
       activity: activityStats,
@@ -253,7 +253,7 @@ export default function UserActivityDemoPage() {
           <CardHeader>
             <CardTitle>Simulate User Interactions</CardTitle>
             <CardDescription>
-              Click the buttons below to simulate different user activities. 
+              Click the buttons below to simulate different user activities.
               Check the browser console (F12) to see detailed logging output.
             </CardDescription>
           </CardHeader>
@@ -305,7 +305,7 @@ export default function UserActivityDemoPage() {
           <CardHeader>
             <CardTitle>Recent Activities (In-Memory Cache)</CardTitle>
             <CardDescription>
-              These are the activities stored in the application's memory cache. 
+              These are the activities stored in the application's memory cache.
               In a production environment, these would be saved to the database.
             </CardDescription>
           </CardHeader>

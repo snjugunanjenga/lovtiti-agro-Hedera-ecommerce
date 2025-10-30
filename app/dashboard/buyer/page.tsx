@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 // import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  ShoppingCart, 
-  Package, 
-  DollarSign, 
-  TrendingUp, 
-  Heart, 
+import {
+  ShoppingCart,
+  Package,
+  DollarSign,
+  TrendingUp,
+  Heart,
   Search,
   Star,
   MapPin,
@@ -23,7 +23,7 @@ import {
 
 function BuyerDashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Mock data
   const stats = {
     totalOrders: 15,
@@ -33,22 +33,22 @@ function BuyerDashboardContent() {
   };
 
   const recentOrders = [
-    { 
-      id: 1, 
-      farmer: 'Sarah Okafor', 
-      product: 'Fresh Tomatoes', 
-      quantity: 20, 
-      total: 10000, 
+    {
+      id: 1,
+      farmer: 'Sarah Okafor',
+      product: 'Fresh Tomatoes',
+      quantity: 20,
+      total: 10000,
       status: 'Delivered',
       date: '2024-01-15',
       rating: 5
     },
-    { 
-      id: 2, 
-      farmer: 'John Mwangi', 
-      product: 'Organic Rice', 
-      quantity: 10, 
-      total: 8000, 
+    {
+      id: 2,
+      farmer: 'John Mwangi',
+      product: 'Organic Rice',
+      quantity: 10,
+      total: 8000,
       status: 'Shipped',
       date: '2024-01-14',
       rating: null
@@ -100,19 +100,19 @@ function BuyerDashboardContent() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <DollarSign className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Spent</p>
-                  <p className="text-2xl font-bold text-gray-900">₦{stats.totalSpent.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-gray-900">ℏ{stats.totalSpent.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -124,7 +124,7 @@ function BuyerDashboardContent() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -162,11 +162,10 @@ function BuyerDashboardContent() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
-                      activeTab === tab.id
+                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${activeTab === tab.id
                         ? 'border-blue-500 text-blue-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{tab.label}</span>
@@ -199,7 +198,7 @@ function BuyerDashboardContent() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">₦{order.total.toLocaleString()}</p>
+                        <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
                         <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                           {order.status}
                         </span>
@@ -262,7 +261,7 @@ function BuyerDashboardContent() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">₦{order.total.toLocaleString()}</p>
+                      <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
                       <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
                         {order.status}
                       </span>
@@ -340,7 +339,7 @@ export default function BuyerDashboard() {
     //   dashboardName="Buyer Dashboard"
     //   dashboardDescription="Browse products, manage orders, and track purchases"
     // >
-      <BuyerDashboardContent />
+    <BuyerDashboardContent />
     // </DashboardGuard>
   );
 }

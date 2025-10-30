@@ -1,121 +1,87 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
-import { PrismaClient, Role } from '@prisma/client';
+import { clerkClient } from '@clerk/nextjs/server';
+import prisma from '@/lib/prisma';
 import { z } from 'zod';
+import { getRoleDisplayName, getRolePermissions, UserRole } from '@/utils/roleManager';
 
-const prisma = new PrismaClient();
-
-// Valid roles enum
-const validRoles = ['BUYER', 'FARMER', 'DISTRIBUTOR', 'TRANSPORTER', 'AGROEXPERT', 'ADMIN'] as const;
-
-// Function to validate and normalize role
-function validateRole(role: string): Role {
-  if (validRoles.includes(role as any)) {
-    return role as Role;
-  }
-  // Default to BUYER if role is invalid
-  console.warn(`Invalid role '${role}' provided, defaulting to BUYER`);
-  return 'BUYER' as Role;
-}
+const syncUserSchema = z.object({
+  userId: z.string().min(1, 'Missing Clerk user ID'),
+});
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const body = await req.json();
+    const validation = syncUserSchema.safeParse(body);
+
+    if (!validation.success) {
+      return NextResponse.json({
+        success: false,
+        message: 'Invalid request data',
+        errors: validation.error.errors.map(err => ({
+          field: err.path.join('.'),
+          message: err.message,
+        })),
+      }, { status: 400 });
     }
 
-    console.log('🔄 Syncing user to database:', userId);
+    const { userId } = validation.data;
 
-    // Get user from Clerk
-    const clerkUser = await clerkClient.users.getUser(userId);
-    
-    if (!clerkUser) {
-      return NextResponse.json({ error: 'User not found in Clerk' }, { status: 404 });
-    }
+    console.log(`[SYNC-USER] Syncing user: ${userId}`);
 
-    // Extract user data
-    const email = clerkUser.emailAddresses[0]?.emailAddress || '';
-    const roleString = (clerkUser.publicMetadata?.role as string) || 'BUYER';
-    const validatedRole = validateRole(roleString);
-
-    console.log('📋 User data:', { userId, email, role: validatedRole });
-
-    // Create or update user in database
-    const user = await prisma.user.upsert({
+    // Get user from database
+    const user = await prisma.user.findUnique({
       where: { id: userId },
-      update: {
-        email,
-        role: validatedRole,
-        updatedAt: new Date(),
-      },
-      create: {
-        id: userId,
-        email,
-        role: validatedRole,
-      },
+      include: { profiles: true }
     });
 
-    console.log('✅ User synced to database:', user);
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        message: 'User not found in database',
+      }, { status: 404 });
+    }
+
+    // Sync role metadata to Clerk
+    try {
+      const currentUser = await clerkClient.users.getUser(userId);
+      const currentMetadata = currentUser.publicMetadata || {};
+
+      await clerkClient.users.updateUserMetadata(userId, {
+        publicMetadata: {
+          ...currentMetadata,
+          role: user.role,
+          synced: true,
+          syncedAt: new Date().toISOString(),
+        },
+      });
+
+      console.log(`[SYNC-USER] ✅ Successfully synced role ${user.role} to Clerk for user ${userId}`);
+    } catch (clerkError) {
+      console.warn('[SYNC-USER] ⚠️ Failed to sync to Clerk:', clerkError);
+      // Don't fail the request if Clerk sync fails
+    }
+
+    const roleInfo = {
+      role: user.role,
+      displayName: getRoleDisplayName(user.role as UserRole),
+      permissions: getRolePermissions(user.role as UserRole),
+    };
 
     return NextResponse.json({
       success: true,
       message: 'User synced successfully',
-      user,
+      data: {
+        user,
+        profiles: user.profiles,
+        roleInfo,
+      },
     });
-
   } catch (error) {
-    console.error('❌ Error syncing user:', error);
-    
+    console.error('[SYNC-USER] Error:', error);
     return NextResponse.json({
       success: false,
       message: 'Failed to sync user',
       error: error instanceof Error ? error.message : 'Unknown error',
     }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
   }
 }
-
-export async function GET() {
-  try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    // Get user from database
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      return NextResponse.json({ error: 'User not found in database' }, { status: 404 });
-    }
-
-    return NextResponse.json({
-      success: true,
-      user,
-    });
-
-  } catch (error) {
-    console.error('❌ Error fetching user:', error);
-    
-    return NextResponse.json({
-      success: false,
-      message: 'Failed to fetch user',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-
-
-
-
-
-

@@ -4,12 +4,12 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  MapPin, 
-  Clock, 
-  Package, 
-  Truck, 
-  CheckCircle, 
+import {
+  MapPin,
+  Clock,
+  Package,
+  Truck,
+  CheckCircle,
   AlertCircle,
   RefreshCw,
   Share,
@@ -223,7 +223,7 @@ function TrackingContent({ orderId }: { orderId: string }) {
                   <h4 className="font-medium text-gray-900">{order.product}</h4>
                   <p className="text-sm text-gray-600">Quantity: {order.quantity} units</p>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Farmer:</span>
@@ -239,7 +239,7 @@ function TrackingContent({ orderId }: { orderId: string }) {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">Total Value:</span>
-                    <span className="text-sm font-medium">₦{order.totalValue.toLocaleString()}</span>
+                    <span className="text-sm font-medium">ℏ{order.totalValue.toLocaleString()}</span>
                   </div>
                 </div>
 

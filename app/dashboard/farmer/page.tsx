@@ -6,13 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 // import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  Leaf, 
-  Plus, 
-  Package, 
-  DollarSign, 
-  TrendingUp, 
-  Users, 
+import {
+  Leaf,
+  Plus,
+  Package,
+  DollarSign,
+  TrendingUp,
+  Users,
   ShoppingCart,
   BarChart3,
   Settings,
@@ -32,7 +32,7 @@ import {
 
 function FarmerDashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
-  
+
   // Mock data - in real app, this would come from API
   const stats = {
     totalListings: 12,
@@ -126,7 +126,7 @@ function FarmerDashboardContent() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -138,19 +138,19 @@ function FarmerDashboardContent() {
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
                 <DollarSign className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">₦{stats.totalRevenue.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-gray-900">ℏ{stats.totalRevenue.toLocaleString()}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center">
@@ -174,11 +174,10 @@ function FarmerDashboardContent() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${
-                      activeTab === tab.id
+                    className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${activeTab === tab.id
                         ? 'border-green-500 text-green-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
+                      }`}
                   >
                     <Icon className="h-4 w-4" />
                     <span>{tab.label}</span>
@@ -204,14 +203,13 @@ function FarmerDashboardContent() {
                     <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{listing.name}</h4>
-                        <p className="text-sm text-gray-600">₦{listing.price} per unit • {listing.quantity} units</p>
+                        <p className="text-sm text-gray-600">ℏ{listing.price} per unit • {listing.quantity} units</p>
                       </div>
                       <div className="text-right">
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          listing.status === 'Active' 
-                            ? 'bg-green-100 text-green-800' 
+                        <span className={`px-2 py-1 text-xs rounded-full ${listing.status === 'Active'
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
-                        }`}>
+                          }`}>
                           {listing.status}
                         </span>
                         <p className="text-sm text-gray-500 mt-1">{listing.views} views</p>
@@ -240,14 +238,13 @@ function FarmerDashboardContent() {
                         <p className="text-sm text-gray-600">{order.product} • {order.quantity} units</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">₦{order.total.toLocaleString()}</p>
-                        <span className={`px-2 py-1 text-xs rounded-full ${
-                          order.status === 'Delivered' 
+                        <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
+                        <span className={`px-2 py-1 text-xs rounded-full ${order.status === 'Delivered'
                             ? 'bg-green-100 text-green-800'
                             : order.status === 'Shipped'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {order.status}
                         </span>
                       </div>
@@ -279,7 +276,7 @@ function FarmerDashboardContent() {
                     <Input id="productName" placeholder="Enter product name" />
                   </div>
                   <div>
-                    <Label htmlFor="price">Price per Unit (₦)</Label>
+                    <Label htmlFor="price">Price per Unit (ℏ)</Label>
                     <Input id="price" type="number" placeholder="Enter price" />
                   </div>
                   <div>
@@ -321,7 +318,7 @@ function FarmerDashboardContent() {
                     <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex-1">
                         <h4 className="font-medium">{listing.name}</h4>
-                        <p className="text-sm text-gray-600">₦{listing.price} per unit • {listing.quantity} units available</p>
+                        <p className="text-sm text-gray-600">ℏ{listing.price} per unit • {listing.quantity} units available</p>
                         <p className="text-sm text-gray-500">{listing.views} views</p>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -354,14 +351,13 @@ function FarmerDashboardContent() {
                       <p className="text-sm text-gray-600">Product: {order.product} • {order.quantity} units</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">₦{order.total.toLocaleString()}</p>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        order.status === 'Delivered' 
+                      <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
+                      <span className={`px-2 py-1 text-xs rounded-full ${order.status === 'Delivered'
                           ? 'bg-green-100 text-green-800'
                           : order.status === 'Shipped'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {order.status}
                       </span>
                     </div>
@@ -388,7 +384,7 @@ function FarmerDashboardContent() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle>Top Products</CardTitle>
@@ -398,15 +394,15 @@ function FarmerDashboardContent() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Fresh Tomatoes</span>
-                    <span className="font-medium">₦45,000</span>
+                    <span className="font-medium">ℏ45,000</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Organic Rice</span>
-                    <span className="font-medium">₦32,000</span>
+                    <span className="font-medium">ℏ32,000</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Cocoa Beans</span>
-                    <span className="font-medium">₦28,000</span>
+                    <span className="font-medium">ℏ28,000</span>
                   </div>
                 </div>
               </CardContent>
@@ -454,7 +450,7 @@ function FarmerDashboardContent() {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-green-600">₦{product.price.toLocaleString()}</span>
+                        <span className="text-2xl font-bold text-green-600">ℏ{product.price.toLocaleString()}</span>
                         <div className="flex items-center space-x-1 text-gray-500">
                           <MapPin className="w-4 h-4" />
                           <span className="text-sm">{product.location}</span>
@@ -512,7 +508,7 @@ function FarmerDashboardContent() {
                   <CardContent>
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-2xl font-bold text-green-600">₦{equipment.price.toLocaleString()}</span>
+                        <span className="text-2xl font-bold text-green-600">ℏ{equipment.price.toLocaleString()}</span>
                         <div className="flex items-center space-x-1 text-gray-500">
                           <MapPin className="w-4 h-4" />
                           <span className="text-sm">{equipment.location}</span>
@@ -607,7 +603,7 @@ export default function FarmerDashboard() {
     //   dashboardName="Farmer Dashboard"
     //   dashboardDescription="Manage your products, orders, and farming operations"
     // >
-      <FarmerDashboardContent />
+    <FarmerDashboardContent />
     // </DashboardGuard>
   );
 }

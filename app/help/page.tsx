@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Search, 
-  HelpCircle, 
-  BookOpen, 
+import {
+  Search,
+  HelpCircle,
+  BookOpen,
   MessageCircle,
   ChevronDown,
   ChevronRight,
@@ -53,7 +53,7 @@ export default function HelpPage() {
         },
         {
           question: 'What are the listing fees?',
-          answer: 'We offer a free starter plan with up to 10 listings. Pro plans start at ₦2,500/month for unlimited listings and premium features.'
+          answer: 'We offer a free starter plan with up to 10 listings. Pro plans start at ℏ2,500/month for unlimited listings and premium features.'
         },
         {
           question: 'How do I receive payments?',
@@ -171,7 +171,7 @@ export default function HelpPage() {
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Find answers to common questions and get the support you need.
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto relative">
               <Search className="h-5 w-5 absolute left-3 top-3 text-gray-400" />
@@ -201,8 +201,8 @@ export default function HelpPage() {
                 <ul className="space-y-2">
                   {popularArticles.map((article, index) => (
                     <li key={index}>
-                      <a 
-                        href="#" 
+                      <a
+                        href="#"
                         className="text-sm text-gray-600 hover:text-green-600 hover:underline"
                       >
                         {article}
@@ -260,7 +260,7 @@ export default function HelpPage() {
               {(searchQuery ? filteredSections : faqSections).map((section) => {
                 const Icon = section.icon;
                 const isExpanded = expandedSection === section.id;
-                
+
                 return (
                   <Card key={section.id}>
                     <CardHeader>
@@ -279,7 +279,7 @@ export default function HelpPage() {
                         )}
                       </button>
                     </CardHeader>
-                    
+
                     {isExpanded && (
                       <CardContent>
                         <div className="space-y-4">

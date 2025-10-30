@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Search, 
-  Filter, 
-  MapPin, 
-  Star, 
+import {
+  Search,
+  Filter,
+  MapPin,
+  Star,
   Leaf,
   Package,
   Calendar,
@@ -25,7 +25,7 @@ const mockListings = [
     id: '1',
     title: 'Fresh Organic Tomatoes',
     description: 'Premium organic tomatoes from our certified farm',
-    priceCents: 50000, // ₦500
+    priceCents: 50000, // ℏ500
     quantity: 100,
     unit: 'kg',
     category: 'Vegetables',
@@ -39,7 +39,7 @@ const mockListings = [
     id: '2',
     title: 'Premium Rice',
     description: 'High-quality rice grains, perfect for cooking',
-    priceCents: 80000, // ₦800
+    priceCents: 80000, // ℏ800
     quantity: 50,
     unit: 'kg',
     category: 'Grains',
@@ -53,7 +53,7 @@ const mockListings = [
     id: '3',
     title: 'Fresh Cocoa Beans',
     description: 'Premium cocoa beans for chocolate production',
-    priceCents: 120000, // ₦1200
+    priceCents: 120000, // ℏ1200
     quantity: 25,
     unit: 'kg',
     category: 'Spices',
@@ -96,7 +96,7 @@ export default function BrowseListingsPage() {
   console.log('Component rendering, isLoading:', isLoading);
 
   const categories = [
-    'All', 'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 
+    'All', 'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts',
     'Herbs', 'Dairy', 'Meat', 'Poultry', 'Seafood', 'Beverages'
   ];
 
@@ -148,7 +148,7 @@ export default function BrowseListingsPage() {
   }, [listings, searchQuery, selectedCategory, priceRange, sortBy]);
 
   const formatPrice = (priceCents: number) => {
-    return `₦${(priceCents / 100).toLocaleString()}`;
+    return `ℏ${(priceCents / 100).toLocaleString()}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -243,7 +243,7 @@ export default function BrowseListingsPage() {
 
                   {/* Price Range */}
                   <div>
-                    <Label className="text-sm font-medium">Price Range (₦)</Label>
+                    <Label className="text-sm font-medium">Price Range (ℏ)</Label>
                     <div className="mt-1 flex space-x-2">
                       <Input
                         placeholder="Min"

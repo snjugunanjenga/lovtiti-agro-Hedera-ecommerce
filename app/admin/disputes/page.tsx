@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  AlertTriangle, 
-  Search, 
-  Filter, 
+import {
+  AlertTriangle,
+  Search,
+  Filter,
   CheckCircle,
   XCircle,
   Clock,
@@ -129,7 +129,7 @@ function DisputeManagementContent() {
       },
       resolution: {
         status: 'IN_PROGRESS',
-        proposedSolution: 'Partial refund of ₦3,000 for the delay',
+        proposedSolution: 'Partial refund of ℏ3,000 for the delay',
         adminNotes: 'Reviewing transportation contract terms',
         finalDecision: null
       },
@@ -215,12 +215,12 @@ function DisputeManagementContent() {
 
   const filteredDisputes = disputes.filter(dispute => {
     const matchesSearch = dispute.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         dispute.complainant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         dispute.respondent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         dispute.issue.title.toLowerCase().includes(searchTerm.toLowerCase());
+      dispute.complainant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      dispute.respondent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      dispute.issue.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'ALL' || dispute.status === selectedStatus;
     const matchesPriority = selectedPriority === 'ALL' || dispute.priority === selectedPriority;
-    
+
     return matchesSearch && matchesStatus && matchesPriority;
   });
 
@@ -433,7 +433,7 @@ function DisputeManagementContent() {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 {/* Parties Involved */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -525,7 +525,7 @@ function DisputeManagementContent() {
                     <Eye className="w-4 h-4" />
                     <span>View Details</span>
                   </Button>
-                  
+
                   <div className="flex space-x-2">
                     {dispute.status === 'OPEN' && (
                       <>

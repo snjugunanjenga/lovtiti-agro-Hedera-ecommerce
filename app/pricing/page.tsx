@@ -23,7 +23,7 @@ export default function PricingPage() {
     },
     {
       name: 'Farmer Pro',
-      price: '₦2,500',
+      price: 'ℏ2,500',
       period: '/month',
       description: 'For growing farms with more products',
       features: [
@@ -99,8 +99,8 @@ export default function PricingPage() {
           {plans.map((plan) => {
             const Icon = plan.icon;
             return (
-              <Card 
-                key={plan.name} 
+              <Card
+                key={plan.name}
                 className={`relative ${plan.popular ? 'border-green-500 shadow-lg scale-105' : 'border-gray-200'}`}
               >
                 {plan.popular && (
@@ -110,7 +110,7 @@ export default function PricingPage() {
                     </span>
                   </div>
                 )}
-                
+
                 <CardHeader className="text-center">
                   <div className="flex justify-center mb-4">
                     <div className={`p-3 rounded-full ${plan.popular ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -128,7 +128,7 @@ export default function PricingPage() {
                     )}
                   </div>
                 </CardHeader>
-                
+
                 <CardContent>
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, index) => (
@@ -138,8 +138,8 @@ export default function PricingPage() {
                       </li>
                     ))}
                   </ul>
-                  
-                  <Button 
+
+                  <Button
                     className={`w-full ${plan.popular ? 'bg-green-600 hover:bg-green-700' : ''}`}
                     variant={plan.popular ? 'default' : 'outline'}
                   >
@@ -159,7 +159,7 @@ export default function PricingPage() {
           <p className="text-xl text-gray-600 mb-8">
             Buyers can browse and purchase products without any fees
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {buyerFeatures.map((feature, index) => {
               const Icon = feature.icon;
@@ -189,44 +189,44 @@ export default function PricingPage() {
           <h2 className="text-3xl font-bold text-gray-900 text-center mb-8">
             Frequently Asked Questions
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 How does payment processing work?
               </h3>
               <p className="text-gray-600">
-                We use Hedera Hashgraph blockchain for secure, transparent payments. 
+                We use Hedera Hashgraph blockchain for secure, transparent payments.
                 All transactions are processed through smart contracts with automatic escrow.
               </p>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Can I change my plan anytime?
               </h3>
               <p className="text-gray-600">
-                Yes! You can upgrade or downgrade your plan at any time. 
+                Yes! You can upgrade or downgrade your plan at any time.
                 Changes take effect immediately and billing is prorated.
               </p>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 What payment methods do you accept?
               </h3>
               <p className="text-gray-600">
-                We accept HBAR (Hedera's native cryptocurrency) and traditional 
+                We accept HBAR (Hedera's native cryptocurrency) and traditional
                 payment methods like bank transfers and mobile money.
               </p>
             </div>
-            
+
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Is there a free trial?
               </h3>
               <p className="text-gray-600">
-                Yes! Farmer Pro comes with a 14-day free trial. 
+                Yes! Farmer Pro comes with a 14-day free trial.
                 No credit card required to get started.
               </p>
             </div>

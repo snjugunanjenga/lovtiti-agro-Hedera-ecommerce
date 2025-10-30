@@ -7,15 +7,18 @@ const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    
+    const body = await req.json();
+    const { role, userId: providedUserId } = body;
+
+    // Get userId from auth or use provided userId (for signup flow)
+    const { userId: authUserId } = await auth();
+    const userId = providedUserId || authUserId;
+
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized - No user ID provided" }, { status: 401 });
     }
 
-    const { role } = await req.json();
-    
-    if (!role || !['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER', 'VETERINARIAN', 'ADMIN'].includes(role)) {
+    if (!role || !['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER', 'AGROEXPERT', 'ADMIN'].includes(role)) {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
@@ -39,8 +42,8 @@ export async function POST(req: NextRequest) {
 
     console.log(`Role ${role} assigned to user ${userId} in both Clerk metadata and database`);
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: `Role ${role} assigned successfully`,
       role: role as UserRole,
       user: updatedUser

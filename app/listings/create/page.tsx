@@ -6,11 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  Leaf, 
-  Upload, 
-  Image as ImageIcon, 
-  Video, 
+import {
+  Leaf,
+  Upload,
+  Image as ImageIcon,
+  Video,
   Calendar,
   MapPin,
   Package,
@@ -46,13 +46,13 @@ export default function CreateListingPage() {
   const router = useRouter();
 
   // Wallet integration
-  const { 
-    isConnected, 
-    wallet, 
-    addProduct, 
+  const {
+    isConnected,
+    wallet,
+    addProduct,
     isAddingProduct,
     isFarmer,
-    error: walletError 
+    error: walletError
   } = useWallet();
 
   // Check if user can create listings (Farmers and Agro Experts only)
@@ -60,7 +60,7 @@ export default function CreateListingPage() {
   const canCreateListings = ['FARMER', 'AGROEXPERT', 'ADMIN'].includes(userRole);
 
   const categories = [
-    'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 'Herbs', 
+    'Vegetables', 'Fruits', 'Grains', 'Spices', 'Nuts', 'Herbs',
     'Dairy', 'Meat', 'Poultry', 'Seafood', 'Beverages', 'Other'
   ];
 
@@ -90,10 +90,10 @@ export default function CreateListingPage() {
 
     // For now, we'll simulate image upload with placeholder URLs
     // In production, you'd upload to IPFS or CDN
-    const newImages = Array.from(files).map((file, index) => 
+    const newImages = Array.from(files).map((file, index) =>
       `https://via.placeholder.com/400x300?text=${encodeURIComponent(file.name)}`
     );
-    
+
     setFormData(prev => ({
       ...prev,
       images: [...prev.images, ...newImages]
@@ -109,12 +109,12 @@ export default function CreateListingPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     setIsSubmitting(true);
     setErrors({});
-    
+
     try {
       // Create product in database
       const response = await fetch('/api/listings', {
@@ -138,22 +138,22 @@ export default function CreateListingPage() {
 
       const listingResult = await response.json();
       console.log('✅ Listing created:', listingResult);
-      
+
       // Optional: Add product to smart contract if wallet is connected
       if (isConnected && isFarmer) {
         try {
           const priceInEth = parseFloat(formData.priceCents) / 100;
           const quantity = parseInt(formData.quantity);
-          
+
           const contractResult = await addProduct(
-            priceInEth.toString(), 
-            quantity, 
+            priceInEth.toString(),
+            quantity,
             user?.id || 'unknown'
           );
 
           if (contractResult.success) {
             console.log('✅ Product added to smart contract');
-            
+
             // Update listing with contract information
             await fetch(`/api/listings/${listingResult.id}/contract`, {
               method: 'POST',
@@ -213,7 +213,7 @@ export default function CreateListingPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <h4 className="text-sm font-medium text-gray-900">Who can create listings:</h4>
                 <div className="space-y-1">
@@ -352,7 +352,7 @@ export default function CreateListingPage() {
             <CardContent className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <Label htmlFor="priceCents">Price per Unit (₦) *</Label>
+                  <Label htmlFor="priceCents">Price per Unit (ℏ) *</Label>
                   <Input
                     id="priceCents"
                     type="number"

@@ -94,61 +94,61 @@ curl -X POST http://localhost:3000/api/seed/products \
 ### Crop-Based Products
 
 #### Arable Farming (Grains & Cereals)
-- ✅ Premium White Rice (1000 kg) - ₦2,500/kg
-- ✅ Golden Wheat Grain (2000 kg) - ₦1,800/kg
-- ✅ Yellow Corn/Maize (1500 kg) - ₦1,500/kg
+- ✅ Premium White Rice (1000 kg) - ℏ2,500/kg
+- ✅ Golden Wheat Grain (2000 kg) - ℏ1,800/kg
+- ✅ Yellow Corn/Maize (1500 kg) - ℏ1,500/kg
 
 #### Horticulture (Flowers & Fruits)
-- ✅ Fresh Red Roses (500 dozen) - ₦500/dozen
-- ✅ Mixed Tropical Fruits (200 kg) - ₦3,500/kg
-- ✅ Ornamental Plants (300 pieces) - ₦250/piece
+- ✅ Fresh Red Roses (500 dozen) - ℏ500/dozen
+- ✅ Mixed Tropical Fruits (200 kg) - ℏ3,500/kg
+- ✅ Ornamental Plants (300 pieces) - ℏ250/piece
 
 #### Vegetable Farming
-- ✅ Organic Cherry Tomatoes (500 kg) - ₦4,500/kg
-- ✅ Fresh Bell Peppers Mix (300 kg) - ₦3,800/kg
-- ✅ Leafy Green Spinach (400 kg) - ₦2,800/kg
-- ✅ Crispy Lettuce Heads (350 kg) - ₦2,200/kg
+- ✅ Organic Cherry Tomatoes (500 kg) - ℏ4,500/kg
+- ✅ Fresh Bell Peppers Mix (300 kg) - ℏ3,800/kg
+- ✅ Leafy Green Spinach (400 kg) - ℏ2,800/kg
+- ✅ Crispy Lettuce Heads (350 kg) - ℏ2,200/kg
 
 #### Herbal Farming (Medicinal Herbs)
-- ✅ Fresh Basil Leaves (100 kg) - ₦3,200/kg
-- ✅ Dried Moringa Leaves (150 kg) - ₦5,800/kg
-- ✅ Fresh Mint Leaves (80 kg) - ₦2,900/kg
+- ✅ Fresh Basil Leaves (100 kg) - ℏ3,200/kg
+- ✅ Dried Moringa Leaves (150 kg) - ℏ5,800/kg
+- ✅ Fresh Mint Leaves (80 kg) - ℏ2,900/kg
 
 #### Viticulture (Wine Production)
-- ✅ Premium Red Wine Grapes (500 kg) - ₦6,800/kg
-- ✅ White Wine Grapes (400 kg) - ₦6,500/kg
+- ✅ Premium Red Wine Grapes (500 kg) - ℏ6,800/kg
+- ✅ White Wine Grapes (400 kg) - ℏ6,500/kg
 
 ### Animal-Based Products
 
 #### Livestock Farming
-- ✅ Premium Beef Cattle (20 pieces) - ₦450,000/piece
-- ✅ Healthy Goats (50 pieces) - ₦85,000/piece
-- ✅ Quality Sheep (30 pieces) - ₦75,000/piece
+- ✅ Premium Beef Cattle (20 pieces) - ℏ450,000/piece
+- ✅ Healthy Goats (50 pieces) - ℏ85,000/piece
+- ✅ Quality Sheep (30 pieces) - ℏ75,000/piece
 
 #### Poultry Farming
-- ✅ Fresh Farm Eggs (1000 dozen) - ₦1,800/dozen
-- ✅ Live Broiler Chickens (200 pieces) - ₦3,500/piece
-- ✅ Turkey Birds (50 pieces) - ₦12,000/piece
+- ✅ Fresh Farm Eggs (1000 dozen) - ℏ1,800/dozen
+- ✅ Live Broiler Chickens (200 pieces) - ℏ3,500/piece
+- ✅ Turkey Birds (50 pieces) - ℏ12,000/piece
 
 #### Dairy Farming
-- ✅ Fresh Cow Milk (500 kg) - ₦1,200/kg
-- ✅ Artisan Cheese Selection (100 kg) - ₦8,500/kg
-- ✅ Fresh Goat Milk (200 kg) - ₦1,800/kg
+- ✅ Fresh Cow Milk (500 kg) - ℏ1,200/kg
+- ✅ Artisan Cheese Selection (100 kg) - ℏ8,500/kg
+- ✅ Fresh Goat Milk (200 kg) - ℏ1,800/kg
 
 #### Beekeeping (Apiculture)
-- ✅ Pure Raw Honey (200 kg) - ₦4,500/kg
-- ✅ Beeswax Blocks (100 kg) - ₦3,800/kg
-- ✅ Bee Pollen Granules (50 kg) - ₦6,800/kg
+- ✅ Pure Raw Honey (200 kg) - ℏ4,500/kg
+- ✅ Beeswax Blocks (100 kg) - ℏ3,800/kg
+- ✅ Bee Pollen Granules (50 kg) - ℏ6,800/kg
 
 #### Aquaculture Farming
-- ✅ Fresh Tilapia Fish (300 kg) - ₦4,200/kg
-- ✅ Premium Catfish (400 kg) - ₦3,800/kg
-- ✅ Fresh Water Prawns (150 kg) - ₦9,500/kg
+- ✅ Fresh Tilapia Fish (300 kg) - ℏ4,200/kg
+- ✅ Premium Catfish (400 kg) - ℏ3,800/kg
+- ✅ Fresh Water Prawns (150 kg) - ℏ9,500/kg
 
 #### Fishery (Ocean Fishing)
-- ✅ Fresh Ocean Tuna (200 kg) - ₦12,000/kg
-- ✅ Fresh Mackerel (300 kg) - ₦6,800/kg
-- ✅ Mixed Shellfish (100 kg) - ₦15,000/kg
+- ✅ Fresh Ocean Tuna (200 kg) - ℏ12,000/kg
+- ✅ Fresh Mackerel (300 kg) - ℏ6,800/kg
+- ✅ Mixed Shellfish (100 kg) - ℏ15,000/kg
 
 ---
 
@@ -248,10 +248,10 @@ All products include high-quality images from Unsplash:
 
 ## 💰 Price Range
 
-- **Low:** ₦500 - ₦5,000 (Flowers, small items)
-- **Medium:** ₦10,000 - ₦50,000 (Vegetables, grains)
-- **High:** ₦100,000 - ₦500,000 (Dairy, seafood)
-- **Premium:** ₦1,000,000+ (Livestock, specialty items)
+- **Low:** ℏ500 - ℏ5,000 (Flowers, small items)
+- **Medium:** ℏ10,000 - ℏ50,000 (Vegetables, grains)
+- **High:** ℏ100,000 - ℏ500,000 (Dairy, seafood)
+- **Premium:** ℏ1,000,000+ (Livestock, specialty items)
 
 ---
 

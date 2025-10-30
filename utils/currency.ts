@@ -23,7 +23,7 @@ export const SUPPORTED_CURRENCIES: Currency[] = [
   {
     code: 'NGN',
     name: 'Nigerian Naira',
-    symbol: '₦',
+    symbol: 'ℏ',
     country: 'Nigeria',
     flag: '🇳🇬',
     exchangeRate: 1600.0,
@@ -147,7 +147,7 @@ export const getCurrencyByCode = (code: string): Currency | undefined => {
 };
 
 export const getCurrencyByCountry = (country: string): Currency | undefined => {
-  return SUPPORTED_CURRENCIES.find(currency => 
+  return SUPPORTED_CURRENCIES.find(currency =>
     currency.country.toLowerCase().includes(country.toLowerCase())
   );
 };
@@ -159,13 +159,13 @@ export const convertCurrency = (
 ): number => {
   const from = getCurrencyByCode(fromCurrency);
   const to = getCurrencyByCode(toCurrency);
-  
+
   if (!from || !to) return amount;
-  
+
   // Convert to USD first, then to target currency
   const usdAmount = amount / from.exchangeRate;
   const convertedAmount = usdAmount * to.exchangeRate;
-  
+
   return convertedAmount;
 };
 
@@ -176,14 +176,14 @@ export const formatCurrency = (
 ): string => {
   const currency = getCurrencyByCode(currencyCode);
   if (!currency) return amount.toString();
-  
+
   const formattedAmount = amount.toFixed(currency.decimalPlaces);
-  
+
   // For crypto currencies, use custom formatting
   if (CRYPTO_CURRENCIES.some(crypto => crypto.code === currencyCode)) {
     return `${currency.symbol}${formattedAmount}`;
   }
-  
+
   // For fiat currencies, use Intl.NumberFormat
   try {
     return new Intl.NumberFormat(locale, {
@@ -226,13 +226,13 @@ export const getAllPaymentCurrencies = (): Array<{ value: string; label: string;
     flag: currency.flag,
     type: 'fiat' as const
   }));
-  
+
   const cryptoOptions = CRYPTO_CURRENCIES.map(currency => ({
     value: currency.code,
     label: `${currency.flag} ${currency.name} (${currency.code})`,
     flag: currency.flag,
     type: 'crypto' as const
   }));
-  
+
   return [...fiatOptions, ...cryptoOptions];
 };

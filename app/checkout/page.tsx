@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { 
-  CreditCard, 
-  Smartphone, 
-  Coins, 
+import {
+  CreditCard,
+  Smartphone,
+  Coins,
   Shield,
   MapPin,
   User,
@@ -51,16 +51,16 @@ export default function CheckoutPage() {
   // const { user } = useUser();
   const user = null as any; // Temporary for development
   const { items, totalItems, totalPrice, clearCart } = useCart();
-  
+
   // Wallet integration
-  const { 
-    isConnected, 
-    wallet, 
-    buyProduct, 
+  const {
+    isConnected,
+    wallet,
+    buyProduct,
     isBuyingProduct,
-    error: walletError 
+    error: walletError
   } = useWallet();
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
     fullName: user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
@@ -73,7 +73,7 @@ export default function CheckoutPage() {
     country: 'Nigeria',
     deliveryInstructions: ''
   });
-  
+
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string>('');
@@ -84,7 +84,7 @@ export default function CheckoutPage() {
       name: 'Credit/Debit Card',
       icon: <CreditCard className="w-6 h-6" />,
       description: 'Visa, Mastercard, American Express',
-      fees: '2.9% + ₦15',
+      fees: '2.9% + ℏ15',
       processingTime: 'Instant'
     },
     {
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
     const deliveryFee = 500; // Fixed delivery fee
     const serviceFee = subtotal * 0.025; // 2.5% service fee
     const total = subtotal + deliveryFee + serviceFee;
-    
+
     return {
       subtotal,
       deliveryFee,
@@ -152,12 +152,12 @@ export default function CheckoutPage() {
       // Validate delivery info
       const requiredFields = ['fullName', 'email', 'phone', 'address', 'city', 'state', 'postalCode'];
       const missingFields = requiredFields.filter(field => !deliveryInfo[field as keyof DeliveryInfo]);
-      
+
       if (missingFields.length > 0) {
         alert('Please fill in all required fields');
         return;
       }
-      
+
       setCurrentStep(2);
     }
   };
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
       // Clear cart and redirect to success page
       clearCart();
       router.push('/checkout/success');
-      
+
     } catch (error) {
       console.error('Payment error:', error);
       setPaymentError(error instanceof Error ? error.message : 'Payment failed. Please try again.');
@@ -221,7 +221,7 @@ export default function CheckoutPage() {
     }
 
     const { clientSecret } = await response.json();
-    
+
     // In a real implementation, you would use Stripe Elements here
     // For now, we'll simulate a successful payment
     await new Promise(resolve => setTimeout(resolve, 2000));
@@ -242,7 +242,7 @@ export default function CheckoutPage() {
     }
 
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.message || 'MPESA payment failed');
     }
@@ -260,7 +260,7 @@ export default function CheckoutPage() {
     }
 
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.message || 'Hedera payment failed');
     }
@@ -278,7 +278,7 @@ export default function CheckoutPage() {
 
     // Process each item in the cart through the smart contract
     const purchaseResults = [];
-    
+
     for (const item of items) {
       // Skip contract validation for now - products may not have contractProductId
       // if (!item.contractProductId) {
@@ -361,18 +361,16 @@ export default function CheckoutPage() {
         <div className="mb-8">
           <div className="flex items-center justify-center space-x-4">
             <div className={`flex items-center ${currentStep >= 1 ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep >= 1 ? 'bg-green-600 text-white' : 'bg-gray-200'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-green-600 text-white' : 'bg-gray-200'
+                }`}>
                 {currentStep > 1 ? <CheckCircle className="w-4 h-4" /> : '1'}
               </div>
               <span className="ml-2 font-medium">Delivery Info</span>
             </div>
             <div className={`w-16 h-1 ${currentStep >= 2 ? 'bg-green-600' : 'bg-gray-200'}`}></div>
             <div className={`flex items-center ${currentStep >= 2 ? 'text-green-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                currentStep >= 2 ? 'bg-green-600 text-white' : 'bg-gray-200'
-              }`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-green-600 text-white' : 'bg-gray-200'
+                }`}>
                 2
               </div>
               <span className="ml-2 font-medium">Payment</span>
@@ -495,20 +493,18 @@ export default function CheckoutPage() {
                     {paymentMethods.map((method) => (
                       <div
                         key={method.id}
-                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
-                          selectedPaymentMethod === method.id
+                        className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedPaymentMethod === method.id
                             ? 'border-green-500 bg-green-50'
                             : 'border-gray-200 hover:border-gray-300'
-                        }`}
+                          }`}
                         onClick={() => handlePaymentMethodSelect(method.id)}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
-                            <div className={`p-2 rounded-lg ${
-                              selectedPaymentMethod === method.id
+                            <div className={`p-2 rounded-lg ${selectedPaymentMethod === method.id
                                 ? 'bg-green-600 text-white'
                                 : 'bg-gray-100 text-gray-600'
-                            }`}>
+                              }`}>
                               {method.icon}
                             </div>
                             <div>
@@ -580,14 +576,14 @@ export default function CheckoutPage() {
                 {/* Action Button */}
                 <div className="pt-4">
                   {currentStep === 1 ? (
-                    <Button 
+                    <Button
                       onClick={handleProceedToPayment}
                       className="w-full bg-green-600 hover:bg-green-700"
                     >
                       Proceed to Payment
                     </Button>
                   ) : (
-                    <Button 
+                    <Button
                       onClick={handlePayment}
                       disabled={!selectedPaymentMethod || isProcessing}
                       className="w-full bg-green-600 hover:bg-green-700"

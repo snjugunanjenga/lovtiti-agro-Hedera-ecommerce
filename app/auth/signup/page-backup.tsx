@@ -21,11 +21,11 @@ import {
   Stethoscope,
   Leaf,
   ShoppingCart,
+  ArrowRight,
   CheckCircle,
   AlertCircle,
   Eye,
-  EyeOff,
-  Wallet
+  EyeOff
 } from 'lucide-react';
 
 const USER_ROLES = [
@@ -96,12 +96,13 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (preselectedRole) {
+      // Convert to uppercase to match our role IDs
       const normalizedRole = preselectedRole.toUpperCase();
       const roleExists = USER_ROLES.find(role => role.id === normalizedRole);
 
       if (roleExists) {
         setSelectedRole(normalizedRole);
-        setStep(2);
+        setStep(2); // Skip role selection and go directly to form
       }
     }
   }, [preselectedRole]);
@@ -129,6 +130,7 @@ export default function SignupPage() {
       setConnecting(false);
     }
   };
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -168,6 +170,7 @@ export default function SignupPage() {
         });
         return;
       }
+      // Proceed to submit
       handleSubmit();
       return;
     }
@@ -181,6 +184,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
+      // Create the user with Clerk and set role metadata immediately
       const result = await signUp.create({
         emailAddress: formData.email,
         password: formData.password,
@@ -188,10 +192,11 @@ export default function SignupPage() {
         lastName: formData.fullName.split(' ').slice(1).join(' ') || '',
       });
 
+      // Send email verification
       await result.prepareEmailAddressVerification({ strategy: 'email_code' });
 
       setPendingVerification(true);
-      setStep(3);
+      setStep(3); // Move to verification step
 
       toast({
         title: "Verification Email Sent!",
@@ -216,13 +221,16 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
+      // Verify the email code
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code: verificationCode,
       });
 
       if (completeSignUp.status === 'complete') {
+        // Set the active session
         await setActive({ session: completeSignUp.createdSessionId });
 
+        // Create user profile in our database
         const response = await fetch('/api/auth/create-user', {
           method: 'POST',
           headers: {
@@ -241,45 +249,24 @@ export default function SignupPage() {
               hederaWallet: formData.walletId || 'Not provided'
             }
           }),
+
         });
 
         if (!response.ok) {
           console.warn('Failed to create user profile in database');
         }
-
-        // Sync user data
-        const syncResponse = await fetch('/api/auth/sync-user', {
+        await fetch('/api/auth/sync-user', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: completeSignUp.createdUserId }),
         });
-
-        if (!syncResponse.ok) {
-          console.warn('Failed to sync user data');
-        }
-
-        // Assign role to Clerk user metadata
-        console.log(`🔄 Assigning role ${selectedRole} to user ${completeSignUp.createdUserId}`);
-        const roleResponse = await fetch('/api/auth/assign-role', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            role: selectedRole,
-            userId: completeSignUp.createdUserId
-          }),
-        });
-
-        if (!roleResponse.ok) {
-          console.warn('Failed to assign role to Clerk metadata');
-        } else {
-          console.log(`✅ Successfully assigned role ${selectedRole} to Clerk user`);
-        }
 
         toast({
           title: "Account Created Successfully!",
           description: "Welcome to Lovtiti Agro Mart!",
         });
 
+        // Redirect to dashboard based on role
         window.location.href = `/dashboard/${selectedRole.toLowerCase()}`;
       }
     } catch (error: any) {
@@ -507,140 +494,48 @@ export default function SignupPage() {
                       />
                     </div>
                   </div>
-                </div>
-
-                {/* Enhanced Hedera Wallet Connection */}
-                <div className="space-y-4">
-                  <Label className="text-base font-medium flex items-center gap-2">
-                    <Wallet className="h-4 w-4" />
-                    Hedera Wallet Connection *
-                  </Label>
-
-                  {formData.walletId ? (
-                    <div className="p-4 rounded-lg bg-green-50 border border-green-200">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-5 w-5 text-green-600" />
-                          <div>
-                            <p className="text-sm font-medium text-green-800">Wallet Connected</p>
-                            <p className="text-xs text-green-600 truncate">
-                              {formData.walletId.slice(0, 12)}...{formData.walletId.slice(-8)}
-                            </p>
-                          </div>
-                        </div>
+                  {/* Wallet Connection */}
+                  <div className="space-y-2">
+                    <Label htmlFor="walletId">Wallet *</Label>
+                    {formData.walletId ? (
+                      <div className="p-3 rounded-lg bg-green-50 flex items-center justify-between">
+                        <span className="text-sm text-green-800 truncate">
+                          Connected: {formData.walletId.slice(0, 8)}...{formData.walletId.slice(-6)}
+                        </span>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setFormData(prev => ({ ...prev, walletId: '' }))}
-                          className="text-red-600 hover:text-red-700 border-red-200 hover:border-red-300"
                         >
                           Disconnect
                         </Button>
                       </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Option 1: Connect MetaMask */}
-                      <div className="p-4 border rounded-lg hover:border-orange-200 transition-colors">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                              <span className="text-orange-600 font-bold text-lg">M</span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900">Connect MetaMask</p>
-                              <p className="text-xs text-gray-600">Automatically detect your wallet address</p>
-                            </div>
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={connectMetaMask}
-                            disabled={connecting}
-                            className="bg-orange-500 hover:bg-orange-600 text-white"
-                            size="sm"
+                    ) : (
+                      <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                        <Button
+                          type="button"
+                          onClick={connectMetaMask}
+                          disabled={connecting}
+                          className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white"
+                        >
+                          {connecting ? 'Connecting...' : 'Connect MetaMask'}
+                        </Button>
+                        <p className="text-sm text-gray-600">
+                          Don’t have a wallet?{' '}
+                          <a
+                            href="https://portal.hedera.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-green-600 underline hover:text-green-700"
                           >
-                            {connecting ? 'Connecting...' : 'Connect'}
-                          </Button>
-                        </div>
+                            Create one here
+                          </a>
+                        </p>
                       </div>
+                    )}
+                    {error && <p className="text-sm text-red-600">{error}</p>}
+                  </div>
 
-                      {/* Divider */}
-                      <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                          <div className="w-full border-t border-gray-300" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                          <span className="px-3 bg-white text-gray-500 font-medium">or</span>
-                        </div>
-                      </div>
-
-                      {/* Option 2: Manual Input */}
-                      <div className="p-4 border rounded-lg hover:border-green-200 transition-colors">
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                              <span className="text-green-600 font-bold text-lg">H</span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900">Enter Hedera Wallet ID</p>
-                              <p className="text-xs text-gray-600">Manually input your wallet address</p>
-                            </div>
-                          </div>
-                          <Input
-                            id="manualWalletId"
-                            name="walletId"
-                            type="text"
-                            placeholder="0.0.123456 or 0x1234...abcd"
-                            value={formData.walletId}
-                            onChange={handleInputChange}
-                            className="font-mono text-sm"
-                          />
-                          <p className="text-xs text-gray-500">
-                            Enter your Hedera account ID (0.0.123456) or Ethereum-style address (0x...)
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Help Text */}
-                      <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                        <div className="flex items-start gap-2">
-                          <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
-                          <div className="text-xs text-blue-700">
-                            <p className="font-medium mb-1">Need a Hedera wallet?</p>
-                            <p>
-                              Create one at{' '}
-                              <a
-                                href="https://portal.hedera.com/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline hover:text-blue-800 font-medium"
-                              >
-                                Hedera Portal
-                              </a>{' '}
-                              or use{' '}
-                              <a
-                                href="https://metamask.io/"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-600 underline hover:text-blue-800 font-medium"
-                              >
-                                MetaMask
-                              </a>
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {error && (
-                    <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-                      <p className="text-sm text-red-600 flex items-center gap-2">
-                        <AlertCircle className="h-4 w-4" />
-                        {error}
-                      </p>
-                    </div>
-                  )}
                 </div>
 
                 {/* Platform Info */}

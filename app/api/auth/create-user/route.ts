@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 
 // Validation schema for create user request
 const createUserSchema = z.object({
+  userId: z.string().optional(), // Clerk user ID if provided
   email: z.string().email('Invalid email format'),
   role: z.enum(['BUYER', 'FARMER', 'DISTRIBUTOR', 'TRANSPORTER', 'AGROEXPERT', 'ADMIN']).default('BUYER'),
   firstName: z.string().optional(),
@@ -25,10 +26,10 @@ const createUserSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    
+
     // Validate request body
     const validationResult = createUserSchema.safeParse(body);
-    
+
     if (!validationResult.success) {
       return NextResponse.json({
         success: false,
@@ -40,12 +41,12 @@ export async function POST(req: NextRequest) {
       }, { status: 400 });
     }
 
-    const { email, role, firstName, lastName, profileData } = validationResult.data;
+    const { userId: providedUserId, email, role, firstName, lastName, profileData } = validationResult.data;
 
     console.log('🔍 Creating user:', { email, role, firstName, lastName });
 
-    // Generate a unique ID for the user (similar to Clerk format)
-    const userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Use provided userId (from Clerk) or generate a unique ID
+    const userId = providedUserId || `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     // Check if user already exists by email
     const existingUser = await prisma.user.findFirst({
@@ -82,7 +83,7 @@ export async function POST(req: NextRequest) {
           address: profileData.address || '',
           phone: profileData.phone || '',
           idNumber: profileData.idNumber || '',
-          hederaWallet: profileData.hederaWallet || '',
+          hederaWallet: profileData.hederaWallet || 'Not provided',
         }
       });
     }
@@ -112,7 +113,7 @@ export async function POST(req: NextRequest) {
 
   } catch (error) {
     console.error('❌ Error creating user:', error);
-    
+
     return NextResponse.json({
       success: false,
       message: 'Failed to create user',
@@ -182,7 +183,7 @@ export async function GET() {
 
   } catch (error) {
     console.error('❌ Error retrieving roles:', error);
-    
+
     return NextResponse.json({
       success: false,
       message: 'Failed to retrieve roles',
