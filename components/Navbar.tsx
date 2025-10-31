@@ -56,7 +56,7 @@ export default function Navbar() {
 
   // If Clerk keys are not valid, do NOT call useUser (would throw) –
   // render a simplified Navbar without auth-dependent UI.
-  if (!clerkKeysValid) {
+  if (clerkKeysValid) {
     const navigation = [
       { name: "Marketplace", href: "/listings/browse", public: true },
       { name: "Services", href: "/services", public: true },
@@ -754,56 +754,57 @@ export default function Navbar() {
               // Signed in - show user profile
               <div className="flex items-center space-x-3">
                 {isFarmerRole && (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleFarmerSync}
-                      disabled={isRegisteringFarmer}
-                      className="hidden lg:flex items-center space-x-2 border-green-200"
-                    >
-                      <Leaf className="w-4 h-4 text-green-600" />
-                      <span>
-                        {isRegisteringFarmer ? "Syncing..." : "Sync Farmer"}
-                      </span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleCreateProduct}
-                      disabled={isCreatingProduct}
-                      className="hidden lg:flex items-center space-x-2 border-green-200"
-                    >
-                      <Package className="w-4 h-4 text-green-600" />
-                      <span>
-                        {isCreatingProduct ? "Creating..." : "Create Product"}
-                      </span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleViewProducts}
-                      disabled={isViewingProducts}
-                      className="hidden lg:flex items-center space-x-2 border-green-200"
-                    >
-                      <List className="w-4 h-4 text-green-600" />
-                      <span>
-                        {isViewingProducts ? "Loading..." : "View Products"}
-                      </span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleWhoFarmer}
-                      disabled={isFetchingFarmerInfo}
-                      className="hidden lg:flex items-center space-x-2 border-green-200"
-                    >
-                      <Info className="w-4 h-4 text-green-600" />
-                      <span>
-                        {isFetchingFarmerInfo ? "Checking..." : "whoFarmer"}
-                      </span>
-                    </Button>
-                  </>
+                  <></>
+                  // <>
+                  //   <Button
+                  //     variant="outline"
+                  //     size="sm"
+                  //     onClick={handleFarmerSync}
+                  //     disabled={isRegisteringFarmer}
+                  //     className="hidden lg:flex items-center space-x-2 border-green-200"
+                  //   >
+                  //     <Leaf className="w-4 h-4 text-green-600" />
+                  //     <span>
+                  //       {isRegisteringFarmer ? "Syncing..." : "Sync Farmer"}
+                  //     </span>
+                  //   </Button>
+                  //   <Button
+                  //     variant="outline"
+                  //     size="sm"
+                  //     onClick={handleCreateProduct}
+                  //     disabled={isCreatingProduct}
+                  //     className="hidden lg:flex items-center space-x-2 border-green-200"
+                  //   >
+                  //     <Package className="w-4 h-4 text-green-600" />
+                  //     <span>
+                  //       {isCreatingProduct ? "Creating..." : "Create Product"}
+                  //     </span>
+                  //   </Button>
+                  //   <Button
+                  //     variant="outline"
+                  //     size="sm"
+                  //     onClick={handleViewProducts}
+                  //     disabled={isViewingProducts}
+                  //     className="hidden lg:flex items-center space-x-2 border-green-200"
+                  //   >
+                  //     <List className="w-4 h-4 text-green-600" />
+                  //     <span>
+                  //       {isViewingProducts ? "Loading..." : "View Products"}
+                  //     </span>
+                  //   </Button>
+                  //   <Button
+                  //     variant="outline"
+                  //     size="sm"
+                  //     onClick={handleWhoFarmer}
+                  //     disabled={isFetchingFarmerInfo}
+                  //     className="hidden lg:flex items-center space-x-2 border-green-200"
+                  //   >
+                  //     <Info className="w-4 h-4 text-green-600" />
+                  //     <span>
+                  //       {isFetchingFarmerInfo ? "Checking..." : "whoFarmer"}
+                  //     </span>
+                  //   </Button>
+                  // </>
                 )}
                 <Link href="/settings">
                   <Button
