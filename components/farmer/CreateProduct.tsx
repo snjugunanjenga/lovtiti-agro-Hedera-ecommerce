@@ -44,6 +44,16 @@ interface CreateProductProps {
     onProductCreated?: () => void;
 }
 
+// Helper function to convert image to base64
+const convertImageToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+};
+
 export default function CreateProduct({ onProductCreated }: CreateProductProps) {
     const { toast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
@@ -125,6 +135,24 @@ export default function CreateProduct({ onProductCreated }: CreateProductProps) 
             // Convert price from HBAR to cents (assuming 1 HBAR = 100 cents for calculation)
             const priceCents = Math.round(parseFloat(formData.price) * 100);
 
+            // Convert images to base64 for upload
+            const imageData: string[] = [];
+            if (images.length > 0) {
+                toast({
+                    title: "Processing Images",
+                    description: `Converting ${images.length} images for upload...`,
+                });
+
+                for (const image of images) {
+                    try {
+                        const base64 = await convertImageToBase64(image);
+                        imageData.push(base64);
+                    } catch (error) {
+                        console.error('Error converting image:', error);
+                    }
+                }
+            }
+
             // Prepare form data for submission
             const submitData = {
                 title: formData.title,
@@ -137,7 +165,7 @@ export default function CreateProduct({ onProductCreated }: CreateProductProps) 
                 location: formData.location,
                 harvestDate: formData.harvestDate || null,
                 expiryDate: formData.expiryDate || null,
-                images: [], // We'll handle image upload separately for now
+                images: imageData,
                 video: null,
             };
 

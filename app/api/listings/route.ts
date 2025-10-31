@@ -150,43 +150,107 @@ export async function POST(request: Request) {
       );
     }
 
-    // ✅ Upload images to Pinata (instead of Infura IPFS)
+    // ✅ Upload images to Pinata
     const uploadedImages: string[] = [];
-    for (const file of images || []) {
-      if (typeof file === "string") {
-        uploadedImages.push(file); // already uploaded or base64 URL
-      } else {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const uploaded = await uploadToIPFS(buffer, title);
-        uploadedImages.push(`https://gateway.pinata.cloud/ipfs/${uploaded.IpfsHash}`);
+
+    if (images && images.length > 0) {
+      console.log(`📸 Uploading ${images.length} images to IPFS...`);
+
+      for (let i = 0; i < images.length; i++) {
+        const image = images[i];
+        try {
+          if (typeof image === "string") {
+            if (image.startsWith('data:')) {
+              // Base64 image - convert to buffer and upload
+              const base64Data = image.split(',')[1];
+              const buffer = Buffer.from(base64Data, 'base64');
+              const fileName = `${title.replace(/[^a-zA-Z0-9]/g, '_')}_${i}_${Date.now()}`;
+
+              const uploaded = await uploadToIPFS(buffer, fileName);
+              const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${uploaded.IpfsHash}`;
+              uploadedImages.push(ipfsUrl);
+              console.log(`✅ Image ${i + 1} uploaded to IPFS: ${ipfsUrl}`);
+            } else {
+              // Already an IPFS URL
+              uploadedImages.push(image);
+            }
+          } else {
+            // File object - convert to buffer and upload
+            const buffer = Buffer.from(await image.arrayBuffer());
+            const fileName = `${title.replace(/[^a-zA-Z0-9]/g, '_')}_${i}_${Date.now()}`;
+
+            const uploaded = await uploadToIPFS(buffer, fileName);
+            const ipfsUrl = `https://gateway.pinata.cloud/ipfs/${uploaded.IpfsHash}`;
+            uploadedImages.push(ipfsUrl);
+            console.log(`✅ Image ${i + 1} uploaded to IPFS: ${ipfsUrl}`);
+          }
+        } catch (uploadError) {
+          console.error(`❌ Image ${i + 1} upload failed:`, uploadError);
+          // Continue with other images even if one fails
+        }
       }
+
+      console.log(`✅ Successfully uploaded ${uploadedImages.length}/${images.length} images`);
     }
 
-    // ✅ Call Hedera smart contract
-    const tx = new ContractExecuteTransaction()
-      .setContractId(AGRO_CONTRACT_ID)
-      .setGas(300000)
-      .setFunction(
-        "addProduct",
-        new ContractFunctionParameters()
-          .addUint256(Number(priceCents))
-          .addUint256(Math.floor(Number(quantity)))
-      );
+    // ✅ Call Hedera smart contract (optional for development)
+    let contractTxHash = null;
 
-    const submitTx = await tx.execute(hederaClient);
-    const receipt = await submitTx.getReceipt(hederaClient);
-    const status = receipt.status.toString();
+    if (process.env.ENABLE_SMART_CONTRACT !== 'false') {
+      try {
+        // First, try to register as farmer (will fail if already registered, which is fine)
+        try {
+          console.log("🌾 Attempting to register farmer in smart contract...");
+          const registerTx = new ContractExecuteTransaction()
+            .setContractId(AGRO_CONTRACT_ID)
+            .setGas(200000)
+            .setFunction("createFarmer");
 
-    if (status !== "SUCCESS") {
-      return NextResponse.json(
-        { error: `Hedera contract execution failed: ${status}` },
-        { status: 500 }
-      );
+          const registerSubmitTx = await registerTx.execute(hederaClient);
+          const registerReceipt = await registerSubmitTx.getReceipt(hederaClient);
+          console.log("✅ Farmer registration successful:", registerReceipt.status.toString());
+        } catch (registerError: any) {
+          // If registration fails, it might be because farmer already exists
+          console.log("ℹ️ Farmer registration failed (might already exist):", registerError.message);
+        }
+
+        // Now try to add the product
+        console.log("📦 Adding product to smart contract...");
+        const tx = new ContractExecuteTransaction()
+          .setContractId(AGRO_CONTRACT_ID)
+          .setGas(300000)
+          .setFunction(
+            "addProduct",
+            new ContractFunctionParameters()
+              .addUint256(Number(priceCents))
+              .addUint256(Math.floor(Number(quantity)))
+          );
+
+        const submitTx = await tx.execute(hederaClient);
+        const receipt = await submitTx.getReceipt(hederaClient);
+        const status = receipt.status.toString();
+
+        if (status !== "SUCCESS") {
+          console.error("❌ Smart contract execution failed:", status);
+          // Don't fail the entire request, just log the error
+          console.log("⚠️ Continuing without smart contract registration...");
+        } else {
+          contractTxHash = submitTx.transactionId.toString();
+          console.log("✅ Product added to smart contract successfully:", contractTxHash);
+        }
+      } catch (contractError: any) {
+        console.error("❌ Smart contract error:", contractError);
+        console.log("⚠️ Continuing without smart contract registration...");
+        // Don't fail the entire request, just continue without smart contract
+      }
+    } else {
+      console.log("ℹ️ Smart contract calls disabled for development");
     }
 
-    // Store contract transaction hash for future use
-    const contractTxHash = submitTx.transactionId.toString();
-    console.log(`✅ Hedera contract transaction: ${contractTxHash}`);
+    // Log contract transaction hash if available
+    if (contractTxHash) {
+      console.log(`✅ Hedera contract transaction: ${contractTxHash}`);
+    }
 
     // ✅ Save to Prisma DB
     const listing = await prisma.listing.create({
