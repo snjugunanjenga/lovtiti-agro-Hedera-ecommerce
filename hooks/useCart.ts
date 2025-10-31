@@ -8,7 +8,7 @@ export interface CartItem {
   productId: string;
   listingId: string;
   sellerId: string;
-  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGROEXPERT' | 'VETERINARIAN';
+  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGROEXPERT';
   name: string;
   description: string;
   price: number;
@@ -82,7 +82,7 @@ export function useCart() {
   // Generate or retrieve session ID
   const getSessionId = useCallback(() => {
     if (typeof window === 'undefined') return '';
-    
+
     let sessionId = sessionStorage.getItem(CART_SESSION_KEY);
     if (!sessionId) {
       sessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
@@ -105,18 +105,18 @@ export function useCart() {
     }
 
     console.log('🔄 Loading cart from localStorage...');
-    
+
     try {
       const sessionId = getSessionId();
       const savedCart = localStorage.getItem(CART_STORAGE_KEY);
       const savedLiked = localStorage.getItem(LIKED_STORAGE_KEY);
-      
+
       console.log('📦 Saved cart data:', savedCart ? 'Found' : 'Not found');
       console.log('❤️ Saved liked data:', savedLiked ? 'Found' : 'Not found');
-      
+
       let items: CartItem[] = [];
       let likedItems: LikedItem[] = [];
-      
+
       if (savedCart) {
         const parsedCart = JSON.parse(savedCart);
         items = (parsedCart.items || []).map((item: any) => ({
@@ -132,7 +132,7 @@ export function useCart() {
         }));
         console.log('✅ Loaded', items.length, 'cart items');
       }
-      
+
       if (savedLiked) {
         const parsedLiked = JSON.parse(savedLiked);
         likedItems = (parsedLiked || []).map((item: any) => ({
@@ -141,10 +141,10 @@ export function useCart() {
         }));
         console.log('✅ Loaded', likedItems.length, 'liked items');
       }
-      
+
       const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      
+
       setCartState({
         items,
         likedItems,
@@ -158,13 +158,13 @@ export function useCart() {
         taxAmount: 0,
         discounts: [],
       });
-      
+
       isInitialized.current = true;
       console.log('✅ Cart initialization complete');
     } catch (error) {
       console.error('❌ Error loading cart from localStorage:', error);
-      setCartState(prev => ({ 
-        ...prev, 
+      setCartState(prev => ({
+        ...prev,
         isLoading: false,
         sessionId: getSessionId(),
       }));
@@ -234,12 +234,12 @@ export function useCart() {
   // Add item to cart with enhanced big tech features
   const addToCart = useCallback((item: Omit<CartItem, 'id' | 'addedAt' | 'updatedAt'>) => {
     console.log('🛒 Adding to cart:', item.name);
-    
+
     // Log cart activity
     const mockUserId = 'user-' + Date.now();
     const mockUserRole = 'BUYER';
     const mockUserEmail = 'user@example.com';
-    
+
     logCartActivity(mockUserId, mockUserRole, mockUserEmail, 'CART_ADD', {
       productId: item.productId,
       listingId: item.listingId,
@@ -254,7 +254,7 @@ export function useCart() {
     });
 
     setCartState(prev => {
-      const existingItem = prev.items.find(cartItem => 
+      const existingItem = prev.items.find(cartItem =>
         cartItem.productId === item.productId && cartItem.listingId === item.listingId
       );
 
@@ -272,15 +272,15 @@ export function useCart() {
         updatedItems = prev.items.map(cartItem =>
           cartItem.id === existingItem.id
             ? {
-                ...cartItem,
-                quantity: newQuantity,
-                updatedAt: now,
-                priceHistory: [
-                  ...(cartItem.priceHistory || []),
-                  { date: now, price: item.price }
-                ].slice(-5),
-                isAvailable: item.isAvailable !== false,
-              }
+              ...cartItem,
+              quantity: newQuantity,
+              updatedAt: now,
+              priceHistory: [
+                ...(cartItem.priceHistory || []),
+                { date: now, price: item.price }
+              ].slice(-5),
+              isAvailable: item.isAvailable !== false,
+            }
             : cartItem
         );
         console.log('✅ Updated existing item, new quantity:', newQuantity);
@@ -325,15 +325,15 @@ export function useCart() {
   // Remove item from cart
   const removeFromCart = useCallback((itemId: string) => {
     console.log('🗑️ Removing from cart:', itemId);
-    
+
     setCartState(prev => {
       const removedItem = prev.items.find(item => item.id === itemId);
-      
+
       if (removedItem) {
         const mockUserId = 'user-' + Date.now();
         const mockUserRole = 'BUYER';
         const mockUserEmail = 'user@example.com';
-        
+
         logCartActivity(mockUserId, mockUserRole, mockUserEmail, 'CART_REMOVE', {
           productId: removedItem.productId,
           listingId: removedItem.listingId,
@@ -365,7 +365,7 @@ export function useCart() {
   // Update item quantity
   const updateQuantity = useCallback((itemId: string, quantity: number) => {
     console.log('🔢 Updating quantity:', itemId, quantity);
-    
+
     if (quantity <= 0) {
       removeFromCart(itemId);
       return;
@@ -406,9 +406,9 @@ export function useCart() {
   // Toggle like status with enhanced metadata
   const toggleLike = useCallback((productId: string, listingId: string, additionalData?: { category?: string; price?: number; sellerType?: string }) => {
     console.log('❤️ Toggling like:', productId);
-    
+
     setCartState(prev => {
-      const existingLike = prev.likedItems.find(like => 
+      const existingLike = prev.likedItems.find(like =>
         like.productId === productId && like.listingId === listingId
       );
 
@@ -442,21 +442,21 @@ export function useCart() {
 
   // Check if item is in cart
   const isInCart = useCallback((productId: string, listingId: string) => {
-    return cartState.items.some(item => 
+    return cartState.items.some(item =>
       item.productId === productId && item.listingId === listingId
     );
   }, [cartState.items]);
 
   // Check if item is liked
   const isLiked = useCallback((productId: string, listingId: string) => {
-    return cartState.likedItems.some(like => 
+    return cartState.likedItems.some(like =>
       like.productId === productId && like.listingId === listingId
     );
   }, [cartState.likedItems]);
 
   // Get cart item by product and listing ID
   const getCartItem = useCallback((productId: string, listingId: string) => {
-    return cartState.items.find(item => 
+    return cartState.items.find(item =>
       item.productId === productId && item.listingId === listingId
     );
   }, [cartState.items]);
@@ -480,11 +480,11 @@ export function useCart() {
 
   const getAbandonedCartTime = useCallback(() => {
     if (cartState.items.length === 0) return null;
-    
+
     const lastActivity = cartState.lastUpdated;
     const now = new Date();
     const diffMinutes = (now.getTime() - lastActivity.getTime()) / (1000 * 60);
-    
+
     if (diffMinutes > 30) {
       return diffMinutes;
     }
@@ -528,7 +528,7 @@ export function useCart() {
     lastUpdated: cartState.lastUpdated,
     sessionId: cartState.sessionId,
     cartVersion: cartState.cartVersion,
-    
+
     // Actions
     addToCart,
     removeFromCart,
@@ -536,7 +536,7 @@ export function useCart() {
     clearCart,
     toggleLike,
     applyDiscount,
-    
+
     // Helpers
     isInCart,
     isLiked,
@@ -544,7 +544,7 @@ export function useCart() {
     getCartRecommendations,
     getAbandonedCartTime,
     getCartSummary,
-    
+
     // Enhanced state
     shippingCost: cartState.shippingCost,
     taxAmount: cartState.taxAmount,

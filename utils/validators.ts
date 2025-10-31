@@ -46,8 +46,8 @@ export const buyerKycSchema = baseKycSchema.extend({
 	monthlyVolume: z.number().optional(), // Expected monthly purchase volume
 });
 
-export const veterinarianKycSchema = baseKycSchema.extend({
-	type: z.literal("VETERINARIAN"),
+export const agroExpertKycSchema = baseKycSchema.extend({
+	type: z.literal("AGROEXPERT"),
 	professionalLicense: z.string().min(1), // Professional veterinary license
 	productSupplierPermits: z.array(z.string()).optional(), // Product supplier permits
 	agriculturalExpertiseCert: z.array(z.string()).optional(), // Agricultural expertise certifications
@@ -61,7 +61,7 @@ export const kycSchema = z.discriminatedUnion("type", [
 	distributorKycSchema,
 	transporterKycSchema,
 	buyerKycSchema,
-	veterinarianKycSchema,
+	agroExpertKycSchema,
 ]);
 
 export const listingSchema = z.object({
@@ -76,5 +76,5 @@ export type FarmerKycInput = z.infer<typeof farmerKycSchema>;
 export type DistributorKycInput = z.infer<typeof distributorKycSchema>;
 export type TransporterKycInput = z.infer<typeof transporterKycSchema>;
 export type BuyerKycInput = z.infer<typeof buyerKycSchema>;
-export type VeterinarianKycInput = z.infer<typeof veterinarianKycSchema>;
+export type AgroExpertKycInput = z.infer<typeof agroExpertKycSchema>;
 export type ListingInput = z.infer<typeof listingSchema>;

@@ -1,7 +1,7 @@
 // Business Logic for Lovtiti Agro Mart
 // Defines the relationships and interactions between different user roles
 
-export type UserRole = 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'VETERINARIAN' | 'ADMIN';
+export type UserRole = 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'AGROEXPERT' | 'ADMIN';
 
 export interface BusinessRule {
   canBuyFrom: UserRole[];
@@ -17,7 +17,7 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   BUYER: {
     canBuyFrom: ['FARMER', 'DISTRIBUTOR'],
     canSellTo: [], // Buyers don't sell products
-    canLeaseFrom: ['VETERINARIAN'], // Buyers can lease equipment from Agro Experts
+    canLeaseFrom: ['AGROEXPERT'], // Buyers can lease equipment from Agro Experts
     canLeaseTo: [], // Buyers don't lease out equipment
     canProvideServicesTo: [], // Buyers don't provide services
     canReceiveServicesFrom: ['TRANSPORTER', 'DISTRIBUTOR'], // Buyers can receive logistics services
@@ -25,9 +25,9 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
 
   // Farmers can sell products to buyers and distributors, lease equipment from Agro Experts
   FARMER: {
-    canBuyFrom: ['VETERINARIAN'], // Farmers can buy equipment/products from Agro Experts
+    canBuyFrom: ['AGROEXPERT'], // Farmers can buy equipment/products from Agro Experts
     canSellTo: ['BUYER', 'DISTRIBUTOR'], // Farmers sell to buyers and distributors
-    canLeaseFrom: ['VETERINARIAN'], // Farmers lease equipment from Agro Experts
+    canLeaseFrom: ['AGROEXPERT'], // Farmers lease equipment from Agro Experts
     canLeaseTo: [], // Farmers don't lease out equipment
     canProvideServicesTo: [], // Farmers don't provide services
     canReceiveServicesFrom: ['TRANSPORTER', 'DISTRIBUTOR'], // Farmers can receive logistics services
@@ -37,7 +37,7 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   DISTRIBUTOR: {
     canBuyFrom: ['FARMER'], // Distributors buy from farmers
     canSellTo: ['BUYER'], // Distributors sell to buyers
-    canLeaseFrom: ['VETERINARIAN'], // Distributors can lease equipment from Agro Experts
+    canLeaseFrom: ['AGROEXPERT'], // Distributors can lease equipment from Agro Experts
     canLeaseTo: [], // Distributors don't lease out equipment
     canProvideServicesTo: ['FARMER', 'BUYER'], // Distributors provide supply chain services
     canReceiveServicesFrom: ['TRANSPORTER'], // Distributors can receive logistics services
@@ -47,14 +47,14 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   TRANSPORTER: {
     canBuyFrom: [], // Transporters don't buy products
     canSellTo: [], // Transporters don't sell products
-    canLeaseFrom: ['VETERINARIAN'], // Transporters can lease equipment from Agro Experts
+    canLeaseFrom: ['AGROEXPERT'], // Transporters can lease equipment from Agro Experts
     canLeaseTo: [], // Transporters don't lease out equipment
     canProvideServicesTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Transporters provide logistics to all
     canReceiveServicesFrom: [], // Transporters don't receive services
   },
 
   // Agro Experts sell equipment/products to farmers and lease equipment to all users
-  VETERINARIAN: {
+  AGROEXPERT: {
     canBuyFrom: [], // Agro Experts don't buy products
     canSellTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Agro Experts sell to farmers, buyers, distributors
     canLeaseFrom: [], // Agro Experts don't lease from others
@@ -139,7 +139,7 @@ export function canUserReceiveServicesFrom(receiverRole: UserRole, providerRole:
 }
 
 export function getValidTransactionsForUser(userRole: UserRole): TransactionType[] {
-  return VALID_TRANSACTIONS.filter(transaction => 
+  return VALID_TRANSACTIONS.filter(transaction =>
     transaction.fromRole === userRole || transaction.toRole === userRole
   );
 }

@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  ShoppingCart, 
-  Truck, 
-  Shield, 
-  Smartphone, 
-  Globe, 
+import {
+  ShoppingCart,
+  Truck,
+  Shield,
+  Smartphone,
+  Globe,
   Star,
   ArrowRight,
   Leaf,
@@ -23,16 +23,16 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[80vh] px-4 sm:px-6 lg:px-8 overflow-hidden flex items-center">
         {/* Background Image */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100"
           style={{
             backgroundImage: 'url(/hero-bg.png)',
           }}
         />
-        
+
         {/* Overlay for better text readability */}
         <div className="absolute inset-0 bg-gradient-to-br from-green-50/10 to-emerald-100/80" />
-        
+
         {/* Content */}
         <div className="relative max-w-7xl mx-auto z-10">
           <div className="text-center">
@@ -41,7 +41,7 @@ export default function Home() {
               <span className="text-green-600 block">Global Buyers</span>
             </h1>
             <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto drop-shadow-sm">
-              A decentralized marketplace powered by blockchain technology, enabling secure, 
+              A decentralized marketplace powered by blockchain technology, enabling secure,
               transparent, and fair trade for African agricultural products.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -224,7 +224,7 @@ export default function Home() {
                 <span className="text-2xl font-bold">Lovtiti Agro Mart</span>
               </div>
               <p className="text-gray-400 mb-4">
-                Connecting African farmers with global buyers through blockchain technology. 
+                Connecting African farmers with global buyers through blockchain technology.
                 A comprehensive agricultural ecosystem for all stakeholders.
               </p>
               <div className="flex space-x-4">
@@ -326,7 +326,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Lovtiti Agro Mart. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} Lovtiti Agro Mart. All rights reserved.</p>
             <p className="mt-2 text-sm">Empowering African agriculture through blockchain technology</p>
           </div>
         </div>

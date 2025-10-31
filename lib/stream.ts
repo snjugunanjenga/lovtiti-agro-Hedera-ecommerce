@@ -11,10 +11,10 @@ export const streamClient = StreamChat.getInstance(STREAM_API_KEY);
 export const getUserRoleForStream = (clerkRole: string) => {
   const roleMap: Record<string, string> = {
     'FARMER': 'farmer',
-    'BUYER': 'buyer', 
+    'BUYER': 'buyer',
     'DISTRIBUTOR': 'distributor',
     'TRANSPORTER': 'transporter',
-    'VETERINARIAN': 'agro-vet',
+    'AGROEXPERT': 'agro-vet',
     'ADMIN': 'admin'
   };
   return roleMap[clerkRole] || 'buyer';
@@ -71,7 +71,7 @@ export const createOrGetChannel = async (
 // Stream Chat channel types for different user interactions
 export const CHANNEL_TYPES = {
   FARMER_VET: 'farmer-vet',
-  FARMER_BUYER: 'farmer-buyer', 
+  FARMER_BUYER: 'farmer-buyer',
   FARMER_DISTRIBUTOR: 'farmer-distributor',
   FARMER_TRANSPORTER: 'farmer-transporter',
   GROUP_FARMERS: 'group-farmers',

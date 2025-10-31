@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
-  ShoppingCart, 
-  Heart, 
-  Check, 
+import {
+  ShoppingCart,
+  Heart,
+  Check,
   Loader2,
   Plus,
   Minus,
@@ -20,7 +20,7 @@ interface ProductActionsProps {
   productId: string;
   listingId: string;
   sellerId: string;
-  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'VETERINARIAN';
+  sellerType: 'FARMER' | 'DISTRIBUTOR' | 'AGROEXPERT';
   name: string;
   description: string;
   price: number;
@@ -56,7 +56,7 @@ export default function ProductActions({
   const [quantity, setQuantity] = useState(1);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [isTogglingLike, setIsTogglingLike] = useState(false);
-  
+
   // const { user, isSignedIn } = useUser();
   const user = null; // Temporary for development
   const isSignedIn = false; // Temporary for development
@@ -64,10 +64,10 @@ export default function ProductActions({
 
   // Get user role (default to BUYER for now)
   const userRole = 'BUYER' as any; // Default role for development
-  
+
   // Check if user can buy from this seller based on business logic
   const canBuy = canUserBuyFrom(userRole as any, sellerType);
-  
+
   const {
     addToCart,
     toggleLike,
@@ -102,7 +102,7 @@ export default function ProductActions({
         expiryDate,
         certifications,
       });
-      
+
       // Show success feedback
       setTimeout(() => {
         setIsAddingToCart(false);
@@ -177,13 +177,12 @@ export default function ProductActions({
         <Button
           onClick={handleAddToCart}
           disabled={isAddingToCart || isInCartStatus || !canBuy}
-          className={`flex-1 ${
-            isInCartStatus
-              ? 'bg-green-600 text-white cursor-not-allowed'
-              : !canBuy
+          className={`flex-1 ${isInCartStatus
+            ? 'bg-green-600 text-white cursor-not-allowed'
+            : !canBuy
               ? 'bg-gray-400 text-white cursor-not-allowed'
               : 'bg-green-600 hover:bg-green-700'
-          }`}
+            }`}
         >
           {isAddingToCart ? (
             <>
@@ -213,19 +212,17 @@ export default function ProductActions({
           variant="outline"
           onClick={handleToggleLike}
           disabled={isTogglingLike}
-          className={`w-12 h-10 p-0 ${
-            isLikedStatus
-              ? 'text-red-600 border-red-300 bg-red-50 hover:bg-red-100'
-              : 'text-gray-600 border-gray-300 hover:border-red-300 hover:text-red-600'
-          }`}
+          className={`w-12 h-10 p-0 ${isLikedStatus
+            ? 'text-red-600 border-red-300 bg-red-50 hover:bg-red-100'
+            : 'text-gray-600 border-gray-300 hover:border-red-300 hover:text-red-600'
+            }`}
         >
           {isTogglingLike ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
-            <Heart 
-              className={`w-4 h-4 ${
-                isLikedStatus ? 'fill-current' : ''
-              }`} 
+            <Heart
+              className={`w-4 h-4 ${isLikedStatus ? 'fill-current' : ''
+                }`}
             />
           )}
         </Button>
@@ -257,7 +254,7 @@ export default function ProductActions({
           </p>
         </div>
       )}
-      
+
       {isLikedStatus && (
         <div className="text-center">
           <p className="text-sm text-red-600 font-medium">
@@ -279,7 +276,7 @@ export default function ProductActions({
             {userRole === 'FARMER' && sellerType === 'FARMER' && 'Farmers cannot buy from other farmers'}
             {userRole === 'DISTRIBUTOR' && sellerType === 'DISTRIBUTOR' && 'Distributors cannot buy from other distributors'}
             {userRole === 'TRANSPORTER' && 'Transporters cannot buy products'}
-            {userRole === 'VETERINARIAN' && sellerType === 'VETERINARIAN' && 'Agro Experts cannot buy from other Agro Experts'}
+            {userRole === 'AGROEXPERT' && sellerType === 'AGROEXPERT' && 'Agro Experts cannot buy from other Agro Experts'}
             {userRole === 'BUYER' && 'Buyers can buy from any seller'}
           </p>
         </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
-import { 
+import {
   Leaf,
   ShoppingCart,
   Menu,
@@ -13,7 +13,6 @@ import {
   Truck,
   Stethoscope,
   Users,
-  ChevronDown,
   Shield,
   Lock,
   Settings
@@ -24,32 +23,32 @@ import { useCart } from "@/hooks/useCart";
 export default function Navbar() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDashboardDropdownOpen, setIsDashboardDropdownOpen] = useState(false);
+
   const { user } = useUser();
   const { totalItems } = useCart();
 
   // Get user role from metadata or user object
   const getUserRole = () => {
     if (!user) return null;
-    
+
     // Get role from Clerk metadata
     const role = user.publicMetadata?.role as string;
-    
+
     // If no role in metadata, try to get from database via API
     if (!role || role === 'UserRole') {
       // Fallback to 'BUYER' for now, but we should fetch from database
       return 'BUYER';
     }
-    
+
     return role;
   };
 
   const userRole = getUserRole();
-  
+
   // Get display name for role
   const getRoleDisplayName = (role: string | null) => {
     if (!role) return 'User';
-    
+
     switch (role) {
       case 'BUYER': return 'Buyer';
       case 'FARMER': return 'Farmer';
@@ -68,53 +67,7 @@ export default function Navbar() {
     { name: 'Learn More', href: '/learn-more', public: true },
   ];
 
-  const dashboards = [
-    {
-      name: 'Farmer Dashboard',
-      href: '/dashboard/farmer',
-      icon: Package,
-      description: 'Manage products & orders',
-      color: 'text-green-600',
-      bgColor: 'bg-green-100',
-      roles: ['FARMER', 'ADMIN']
-    },
-    {
-      name: 'Buyer Dashboard',
-      href: '/dashboard/buyer',
-      icon: ShoppingCart,
-      description: 'Browse & purchase products',
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-100',
-      roles: ['BUYER', 'ADMIN']
-    },
-    {
-      name: 'Distributor Dashboard',
-      href: '/dashboard/distributor',
-      icon: Package,
-      description: 'Manage inventory & suppliers',
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100',
-      roles: ['DISTRIBUTOR', 'ADMIN']
-    },
-    {
-      name: 'Transporter Dashboard',
-      href: '/dashboard/transporter',
-      icon: Truck,
-      description: 'Route optimization & tracking',
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100',
-      roles: ['TRANSPORTER', 'ADMIN']
-    },
-    {
-      name: 'Agro Expert Dashboard',
-      href: '/dashboard/agro-vet',
-      icon: Stethoscope,
-      description: 'Products, equipment & advice',
-      color: 'text-red-600',
-      bgColor: 'bg-red-100',
-      roles: ['AGROEXPERT', 'ADMIN']
-    },
-  ];
+
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -123,15 +76,34 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  const canAccessDashboard = (dashboard: typeof dashboards[0]) => {
-    if (!user) return false;
-    return dashboard.roles.includes(userRole || '');
+  const getUserDashboard = () => {
+    if (!userRole) return null;
+
+    const roleToPath: { [key: string]: string } = {
+      'FARMER': '/dashboard/farmer',
+      'BUYER': '/dashboard/buyer',
+      'DISTRIBUTOR': '/dashboard/distributor',
+      'TRANSPORTER': '/dashboard/transporter',
+      'AGROEXPERT': '/dashboard/agro-vet',
+      'ADMIN': '/dashboard/farmer' // Default to farmer for admin
+    };
+
+    return roleToPath[userRole] || '/dashboard/buyer';
   };
 
-  const getAvailableDashboards = () => {
-    // Show all dashboards for all users for now
-    return dashboards;
-    // return dashboards.filter(canAccessDashboard);
+  const getDashboardName = () => {
+    if (!userRole) return 'Dashboard';
+
+    const roleToName: { [key: string]: string } = {
+      'FARMER': 'Farmer Dashboard',
+      'BUYER': 'Buyer Dashboard',
+      'DISTRIBUTOR': 'Distributor Dashboard',
+      'TRANSPORTER': 'Transporter Dashboard',
+      'AGROEXPERT': 'Agro Expert Dashboard',
+      'ADMIN': 'Admin Dashboard'
+    };
+
+    return roleToName[userRole] || 'Dashboard';
   };
 
   return (
@@ -155,90 +127,35 @@ export default function Navbar() {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                  isActive(item.href)
-                    ? 'text-green-600 bg-green-50 shadow-sm'
-                    : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
-                }`}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${isActive(item.href)
+                  ? 'text-green-600 bg-green-50 shadow-sm'
+                  : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
+                  }`}
               >
                 {item.name}
               </Link>
             ))}
 
-            {/* Dashboard Dropdown */}
-            <div className="relative group">
-                <button
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    pathname.startsWith('/dashboard')
-                      ? 'text-green-600 bg-green-50 shadow-sm'
-                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
+            {/* Dashboard Link */}
+            {user && userRole && (
+              <Link
+                href={getUserDashboard() || '/dashboard/buyer'}
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${pathname.startsWith('/dashboard')
+                  ? 'text-green-600 bg-green-50 shadow-sm'
+                  : 'text-gray-700 hover:text-green-600 hover:bg-green-50 hover:shadow-sm'
                   }`}
-                  onMouseEnter={() => setIsDashboardDropdownOpen(true)}
-                  onMouseLeave={() => setIsDashboardDropdownOpen(false)}
-                >
-                  <Users className="h-4 w-4 mr-2" />
-                  Dashboards
-                  <ChevronDown className={`h-4 w-4 ml-1 transition-transform duration-200 ${
-                    isDashboardDropdownOpen ? 'rotate-180' : ''
-                  }`} />
-                </button>
+              >
+                <Users className="h-4 w-4 mr-2" />
+                Dashboard
+              </Link>
+            )}
 
-                {/* Dropdown Menu */}
-                {isDashboardDropdownOpen && (
-                  <div
-                    className="absolute left-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
-                    onMouseEnter={() => setIsDashboardDropdownOpen(true)}
-                    onMouseLeave={() => setIsDashboardDropdownOpen(false)}
-                  >
-                    <div className="py-2">
-                      <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100">
-                        Your Dashboards
-                      </div>
-                      {getAvailableDashboards().map((dashboard) => {
-                        const Icon = dashboard.icon;
-                        return (
-                          <Link
-                            key={dashboard.name}
-                            href={dashboard.href}
-                            className={`flex items-center px-4 py-3 text-sm transition-all duration-200 hover:bg-gray-50 ${
-                              isActive(dashboard.href)
-                                ? 'bg-green-50 text-green-700 border-r-2 border-green-500'
-                                : 'text-gray-700 hover:text-green-600'
-                            }`}
-                            onClick={() => setIsDashboardDropdownOpen(false)}
-                          >
-                            <div className={`w-10 h-10 rounded-lg ${dashboard.bgColor} flex items-center justify-center mr-3`}>
-                              <Icon className={`w-5 h-5 ${dashboard.color}`} />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium">{dashboard.name}</div>
-                              <div className="text-xs text-gray-500">{dashboard.description}</div>
-                            </div>
-                            {isActive(dashboard.href) && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            )}
-                          </Link>
-                        );
-                      })}
-                      
-                      {getAvailableDashboards().length === 0 && (
-                        <div className="px-4 py-6 text-center">
-                          <Lock className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                          <p className="text-sm text-gray-500">No dashboards available</p>
-                          <p className="text-xs text-gray-400 mt-1">Complete your profile to access dashboards</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            
-            
+
             {/* Cart Button */}
             <Link href="/cart">
-              <Button 
-                variant="outline" 
-                size="sm" 
+              <Button
+                variant="outline"
+                size="sm"
                 className="flex items-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
               >
                 <ShoppingCart className="h-4 w-4" />
@@ -311,60 +228,38 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    isActive(item.href)
-                      ? 'text-green-600 bg-green-50 shadow-sm'
-                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-                  }`}
+                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${isActive(item.href)
+                    ? 'text-green-600 bg-green-50 shadow-sm'
+                    : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                    }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.name}
                 </Link>
               ))}
 
-              {/* Mobile Dashboard Section */}
-              <div className="pt-4 border-t border-green-200">
-                  <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Your Dashboards
-                  </div>
-                  {getAvailableDashboards().map((dashboard) => {
-                    const Icon = dashboard.icon;
-                    return (
-                      <Link
-                        key={dashboard.name}
-                        href={dashboard.href}
-                        className={`flex items-center px-3 py-2 rounded-md text-sm transition-all duration-200 ${
-                          isActive(dashboard.href)
-                            ? 'text-green-600 bg-green-50 shadow-sm'
-                            : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
-                        }`}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        <div className={`w-8 h-8 rounded-lg ${dashboard.bgColor} flex items-center justify-center mr-3`}>
-                          <Icon className={`w-4 h-4 ${dashboard.color}`} />
-                        </div>
-                        <div>
-                          <div className="font-medium">{dashboard.name}</div>
-                          <div className="text-xs text-gray-500">{dashboard.description}</div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                  
-                  {getAvailableDashboards().length === 0 && (
-                    <div className="px-3 py-4 text-center">
-                      <Lock className="w-6 h-6 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm text-gray-500">No dashboards available</p>
-                      <p className="text-xs text-gray-400 mt-1">Complete your profile to access dashboards</p>
-                    </div>
-                  )}
+              {/* Mobile Dashboard Link */}
+              {user && userRole && (
+                <div className="pt-4 border-t border-green-200">
+                  <Link
+                    href={getUserDashboard() || '/dashboard/buyer'}
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${pathname.startsWith('/dashboard')
+                      ? 'text-green-600 bg-green-50 shadow-sm'
+                      : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                      }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Link>
                 </div>
-              
+              )}
+
               {/* Mobile Cart */}
               <Link href="/cart" className="block">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   className="w-full mt-4 flex items-center justify-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
                 >
                   <ShoppingCart className="h-4 w-4" />
@@ -376,7 +271,7 @@ export default function Navbar() {
                   )}
                 </Button>
               </Link>
-              
+
               {/* Mobile Auth */}
               <div className="mt-4 pt-4 border-t border-green-200 space-y-2">
                 <SignedOut>
