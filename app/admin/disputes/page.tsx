@@ -162,7 +162,7 @@ function DisputeManagementContent() {
       complainant: {
         id: 'user_5',
         name: 'Dr. Ahmed Vet',
-        role: 'VETERINARIAN',
+        role: 'AGROEXPERT',
         email: 'ahmed@example.com'
       },
       respondent: {
@@ -182,7 +182,7 @@ function DisputeManagementContent() {
       },
       issue: {
         title: 'Consultation Not Provided',
-        description: 'The veterinarian consultation was scheduled but the farmer was not available at the agreed time.',
+        description: 'The AGROEXPERT consultation was scheduled but the farmer was not available at the agreed time.',
         evidence: ['appointment_confirmation.pdf'],
         requestedResolution: 'RESCHEDULE',
         requestedAmount: 0
@@ -197,7 +197,7 @@ function DisputeManagementContent() {
         {
           id: 'msg_5',
           sender: 'Dr. Ahmed Vet',
-          senderRole: 'VETERINARIAN',
+          senderRole: 'AGROEXPERT',
           content: 'I arrived at the scheduled time but the farmer was not available.',
           timestamp: '2024-01-13T12:15:00Z',
           attachments: ['appointment_confirmation.pdf']

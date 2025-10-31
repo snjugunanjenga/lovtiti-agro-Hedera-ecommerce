@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  Shield, 
-  Users, 
-  FileText, 
+import {
+  Shield,
+  Users,
+  FileText,
   AlertTriangle,
   TrendingUp,
   Clock,
@@ -81,7 +81,7 @@ function AdminDashboardContent() {
       id: '5',
       type: 'kyc_submitted',
       user: 'Dr. Ahmed Vet',
-      role: 'VETERINARIAN',
+      role: 'AGROEXPERT',
       timestamp: '3 hours ago',
       status: 'pending'
     }
@@ -92,7 +92,7 @@ function AdminDashboardContent() {
     { role: 'BUYER', count: 10000, percentage: 60, color: 'bg-blue-500' },
     { role: 'DISTRIBUTOR', count: 500, percentage: 3, color: 'bg-purple-500' },
     { role: 'TRANSPORTER', count: 1000, percentage: 6, color: 'bg-orange-500' },
-    { role: 'VETERINARIAN', count: 200, percentage: 1, color: 'bg-red-500' },
+    { role: 'AGROEXPERT', count: 200, percentage: 1, color: 'bg-red-500' },
     { role: 'ADMIN', count: 50, percentage: 0.3, color: 'bg-gray-500' }
   ];
 

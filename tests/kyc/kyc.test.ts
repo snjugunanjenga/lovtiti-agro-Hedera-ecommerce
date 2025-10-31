@@ -1,10 +1,10 @@
-import { 
-	kycSchema, 
-	farmerKycSchema, 
-	distributorKycSchema, 
-	transporterKycSchema, 
-	buyerKycSchema, 
-	veterinarianKycSchema 
+import {
+	kycSchema,
+	farmerKycSchema,
+	distributorKycSchema,
+	transporterKycSchema,
+	buyerKycSchema,
+	AGROEXPERTKycSchema
 } from '../../utils/validators';
 
 describe('KYC Validation System', () => {
@@ -76,10 +76,10 @@ describe('KYC Validation System', () => {
 			expect(result.success).toBe(true);
 		});
 
-		it('should validate veterinarian KYC data', () => {
-			const veterinarianData = {
+		it('should validate AGROEXPERT KYC data', () => {
+			const AGROEXPERTData = {
 				...baseKycData,
-				type: 'VETERINARIAN' as const,
+				type: 'AGROEXPERT' as const,
 				professionalLicense: 'PL123456789',
 				productSupplierPermits: ['PSP123', 'PSP456'],
 				agriculturalExpertiseCert: ['AEC123', 'AEC456'],
@@ -87,7 +87,7 @@ describe('KYC Validation System', () => {
 				yearsOfExperience: 10,
 			};
 
-			const result = veterinarianKycSchema.safeParse(veterinarianData);
+			const result = AGROEXPERTKycSchema.safeParse(AGROEXPERTData);
 			expect(result.success).toBe(true);
 		});
 	});
@@ -142,19 +142,19 @@ describe('KYC Validation System', () => {
 			expect(result.success).toBe(false);
 		});
 
-		it('should reject veterinarian data without professional license', () => {
-			const invalidVeterinarianData = {
+		it('should reject AGROEXPERT data without professional license', () => {
+			const invalidAGROEXPERTData = {
 				fullName: 'Dr. John Doe',
 				country: 'Nigeria',
 				address: '123 Main Street, Lagos',
 				idNumber: '1234567890',
 				phone: '+2341234567890',
 				hederaWallet: '0.0.123456789012345678901234567890',
-				type: 'VETERINARIAN' as const,
+				type: 'AGROEXPERT' as const,
 				// Missing professionalLicense (required)
 			};
 
-			const result = veterinarianKycSchema.safeParse(invalidVeterinarianData);
+			const result = AGROEXPERTKycSchema.safeParse(invalidAGROEXPERTData);
 			expect(result.success).toBe(false);
 		});
 	});

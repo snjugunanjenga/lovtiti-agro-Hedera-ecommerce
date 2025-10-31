@@ -41,7 +41,7 @@ export default function TestUserCreationPage() {
 
       const data = await response.json();
       setResult(data);
-      
+
       if (data.success) {
         // Clear form
         setFormData({ id: '', email: '', role: 'BUYER' });
@@ -129,7 +129,7 @@ export default function TestUserCreationPage() {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="role">Role</Label>
               <select
@@ -142,14 +142,14 @@ export default function TestUserCreationPage() {
                 <option value="FARMER">Farmer</option>
                 <option value="DISTRIBUTOR">Distributor</option>
                 <option value="TRANSPORTER">Transporter</option>
-                <option value="VETERINARIAN">Agro Expert</option>
+                <option value="AGROEXPERT">Agro Expert</option>
                 <option value="ADMIN">Admin</option>
               </select>
             </div>
 
             <div className="flex space-x-2">
-              <Button 
-                onClick={createUser} 
+              <Button
+                onClick={createUser}
                 disabled={isLoading}
                 className="bg-green-600 hover:bg-green-700"
               >
@@ -224,15 +224,14 @@ export default function TestUserCreationPage() {
                           Created: {new Date(user.createdAt).toLocaleString()}
                         </p>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        user.role === 'ADMIN' ? 'bg-red-100 text-red-800' :
-                        user.role === 'FARMER' ? 'bg-green-100 text-green-800' :
-                        user.role === 'BUYER' ? 'bg-blue-100 text-blue-800' :
-                        user.role === 'DISTRIBUTOR' ? 'bg-purple-100 text-purple-800' :
-                        user.role === 'TRANSPORTER' ? 'bg-orange-100 text-orange-800' :
-                        user.role === 'VETERINARIAN' ? 'bg-red-100 text-red-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 py-1 rounded-full text-xs ${user.role === 'ADMIN' ? 'bg-red-100 text-red-800' :
+                          user.role === 'FARMER' ? 'bg-green-100 text-green-800' :
+                            user.role === 'BUYER' ? 'bg-blue-100 text-blue-800' :
+                              user.role === 'DISTRIBUTOR' ? 'bg-purple-100 text-purple-800' :
+                                user.role === 'TRANSPORTER' ? 'bg-orange-100 text-orange-800' :
+                                  user.role === 'AGROEXPERT' ? 'bg-red-100 text-red-800' :
+                                    'bg-gray-100 text-gray-800'
+                        }`}>
                         {user.role}
                       </span>
                     </div>

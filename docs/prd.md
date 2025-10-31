@@ -172,11 +172,11 @@ Product Requirements Document (PRD)
 
 ### Supply Chain Workflow
 1. **Product Listing:** Farmers list products with specifications and quality certifications
-2. **Service Listing:** Distributors, transporters, and veterinarians list their services
+2. **Service Listing:** Distributors, transporters, and AGROEXPERTs list their services
 3. **Order Placement:** Buyers place orders with specific requirements
 4. **Service Matching:** Platform matches orders with appropriate transporters and distributors
 5. **Logistics Coordination:** Automated route planning and delivery scheduling
-6. **Quality Assurance:** Veterinarians provide health certificates and quality inspections
+6. **Quality Assurance:** AGROEXPERTs provide health certificates and quality inspections
 7. **Payment Processing:** Secure escrow payments via Hedera smart contracts
 8. **Delivery Confirmation:** Real-time tracking and delivery confirmation
 9. **Payment Release:** Automatic payment release upon successful delivery
@@ -186,7 +186,7 @@ Product Requirements Document (PRD)
 - **Distributor Flow:** Inventory management → Supplier connections → Order fulfillment → Market analytics
 - **Transporter Flow:** Route optimization → Cargo tracking → Delivery management → Payment processing
 - **Buyer Flow:** Product discovery → Order placement → Supply chain tracking → Quality verification
-- **Veterinarian Flow:** Service scheduling → Health record management → Client communication → Payment processing
+- **AGROEXPERT Flow:** Service scheduling → Health record management → Client communication → Payment processing
 
 ## 8. Success Metrics
 

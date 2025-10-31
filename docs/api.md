@@ -22,7 +22,7 @@ Authorization: Bearer <clerk_jwt_token>
 - `DISTRIBUTOR` - Supply chain intermediaries
 - `TRANSPORTER` - Logistics service providers
 - `BUYER` - Product purchasers
-- `VETERINARIAN` - Animal health professionals
+- `AGROEXPERT` - Animal health professionals
 - `ADMIN` - Platform administrators
 
 ### Role-Based Access Control

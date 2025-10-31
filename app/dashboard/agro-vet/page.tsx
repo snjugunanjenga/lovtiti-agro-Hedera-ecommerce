@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // import DashboardGuard from "@/components/DashboardGuard";
-import { 
-  Stethoscope, 
-  Package, 
-  Wrench, 
-  MessageCircle, 
-  Search, 
-  Filter, 
+import {
+  Stethoscope,
+  Package,
+  Wrench,
+  MessageCircle,
+  Search,
+  Filter,
   Plus,
   BarChart3,
   Users,
@@ -134,51 +134,50 @@ function AgroVetDashboardContent() {
                 <div className="space-y-4">
                   {/* Sample products */}
                   {[
-                    { 
-                      name: "High-Yield Maize Seeds", 
-                      type: "SEEDS", 
-                      price: "$25/kg", 
-                      stock: 150, 
+                    {
+                      name: "High-Yield Maize Seeds",
+                      type: "SEEDS",
+                      price: "$25/kg",
+                      stock: 150,
                       status: "Active",
                       category: "Cereals"
                     },
-                    { 
-                      name: "Organic Pesticide Spray", 
-                      type: "PESTICIDES", 
-                      price: "$12/liter", 
-                      stock: 45, 
+                    {
+                      name: "Organic Pesticide Spray",
+                      type: "PESTICIDES",
+                      price: "$12/liter",
+                      stock: 45,
                       status: "Active",
                       category: "Chemicals"
                     },
-                    { 
-                      name: "Tractor Rental", 
-                      type: "EQUIPMENT", 
-                      price: "$50/day", 
-                      stock: 2, 
+                    {
+                      name: "Tractor Rental",
+                      type: "EQUIPMENT",
+                      price: "$50/day",
+                      stock: 2,
                       status: "Leased",
                       category: "Machinery"
                     },
-                    { 
-                      name: "Livestock Vaccines", 
-                      type: "VACCINES", 
-                      price: "$8/dose", 
-                      stock: 0, 
+                    {
+                      name: "Livestock Vaccines",
+                      type: "VACCINES",
+                      price: "$8/dose",
+                      stock: 0,
                       status: "Out of Stock",
                       category: "Veterinary"
                     },
                   ].map((product, index) => (
                     <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                       <div className="flex items-center space-x-4">
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                          product.type === 'SEEDS' ? 'bg-green-100' :
-                          product.type === 'PESTICIDES' ? 'bg-red-100' :
-                          product.type === 'EQUIPMENT' ? 'bg-blue-100' :
-                          'bg-purple-100'
-                        }`}>
+                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${product.type === 'SEEDS' ? 'bg-green-100' :
+                            product.type === 'PESTICIDES' ? 'bg-red-100' :
+                              product.type === 'EQUIPMENT' ? 'bg-blue-100' :
+                                'bg-purple-100'
+                          }`}>
                           {product.type === 'SEEDS' ? <Package className="w-6 h-6 text-green-600" /> :
-                           product.type === 'PESTICIDES' ? <Package className="w-6 h-6 text-red-600" /> :
-                           product.type === 'EQUIPMENT' ? <Wrench className="w-6 h-6 text-blue-600" /> :
-                           <Stethoscope className="w-6 h-6 text-purple-600" />}
+                            product.type === 'PESTICIDES' ? <Package className="w-6 h-6 text-red-600" /> :
+                              product.type === 'EQUIPMENT' ? <Wrench className="w-6 h-6 text-blue-600" /> :
+                                <Stethoscope className="w-6 h-6 text-purple-600" />}
                         </div>
                         <div>
                           <h3 className="font-medium">{product.name}</h3>
@@ -197,11 +196,10 @@ function AgroVetDashboardContent() {
                           <p className="text-sm text-gray-500">{product.stock} in stock</p>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            product.status === 'Active' ? 'bg-green-100 text-green-800' :
-                            product.status === 'Leased' ? 'bg-blue-100 text-blue-800' :
-                            'bg-red-100 text-red-800'
-                          }`}>
+                          <span className={`px-2 py-1 rounded-full text-xs ${product.status === 'Active' ? 'bg-green-100 text-green-800' :
+                              product.status === 'Leased' ? 'bg-blue-100 text-blue-800' :
+                                'bg-red-100 text-red-800'
+                            }`}>
                             {product.status}
                           </span>
                           <Button variant="outline" size="sm">Edit</Button>
@@ -224,24 +222,24 @@ function AgroVetDashboardContent() {
               <CardContent>
                 <div className="space-y-4">
                   {[
-                    { 
-                      equipment: "John Deere Tractor", 
-                      client: "Green Valley Farm", 
-                      rate: "$50/day", 
+                    {
+                      equipment: "John Deere Tractor",
+                      client: "Green Valley Farm",
+                      rate: "$50/day",
                       status: "Active",
                       duration: "5 days"
                     },
-                    { 
-                      equipment: "Irrigation System", 
-                      client: "Sunrise Agriculture", 
-                      rate: "$30/day", 
+                    {
+                      equipment: "Irrigation System",
+                      client: "Sunrise Agriculture",
+                      rate: "$30/day",
                       status: "Completed",
                       duration: "3 days"
                     },
-                    { 
-                      equipment: "Harvesting Machine", 
-                      client: "Crop Masters Ltd", 
-                      rate: "$75/day", 
+                    {
+                      equipment: "Harvesting Machine",
+                      client: "Crop Masters Ltd",
+                      rate: "$75/day",
                       status: "Scheduled",
                       duration: "7 days"
                     },
@@ -257,11 +255,10 @@ function AgroVetDashboardContent() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          lease.status === 'Active' ? 'bg-green-100 text-green-800' :
-                          lease.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className={`px-2 py-1 rounded-full text-xs ${lease.status === 'Active' ? 'bg-green-100 text-green-800' :
+                            lease.status === 'Completed' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {lease.status}
                         </span>
                         <Button variant="outline" size="sm">View</Button>
@@ -281,24 +278,24 @@ function AgroVetDashboardContent() {
               <CardContent>
                 <div className="space-y-3">
                   {[
-                    { 
-                      client: "Farm Fresh Co", 
-                      type: "Crop Management", 
-                      status: "Scheduled", 
+                    {
+                      client: "Farm Fresh Co",
+                      type: "Crop Management",
+                      status: "Scheduled",
                       time: "2:00 PM",
                       method: "Video Call"
                     },
-                    { 
-                      client: "Rural Farmers Group", 
-                      type: "Pest Control", 
-                      status: "Completed", 
+                    {
+                      client: "Rural Farmers Group",
+                      type: "Pest Control",
+                      status: "Completed",
                       time: "10:00 AM",
                       method: "On-site"
                     },
-                    { 
-                      client: "Organic Growers", 
-                      type: "Soil Health", 
-                      status: "In Progress", 
+                    {
+                      client: "Organic Growers",
+                      type: "Soil Health",
+                      status: "In Progress",
                       time: "4:00 PM",
                       method: "Phone Call"
                     },
@@ -315,11 +312,10 @@ function AgroVetDashboardContent() {
                         </div>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          consultation.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                          consultation.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                          'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className={`px-2 py-1 rounded-full text-xs ${consultation.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                            consultation.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
+                              'bg-yellow-100 text-yellow-800'
+                          }`}>
                           {consultation.status}
                         </span>
                         {consultation.method === 'Video Call' && (
@@ -407,42 +403,41 @@ function AgroVetDashboardContent() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { 
-                  action: "New product listed", 
-                  item: "High-Yield Maize Seeds", 
-                  time: "2 hours ago", 
+                {
+                  action: "New product listed",
+                  item: "High-Yield Maize Seeds",
+                  time: "2 hours ago",
                   type: "product"
                 },
-                { 
-                  action: "Equipment lease completed", 
-                  item: "Tractor rental to Green Valley Farm", 
-                  time: "4 hours ago", 
+                {
+                  action: "Equipment lease completed",
+                  item: "Tractor rental to Green Valley Farm",
+                  time: "4 hours ago",
                   type: "lease"
                 },
-                { 
-                  action: "Consultation completed", 
-                  item: "Crop management advice for Farm Fresh Co", 
-                  time: "6 hours ago", 
+                {
+                  action: "Consultation completed",
+                  item: "Crop management advice for Farm Fresh Co",
+                  time: "6 hours ago",
                   type: "consultation"
                 },
-                { 
-                  action: "New client registered", 
-                  item: "Sunrise Agriculture joined your network", 
-                  time: "1 day ago", 
+                {
+                  action: "New client registered",
+                  item: "Sunrise Agriculture joined your network",
+                  time: "1 day ago",
                   type: "client"
                 },
               ].map((activity, index) => (
                 <div key={index} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    activity.type === 'product' ? 'bg-green-100' :
-                    activity.type === 'lease' ? 'bg-blue-100' :
-                    activity.type === 'consultation' ? 'bg-purple-100' :
-                    'bg-yellow-100'
-                  }`}>
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activity.type === 'product' ? 'bg-green-100' :
+                      activity.type === 'lease' ? 'bg-blue-100' :
+                        activity.type === 'consultation' ? 'bg-purple-100' :
+                          'bg-yellow-100'
+                    }`}>
                     {activity.type === 'product' ? <Package className="w-4 h-4 text-green-600" /> :
-                     activity.type === 'lease' ? <Wrench className="w-4 h-4 text-blue-600" /> :
-                     activity.type === 'consultation' ? <MessageCircle className="w-4 h-4 text-purple-600" /> :
-                     <Users className="w-4 h-4 text-yellow-600" />}
+                      activity.type === 'lease' ? <Wrench className="w-4 h-4 text-blue-600" /> :
+                        activity.type === 'consultation' ? <MessageCircle className="w-4 h-4 text-purple-600" /> :
+                          <Users className="w-4 h-4 text-yellow-600" />}
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">{activity.action}</p>
@@ -464,11 +459,11 @@ function AgroVetDashboardContent() {
 export default function AgroVetDashboard() {
   return (
     // <DashboardGuard
-    //   allowedRoles={['VETERINARIAN', 'ADMIN']}
+    //   allowedRoles={['AGROEXPERT', 'ADMIN']}
     //   dashboardName="Agro Expert Dashboard"
     //   dashboardDescription="Manage your products, equipment leasing, and expert services"
     // >
-      <AgroVetDashboardContent />
+    <AgroVetDashboardContent />
     // </DashboardGuard>
   );
 }

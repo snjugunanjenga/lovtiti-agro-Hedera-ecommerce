@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Stethoscope, User, MapPin, Phone, CreditCard, Globe, CheckCircle, FileText, Award, Plus, X } from 'lucide-react';
 import { agroExpertKycSchema } from "@/utils/validators";
 
-export default function VeterinarianOnboarding() {
+export default function AGROEXPERTOnboarding() {
 	const [formData, setFormData] = useState({
 		fullName: '',
 		phone: '',
@@ -43,8 +43,8 @@ export default function VeterinarianOnboarding() {
 		setError(null);
 
 		try {
-			const parsed = agroExpertKycSchema.safeParse({ 
-				...formData, 
+			const parsed = agroExpertKycSchema.safeParse({
+				...formData,
 				type: "AGROEXPERT" as const,
 				productSupplierPermits: formData.productSupplierPermits.filter(permit => permit.trim() !== ''),
 				agriculturalExpertiseCert: formData.agriculturalExpertiseCert.filter(cert => cert.trim() !== ''),
@@ -126,7 +126,7 @@ export default function VeterinarianOnboarding() {
 						<Stethoscope className="h-8 w-8 text-teal-600" />
 						<span className="text-2xl font-bold text-teal-800">Lovtiti Agro Mart</span>
 					</div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">Veterinarian Onboarding</h1>
+					<h1 className="text-3xl font-bold text-gray-900 mb-2">AGROEXPERT Onboarding</h1>
 					<p className="text-gray-600">Join our expert network and provide agricultural expertise</p>
 				</div>
 
@@ -137,31 +137,28 @@ export default function VeterinarianOnboarding() {
 							const Icon = step.icon;
 							const isActive = currentStep === step.id;
 							const isCompleted = currentStep > step.id;
-							
+
 							return (
 								<div key={step.id} className="flex items-center">
-									<div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-										isActive 
-											? 'border-teal-600 bg-teal-600 text-white' 
-											: isCompleted 
+									<div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${isActive
 											? 'border-teal-600 bg-teal-600 text-white'
-											: 'border-gray-300 bg-white text-gray-500'
-									}`}>
+											: isCompleted
+												? 'border-teal-600 bg-teal-600 text-white'
+												: 'border-gray-300 bg-white text-gray-500'
+										}`}>
 										{isCompleted ? (
 											<CheckCircle className="h-5 w-5" />
 										) : (
 											<Icon className="h-5 w-5" />
 										)}
 									</div>
-									<span className={`ml-2 text-sm font-medium ${
-										isActive ? 'text-teal-600' : isCompleted ? 'text-teal-600' : 'text-gray-500'
-									}`}>
+									<span className={`ml-2 text-sm font-medium ${isActive ? 'text-teal-600' : isCompleted ? 'text-teal-600' : 'text-gray-500'
+										}`}>
 										{step.title}
 									</span>
 									{index < steps.length - 1 && (
-										<div className={`w-16 h-0.5 mx-4 ${
-											isCompleted ? 'bg-teal-600' : 'bg-gray-300'
-										}`} />
+										<div className={`w-16 h-0.5 mx-4 ${isCompleted ? 'bg-teal-600' : 'bg-gray-300'
+											}`} />
 									)}
 								</div>
 							);
@@ -455,7 +452,7 @@ export default function VeterinarianOnboarding() {
 								>
 									Previous
 								</Button>
-								
+
 								{currentStep < steps.length ? (
 									<Button
 										type="button"

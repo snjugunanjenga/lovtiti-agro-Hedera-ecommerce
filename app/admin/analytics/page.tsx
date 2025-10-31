@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  Users, 
+import {
+  BarChart3,
+  TrendingUp,
+  Users,
   DollarSign,
   Package,
   Truck,
@@ -48,7 +48,7 @@ function AnalyticsContent() {
       { role: 'BUYER', revenue: 165000, percentage: 34.0 },
       { role: 'DISTRIBUTOR', revenue: 75000, percentage: 15.5 },
       { role: 'TRANSPORTER', revenue: 45000, percentage: 9.3 },
-      { role: 'VETERINARIAN', revenue: 15000, percentage: 3.1 }
+      { role: 'AGROEXPERT', revenue: 15000, percentage: 3.1 }
     ],
     transactionVolume: [
       { date: '2024-01-01', transactions: 450, revenue: 18500 },
@@ -94,7 +94,7 @@ function AnalyticsContent() {
         return 'bg-purple-500';
       case 'TRANSPORTER':
         return 'bg-orange-500';
-      case 'VETERINARIAN':
+      case 'AGROEXPERT':
         return 'bg-red-500';
       default:
         return 'bg-gray-500';
@@ -111,7 +111,7 @@ function AnalyticsContent() {
         return <Package className="w-4 h-4" />;
       case 'TRANSPORTER':
         return <Truck className="w-4 h-4" />;
-      case 'VETERINARIAN':
+      case 'AGROEXPERT':
         return <Package className="w-4 h-4" />;
       default:
         return <Users className="w-4 h-4" />;

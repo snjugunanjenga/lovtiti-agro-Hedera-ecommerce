@@ -18,14 +18,14 @@ export default function DebugUserPage() {
 
   const checkDatabaseUser = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     addLog('🔍 Checking user in database...');
-    
+
     try {
       const response = await fetch('/api/auth/sync-user');
       const data = await response.json();
-      
+
       if (data.success) {
         setDatabaseUser(data.user);
         addLog(`✅ User found in database: ${data.user.email} (${data.user.role})`);
@@ -41,16 +41,16 @@ export default function DebugUserPage() {
 
   const syncUser = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     addLog('🔄 Syncing user to database...');
-    
+
     try {
       const response = await fetch('/api/auth/sync-user', {
         method: 'POST',
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setDatabaseUser(data.user);
         addLog(`✅ User synced successfully: ${data.user.email} (${data.user.role})`);
@@ -66,10 +66,10 @@ export default function DebugUserPage() {
 
   const assignRole = async (role: string) => {
     if (!user) return;
-    
+
     setIsLoading(true);
     addLog(`🎯 Assigning role: ${role}`);
-    
+
     try {
       const response = await fetch('/api/auth/assign-role', {
         method: 'POST',
@@ -79,7 +79,7 @@ export default function DebugUserPage() {
         body: JSON.stringify({ role }),
       });
       const data = await response.json();
-      
+
       if (data.success) {
         addLog(`✅ Role assigned successfully: ${data.role}`);
         // Refresh user data
@@ -176,7 +176,7 @@ export default function DebugUserPage() {
               <Button onClick={syncUser} disabled={isLoading} className="bg-blue-600 hover:bg-blue-700">
                 Sync User to Database
               </Button>
-              
+
               <div className="flex gap-2">
                 <Button onClick={() => assignRole('BUYER')} disabled={isLoading} size="sm">
                   Set Buyer
@@ -187,7 +187,7 @@ export default function DebugUserPage() {
                 <Button onClick={() => assignRole('TRANSPORTER')} disabled={isLoading} size="sm">
                   Set Transporter
                 </Button>
-                <Button onClick={() => assignRole('VETERINARIAN')} disabled={isLoading} size="sm">
+                <Button onClick={() => assignRole('AGROEXPERT')} disabled={isLoading} size="sm">
                   Set Agro Expert
                 </Button>
               </div>
@@ -210,10 +210,10 @@ export default function DebugUserPage() {
                 ))
               )}
             </div>
-            <Button 
-              onClick={() => setLogs([])} 
-              variant="outline" 
-              size="sm" 
+            <Button
+              onClick={() => setLogs([])}
+              variant="outline"
+              size="sm"
               className="mt-2"
             >
               Clear Logs

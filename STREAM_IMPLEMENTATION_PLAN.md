@@ -7,7 +7,7 @@ This document outlines the complete implementation plan for integrating Stream C
 ## 🎯 Objectives
 
 ### **Primary Goals**
-- ✅ Enable real-time messaging between farmers, buyers, distributors, transporters, and veterinarians
+- ✅ Enable real-time messaging between farmers, buyers, distributors, transporters, and AGROEXPERTs
 - ✅ Implement video and audio calling functionality
 - ✅ Integrate with existing Clerk authentication system
 - ✅ Provide role-based access control for different user types
@@ -149,11 +149,11 @@ npm install stream-chat stream-chat-react
 | BUYER | buyer | Join channels, Send messages, Receive calls |
 | DISTRIBUTOR | distributor | Manage inventory channels, Bulk messaging |
 | TRANSPORTER | transporter | Delivery updates, Route coordination |
-| VETERINARIAN | agro-vet | Expert advice, Consultation calls |
+| AGROEXPERT | agro-vet | Expert advice, Consultation calls |
 | ADMIN | admin | All permissions, Moderation tools |
 
 ### **Channel Types**
-- `farmer-vet`: Direct farmer-veterinarian communication
+- `farmer-vet`: Direct farmer-AGROEXPERT communication
 - `farmer-buyer`: Direct farmer-buyer negotiations
 - `farmer-distributor`: Supply chain coordination
 - `farmer-transporter`: Delivery coordination

@@ -3,12 +3,12 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 // Navbar is already included in the root layout
-import { 
-  Leaf, 
-  Users, 
-  Globe, 
-  Shield, 
-  TrendingUp, 
+import {
+  Leaf,
+  Users,
+  Globe,
+  Shield,
+  TrendingUp,
   Heart,
   Award,
   Target,
@@ -55,7 +55,7 @@ export default function AboutPage() {
       name: 'Dr. Fatima Okafor',
       role: 'Head of Agricultural Services',
       image: '/api/placeholder/300/300',
-      bio: 'Veterinarian and agricultural consultant with extensive experience in livestock management and crop production across West Africa.',
+      bio: 'AGROEXPERT and agricultural consultant with extensive experience in livestock management and crop production across West Africa.',
       expertise: ['Veterinary Medicine', 'Livestock Management', 'Crop Production'],
       location: 'Abuja, Nigeria',
       social: {
@@ -144,7 +144,7 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
-      
+
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
@@ -157,8 +157,8 @@ export default function AboutPage() {
             About <span className="text-green-600">Lovtiti Agro Mart</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            We are revolutionizing African agriculture through blockchain technology, 
-            connecting farmers, distributors, transporters, buyers, and agro experts 
+            We are revolutionizing African agriculture through blockchain technology,
+            connecting farmers, distributors, transporters, buyers, and agro experts
             in a transparent, efficient, and sustainable ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -189,8 +189,8 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  To empower African farmers and agricultural stakeholders by providing a 
-                  transparent, efficient, and sustainable marketplace that connects producers 
+                  To empower African farmers and agricultural stakeholders by providing a
+                  transparent, efficient, and sustainable marketplace that connects producers
                   with buyers while ensuring fair trade practices and environmental sustainability.
                 </p>
               </CardContent>
@@ -205,8 +205,8 @@ export default function AboutPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  To become the leading blockchain-powered agricultural ecosystem in Africa, 
-                  transforming how agricultural products are traded, distributed, and consumed 
+                  To become the leading blockchain-powered agricultural ecosystem in Africa,
+                  transforming how agricultural products are traded, distributed, and consumed
                   while promoting sustainable farming practices and economic growth.
                 </p>
               </CardContent>
@@ -224,7 +224,7 @@ export default function AboutPage() {
               The principles that guide everything we do
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {values.map((value, index) => {
               const Icon = value.icon;
@@ -257,7 +257,7 @@ export default function AboutPage() {
               The passionate individuals driving agricultural innovation across Africa
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
               <Card key={index} className="hover:shadow-lg transition-shadow">
@@ -280,7 +280,7 @@ export default function AboutPage() {
                     <h4 className="font-medium text-gray-900">Expertise:</h4>
                     <div className="flex flex-wrap gap-2">
                       {member.expertise.map((skill, skillIndex) => (
-                        <span 
+                        <span
                           key={skillIndex}
                           className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full"
                         >
@@ -315,7 +315,7 @@ export default function AboutPage() {
               Key milestones in our mission to transform African agriculture
             </p>
           </div>
-          
+
           <div className="space-y-8">
             {milestones.map((milestone, index) => (
               <div key={index} className="flex items-start space-x-6">
@@ -345,7 +345,7 @@ export default function AboutPage() {
               Numbers that reflect our commitment to African agriculture
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="text-4xl font-bold mb-2">10,000+</div>
@@ -374,7 +374,7 @@ export default function AboutPage() {
             Ready to Join Our Mission?
           </h2>
           <p className="text-lg text-gray-600 mb-8">
-            Whether you're a farmer, buyer, distributor, transporter, or agro expert, 
+            Whether you're a farmer, buyer, distributor, transporter, or agro expert,
             there's a place for you in our ecosystem.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -403,7 +403,7 @@ export default function AboutPage() {
                 <span className="text-2xl font-bold">Lovtiti Agro Mart</span>
               </div>
               <p className="text-gray-400 mb-4">
-                Connecting African farmers with global buyers through blockchain technology. 
+                Connecting African farmers with global buyers through blockchain technology.
                 A comprehensive agricultural ecosystem for all stakeholders.
               </p>
               <div className="flex space-x-4">

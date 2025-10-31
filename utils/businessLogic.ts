@@ -91,21 +91,21 @@ export const VALID_TRANSACTIONS: TransactionType[] = [
   { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Distributors buy equipment from Agro Experts' },
 
   // Lease transactions
-  { type: 'LEASE', fromRole: 'VETERINARIAN', toRole: 'FARMER', description: 'Farmers lease equipment from Agro Experts' },
-  { type: 'LEASE', fromRole: 'VETERINARIAN', toRole: 'BUYER', description: 'Buyers lease equipment from Agro Experts' },
-  { type: 'LEASE', fromRole: 'VETERINARIAN', toRole: 'DISTRIBUTOR', description: 'Distributors lease equipment from Agro Experts' },
-  { type: 'LEASE', fromRole: 'VETERINARIAN', toRole: 'TRANSPORTER', description: 'Transporters lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Farmers lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Buyers lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Distributors lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'TRANSPORTER', description: 'Transporters lease equipment from Agro Experts' },
 
   // Service transactions
   { type: 'SERVICE', fromRole: 'TRANSPORTER', toRole: 'FARMER', description: 'Transporters provide logistics services to farmers' },
   { type: 'SERVICE', fromRole: 'TRANSPORTER', toRole: 'BUYER', description: 'Transporters provide logistics services to buyers' },
   { type: 'SERVICE', fromRole: 'TRANSPORTER', toRole: 'DISTRIBUTOR', description: 'Transporters provide logistics services to distributors' },
-  { type: 'SERVICE', fromRole: 'TRANSPORTER', toRole: 'VETERINARIAN', description: 'Transporters provide logistics services to Agro Experts' },
+  { type: 'SERVICE', fromRole: 'TRANSPORTER', toRole: 'AGROEXPERT', description: 'Transporters provide logistics services to Agro Experts' },
   { type: 'SERVICE', fromRole: 'DISTRIBUTOR', toRole: 'FARMER', description: 'Distributors provide supply chain services to farmers' },
   { type: 'SERVICE', fromRole: 'DISTRIBUTOR', toRole: 'BUYER', description: 'Distributors provide supply chain services to buyers' },
-  { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'FARMER', description: 'Agro Experts provide expert services to farmers' },
-  { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'BUYER', description: 'Agro Experts provide expert services to buyers' },
-  { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'DISTRIBUTOR', description: 'Agro Experts provide expert services to distributors' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Agro Experts provide expert services to farmers' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Agro Experts provide expert services to buyers' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Agro Experts provide expert services to distributors' },
 ];
 
 export function canUserBuyFrom(buyerRole: UserRole, sellerRole: UserRole): boolean {
@@ -154,7 +154,7 @@ export function getRoleDescription(userRole: UserRole): string {
     BUYER: 'Individual or business that purchases agricultural products from farmers and distributors. Can lease equipment from Agro Experts and receive logistics services.',
     DISTRIBUTOR: 'Supply chain intermediary who manages inventory and connects farmers with buyers. Can buy from farmers, sell to buyers, and provide supply chain services.',
     TRANSPORTER: 'Logistics provider who handles transportation and delivery of agricultural products. Provides logistics services to all users.',
-    VETERINARIAN: 'Agricultural expert who sells products, leases equipment, and provides expert advice. Serves farmers, buyers, distributors, and transporters.',
+    AGROEXPERT: 'Agricultural expert who sells products, leases equipment, and provides expert advice. Serves farmers, buyers, distributors, and transporters.',
     ADMIN: 'Platform moderator managing KYC verification, listings, disputes, and system oversight. Does not participate in commercial transactions.',
   };
 

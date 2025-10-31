@@ -59,35 +59,35 @@ export async function handleUssd(params: UssdParams): Promise<string> {
 	// KYC Registration
 	if (parts[0] === "4") {
 		if (level === 1) {
-			return "CON Select Role\n1. Farmer\n2. Distributor\n3. Transporter\n4. Buyer\n5. Veterinarian";
+			return "CON Select Role\n1. Farmer\n2. Distributor\n3. Transporter\n4. Buyer\n5. AGROEXPERT";
 		}
-		
+
 		if (level === 2) {
 			const roleMap: Record<string, string> = {
 				"1": "FARMER",
-				"2": "DISTRIBUTOR", 
+				"2": "DISTRIBUTOR",
 				"3": "TRANSPORTER",
 				"4": "BUYER",
-				"5": "VETERINARIAN"
+				"5": "AGROEXPERT"
 			};
-			
+
 			const selectedRole = roleMap[parts[1]];
 			if (!selectedRole) {
 				return "END Invalid selection. Please try again.";
 			}
-			
+
 			session.role = selectedRole;
 			session.step = 1;
 			session.kycData = {};
-			
+
 			const roleNames: Record<string, string> = {
 				"FARMER": "Farmer",
 				"DISTRIBUTOR": "Distributor",
-				"TRANSPORTER": "Transporter", 
+				"TRANSPORTER": "Transporter",
 				"BUYER": "Buyer",
-				"VETERINARIAN": "Veterinarian"
+				"AGROEXPERT": "AGROEXPERT"
 			};
-			
+
 			const roleName = roleNames[session.role];
 			return `CON ${roleName} Registration\nEnter Full Name:`;
 		}
@@ -101,8 +101,8 @@ export async function handleUssd(params: UssdParams): Promise<string> {
 			return handleTransporterKyc(parts, session);
 		} else if (session.role === "BUYER") {
 			return handleBuyerKyc(parts, session);
-		} else if (session.role === "VETERINARIAN") {
-			return handleVeterinarianKyc(parts, session);
+		} else if (session.role === "AGROEXPERT") {
+			return handleAGROEXPERTKyc(parts, session);
 		} else {
 			return "END Invalid role selection. Please try again.";
 		}
@@ -122,28 +122,28 @@ function handleFarmerKyc(parts: string[], session: UssdSession): string {
 	const step = level - 2; // Subtract 2 for role selection and KYC selection
 
 	switch (step) {
-		case 1: 
+		case 1:
 			session.kycData.fullName = parts[level - 1];
 			return "CON Enter Phone Number:";
-		case 2: 
-			session.kycData.phone = parts[level - 1]; 
+		case 2:
+			session.kycData.phone = parts[level - 1];
 			return "CON Enter Country:";
-		case 3: 
-			session.kycData.country = parts[level - 1]; 
+		case 3:
+			session.kycData.country = parts[level - 1];
 			return "CON Enter Farm Address:";
-		case 4: 
-			session.kycData.address = parts[level - 1]; 
+		case 4:
+			session.kycData.address = parts[level - 1];
 			return "CON Enter ID Number:";
-		case 5: 
-			session.kycData.idNumber = parts[level - 1]; 
+		case 5:
+			session.kycData.idNumber = parts[level - 1];
 			return "CON Enter Farm Size (acres):";
-		case 6: 
-			session.kycData.farmSize = parts[level - 1]; 
+		case 6:
+			session.kycData.farmSize = parts[level - 1];
 			return "CON Enter Crop Types:\n(comma separated)";
-		case 7: 
-			session.kycData.cropTypes = parts[level - 1]; 
+		case 7:
+			session.kycData.cropTypes = parts[level - 1];
 			return "CON Enter Hedera Wallet:";
-		case 8: 
+		case 8:
 			session.kycData.hederaWallet = parts[level - 1];
 			// Submit KYC data
 			console.log("Farmer KYC submitted:", { ...session.kycData, type: "FARMER" });
@@ -157,29 +157,29 @@ function handleDistributorKyc(parts: string[], session: UssdSession): string {
 	const step = level - 2;
 
 	switch (step) {
-		case 1: 
+		case 1:
 			session.kycData.fullName = parts[level - 1];
 			return "CON Enter Phone Number:";
-		case 2: 
-			session.kycData.phone = parts[level - 1]; 
+		case 2:
+			session.kycData.phone = parts[level - 1];
 			return "CON Enter Country:";
-		case 3: 
-			session.kycData.country = parts[level - 1]; 
+		case 3:
+			session.kycData.country = parts[level - 1];
 			return "CON Enter Business Address:";
-		case 4: 
-			session.kycData.address = parts[level - 1]; 
+		case 4:
+			session.kycData.address = parts[level - 1];
 			return "CON Enter ID Number:";
-		case 5: 
-			session.kycData.idNumber = parts[level - 1]; 
+		case 5:
+			session.kycData.idNumber = parts[level - 1];
 			return "CON Enter Business License:";
-		case 6: 
-			session.kycData.businessLicense = parts[level - 1]; 
+		case 6:
+			session.kycData.businessLicense = parts[level - 1];
 			return "CON Enter Tax ID (optional):";
-		case 7: 
-			session.kycData.taxId = parts[level - 1]; 
+		case 7:
+			session.kycData.taxId = parts[level - 1];
 			return "CON Enter Storage Capacity (tons):";
-		case 8: 
-			session.kycData.storageCapacity = parts[level - 1]; 
+		case 8:
+			session.kycData.storageCapacity = parts[level - 1];
 			return "CON Enter Hedera Wallet:";
 		case 9:
 			session.kycData.hederaWallet = parts[level - 1];
@@ -231,7 +231,7 @@ function handleBuyerKyc(parts: string[], session: UssdSession): string {
 	}
 }
 
-function handleVeterinarianKyc(parts: string[], session: UssdSession): string {
+function handleAGROEXPERTKyc(parts: string[], session: UssdSession): string {
 	const level = parts.length;
 	const step = level - 2;
 
@@ -246,7 +246,7 @@ function handleVeterinarianKyc(parts: string[], session: UssdSession): string {
 		case 8: session.kycData.specialization = parts[level - 1]; return "CON Enter Hedera Wallet:";
 		case 9:
 			session.kycData.hederaWallet = parts[level - 1];
-			console.log("Veterinarian KYC submitted:", { ...session.kycData, type: "VETERINARIAN" });
+			console.log("AGROEXPERT KYC submitted:", { ...session.kycData, type: "AGROEXPERT" });
 			return "END KYC submitted successfully! You'll receive SMS confirmation.";
 		default: return "END Invalid step. Please start over.";
 	}

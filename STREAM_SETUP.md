@@ -77,13 +77,13 @@ The system automatically maps Clerk user roles to Stream Chat roles:
 - `BUYER` → `buyer`
 - `DISTRIBUTOR` → `distributor`
 - `TRANSPORTER` → `transporter`
-- `VETERINARIAN` → `agro-vet`
+- `AGROEXPERT` → `agro-vet`
 - `ADMIN` → `admin`
 
 ### 3. **Channel Types Available**
 
 The system supports these channel types:
-- `farmer-vet`: Direct messages between farmers and veterinarians
+- `farmer-vet`: Direct messages between farmers and AGROEXPERTs
 - `farmer-buyer`: Direct messages between farmers and buyers
 - `farmer-distributor`: Direct messages between farmers and distributors
 - `farmer-transporter`: Direct messages between farmers and transporters

@@ -33,7 +33,7 @@ This document summarizes the comprehensive implementation of the Lovtiti Agro Ma
   - Monthly volume expectations
   - Delivery address management
 
-- ✅ **Veterinarian Onboarding** (`/app/onboarding/veterinarian/page.tsx`)
+- ✅ **AGROEXPERT Onboarding** (`/app/onboarding/AGROEXPERT/page.tsx`)
   - Professional license verification
   - Product supplier permits
   - Agricultural expertise certifications
@@ -105,7 +105,7 @@ This document summarizes the comprehensive implementation of the Lovtiti Agro Ma
 
 #### Enhanced USSD Service
 - ✅ **Multi-Role USSD Flows** (`/backend/services/ussdService.ts`)
-  - Role selection (Farmer, Distributor, Transporter, Buyer, Veterinarian)
+  - Role selection (Farmer, Distributor, Transporter, Buyer, AGROEXPERT)
   - Role-specific KYC data collection
   - Session management for multi-step flows
   - Comprehensive error handling

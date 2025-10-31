@@ -11,7 +11,7 @@
 - This caused foreign key constraint failures
 
 ### 2. **Role Name Mismatch**
-- Code checked for `'VETERINARIAN'` role
+- Code checked for `'AGROEXPERT'` role
 - But the role is now `'AGROEXPERT'`
 - This blocked Agro Experts from creating listings
 
@@ -44,7 +44,7 @@ sellerId: user.id  // Use actual database user ID
 ### 2. **Updated Role Check** (`app/listings/create/page.tsx`)
 ```typescript
 // OLD:
-canCreateListings = ['FARMER', 'VETERINARIAN', 'ADMIN']
+canCreateListings = ['FARMER', 'AGROEXPERT', 'ADMIN']
 
 // NEW:
 canCreateListings = ['FARMER', 'AGROEXPERT', 'ADMIN']
@@ -150,7 +150,7 @@ if (isConnected && isFarmer) {
    - Support for AGROEXPERT role
 
 2. **`app/listings/create/page.tsx`**
-   - Updated role check (VETERINARIAN → AGROEXPERT)
+   - Updated role check (AGROEXPERT → AGROEXPERT)
    - Made wallet optional
    - Made smart contract optional
    - Added error display UI
@@ -165,7 +165,7 @@ if (isConnected && isFarmer) {
 **Solution:** Complete the onboarding process at `/onboarding/farmer`
 
 ### "Farmer or Agro Expert profile required."
-**Solution:** Complete KYC verification at `/onboarding/farmer` or `/onboarding/veterinarian`
+**Solution:** Complete KYC verification at `/onboarding/farmer` or `/onboarding/AGROEXPERT`
 
 ### "Access Denied - Only Farmers and Agro Experts can create listings"
 **Solution:** Sign up with FARMER or AGROEXPERT role

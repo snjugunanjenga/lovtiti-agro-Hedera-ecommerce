@@ -1,17 +1,17 @@
--- Manual migration to change VETERINARIAN to AGROEXPERT
+-- Manual migration to change AGROEXPERT to AGROEXPERT
 -- Run this SQL in your database console
 
 -- Step 1: Add the new AGROEXPERT value to both enums
 ALTER TYPE "Role" ADD VALUE 'AGROEXPERT';
 ALTER TYPE "ProfileType" ADD VALUE 'AGROEXPERT';
 
--- Step 2: Update existing VETERINARIAN records to AGROEXPERT
-UPDATE "User" SET role = 'AGROEXPERT' WHERE role = 'VETERINARIAN';
-UPDATE "Profile" SET type = 'AGROEXPERT' WHERE type = 'VETERINARIAN';
+-- Step 2: Update existing AGROEXPERT records to AGROEXPERT
+UPDATE "User" SET role = 'AGROEXPERT' WHERE role = 'AGROEXPERT';
+UPDATE "Profile" SET type = 'AGROEXPERT' WHERE type = 'AGROEXPERT';
 
--- Step 3: Remove the old VETERINARIAN value (this might require recreating the enum)
+-- Step 3: Remove the old AGROEXPERT value (this might require recreating the enum)
 -- Note: PostgreSQL doesn't allow removing enum values directly
--- You may need to recreate the enums if you want to remove VETERINARIAN completely
+-- You may need to recreate the enums if you want to remove AGROEXPERT completely
 
 -- Alternative approach: Create new enums and migrate
 -- CREATE TYPE "Role_new" AS ENUM ('FARMER', 'DISTRIBUTOR', 'TRANSPORTER', 'BUYER', 'AGROEXPERT', 'ADMIN');

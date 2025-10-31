@@ -116,7 +116,7 @@ function ContentModerationContent() {
       seller: {
         id: 'user_4',
         name: 'Dr. Ahmed Vet',
-        role: 'VETERINARIAN',
+        role: 'AGROEXPERT',
         email: 'ahmed@example.com'
       },
       status: 'ACTIVE',
@@ -206,7 +206,7 @@ function ContentModerationContent() {
         return <Building className="w-4 h-4 text-purple-600" />;
       case 'TRANSPORTER':
         return <Truck className="w-4 h-4 text-orange-600" />;
-      case 'VETERINARIAN':
+      case 'AGROEXPERT':
         return <Stethoscope className="w-4 h-4 text-red-600" />;
       default:
         return <User className="w-4 h-4 text-gray-600" />;

@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     // In production, this would create a STREAM video call session
     // For now, generate a mock session ID
     const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const session = {
       id: sessionId,
       type,
@@ -19,9 +19,9 @@ export async function POST(request: NextRequest) {
       token: `token_${sessionId}` // Mock token
     };
 
-    return NextResponse.json({ 
-      success: true, 
-      session 
+    return NextResponse.json({
+      success: true,
+      session
     });
   } catch (error) {
     console.error('Error creating video call session:', error);
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       type: 'video',
       participants: [
         { id: 'farmer1', name: 'John Farmer', role: 'farmer' },
-        { id: 'vet1', name: 'Dr. Ahmed Vet', role: 'veterinarian' }
+        { id: 'vet1', name: 'Dr. Ahmed Vet', role: 'AGROEXPERT' }
       ],
       status: 'active',
       createdAt: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago

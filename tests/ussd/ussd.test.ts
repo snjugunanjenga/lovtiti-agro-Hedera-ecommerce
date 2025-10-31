@@ -60,7 +60,7 @@ describe('USSD Service', () => {
 			expect(response).toContain('2. Distributor');
 			expect(response).toContain('3. Transporter');
 			expect(response).toContain('4. Buyer');
-			expect(response).toContain('5. Veterinarian');
+			expect(response).toContain('5. AGROEXPERT');
 		});
 
 		describe('Farmer KYC Flow', () => {
@@ -76,7 +76,7 @@ describe('USSD Service', () => {
 
 			it('should progress through farmer KYC steps', async () => {
 				const sessionId = 'test-session';
-				
+
 				// Step 1: Full name
 				let response = await handleUssd({
 					sessionId,
@@ -148,7 +148,7 @@ describe('USSD Service', () => {
 
 			it('should handle business license requirement', async () => {
 				const sessionId = 'test-session';
-				
+
 				// Progress through initial steps
 				let response = await handleUssd({
 					sessionId,
@@ -178,7 +178,7 @@ describe('USSD Service', () => {
 
 			it('should handle vehicle registration requirement', async () => {
 				const sessionId = 'test-session';
-				
+
 				// Progress through initial steps
 				let response = await handleUssd({
 					sessionId,
@@ -201,7 +201,7 @@ describe('USSD Service', () => {
 
 			it('should handle business type and volume', async () => {
 				const sessionId = 'test-session';
-				
+
 				// Progress through initial steps
 				let response = await handleUssd({
 					sessionId,
@@ -218,20 +218,20 @@ describe('USSD Service', () => {
 			});
 		});
 
-		describe('Veterinarian KYC Flow', () => {
-			it('should start veterinarian registration', async () => {
+		describe('AGROEXPERT KYC Flow', () => {
+			it('should start AGROEXPERT registration', async () => {
 				const response = await handleUssd({
 					sessionId: 'test-session',
 					text: '4*5',
 				});
 
-				expect(response).toContain('Veterinarian Registration');
+				expect(response).toContain('AGROEXPERT Registration');
 				expect(response).toContain('Enter Full Name:');
 			});
 
 			it('should handle professional license requirement', async () => {
 				const sessionId = 'test-session';
-				
+
 				// Progress through initial steps
 				let response = await handleUssd({
 					sessionId,
@@ -284,7 +284,7 @@ describe('USSD Service', () => {
 	describe('Session Management', () => {
 		it('should maintain session state across requests', async () => {
 			const sessionId = 'persistent-session';
-			
+
 			// Start farmer registration
 			await handleUssd({
 				sessionId,
@@ -303,7 +303,7 @@ describe('USSD Service', () => {
 		it('should handle different sessions independently', async () => {
 			const session1 = 'session-1';
 			const session2 = 'session-2';
-			
+
 			// Start farmer registration in session 1
 			await handleUssd({
 				sessionId: session1,

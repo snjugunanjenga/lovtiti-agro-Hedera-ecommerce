@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  Shield, 
-  Users, 
-  Search, 
-  Filter, 
-  Edit, 
-  Save, 
+import {
+  Shield,
+  Users,
+  Search,
+  Filter,
+  Edit,
+  Save,
   X,
   CheckCircle,
   AlertCircle,
@@ -69,14 +69,14 @@ function RoleManagementContent() {
       id: '5',
       name: 'Dr. Ahmed Vet',
       email: 'ahmed@example.com',
-      role: 'VETERINARIAN' as UserRole,
+      role: 'AGROEXPERT' as UserRole,
       status: 'active',
       joinedAt: '2024-01-25',
       lastActive: '1 day ago'
     },
   ];
 
-  const roles: UserRole[] = ['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER', 'VETERINARIAN', 'ADMIN'];
+  const roles: UserRole[] = ['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER', 'AGROEXPERT', 'ADMIN'];
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -194,8 +194,8 @@ function RoleManagementContent() {
               <div className="flex space-x-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input 
-                    placeholder="Search users..." 
+                  <Input
+                    placeholder="Search users..."
                     className="pl-10 w-64"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}

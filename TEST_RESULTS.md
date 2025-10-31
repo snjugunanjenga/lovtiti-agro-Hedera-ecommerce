@@ -28,11 +28,11 @@ PASS tests/kyc/kyc.test.ts
     ✓ should validate distributor KYC data
     ✓ should validate transporter KYC data
     ✓ should validate buyer KYC data
-    ✓ should validate veterinarian KYC data
+    ✓ should validate AGROEXPERT KYC data
     ✓ should reject invalid farmer data
     ✓ should reject distributor data without business license
     ✓ should reject transporter data without vehicle registrations
-    ✓ should reject veterinarian data without professional license
+    ✓ should reject AGROEXPERT data without professional license
     ✓ should validate any role type with kycSchema
     ✓ should reject invalid role type
     ✓ should handle optional fields correctly

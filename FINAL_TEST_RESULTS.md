@@ -12,11 +12,11 @@ PASS tests/kyc/kyc.test.ts
     ✓ should validate distributor KYC data
     ✓ should validate transporter KYC data
     ✓ should validate buyer KYC data
-    ✓ should validate veterinarian KYC data
+    ✓ should validate AGROEXPERT KYC data
     ✓ should reject invalid farmer data
     ✓ should reject distributor data without business license
     ✓ should reject transporter data without vehicle registrations
-    ✓ should reject veterinarian data without professional license
+    ✓ should reject AGROEXPERT data without professional license
     ✓ should validate any role type with kycSchema
     ✓ should reject invalid role type
     ✓ should handle optional fields correctly
@@ -70,7 +70,7 @@ PASS tests/ussd/ussd.test.ts
     ✓ should handle vehicle registration requirement
     ✓ should start buyer registration
     ✓ should handle business type and volume
-    ✓ should start veterinarian registration
+    ✓ should start AGROEXPERT registration
     ✓ should handle professional license requirement
     ✓ should prompt for order ID
     ✓ should handle invalid selections
@@ -121,7 +121,7 @@ Tests: 20 passed, 20 total
 The Lovtiti Agro Mart system is now **fully functional** with:
 
 ### **✅ Multi-Role KYC Verification System**
-- Complete onboarding for all 5 user types (Farmer, Distributor, Transporter, Buyer, Veterinarian)
+- Complete onboarding for all 5 user types (Farmer, Distributor, Transporter, Buyer, AGROEXPERT)
 - Role-specific KYC requirements and validation
 - Comprehensive form validation with Zod schemas
 - Database integration with Prisma

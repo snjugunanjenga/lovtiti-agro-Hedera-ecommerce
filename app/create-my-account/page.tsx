@@ -39,7 +39,7 @@ export default function CreateMyAccountPage() {
 
       const data = await response.json();
       setResult(data);
-      
+
       if (data.success) {
         // Clear form
         setFormData({ email: '', role: 'BUYER' });
@@ -92,7 +92,7 @@ export default function CreateMyAccountPage() {
                 placeholder="your-email@gmail.com"
               />
             </div>
-            
+
             <div>
               <Label htmlFor="role">Role</Label>
               <select
@@ -105,14 +105,14 @@ export default function CreateMyAccountPage() {
                 <option value="FARMER">Farmer - Sell agricultural products</option>
                 <option value="DISTRIBUTOR">Distributor - Distribute products</option>
                 <option value="TRANSPORTER">Transporter - Transport goods</option>
-                <option value="VETERINARIAN">Agro Expert - Provide agricultural expertise and services</option>
+                <option value="AGROEXPERT">Agro Expert - Provide agricultural expertise and services</option>
                 <option value="ADMIN">Admin - Platform management</option>
               </select>
             </div>
 
             <div className="flex space-x-2">
-              <Button 
-                onClick={createAccount} 
+              <Button
+                onClick={createAccount}
                 disabled={isLoading}
                 className="bg-green-600 hover:bg-green-700 flex-1"
               >

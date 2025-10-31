@@ -5,11 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  UserCheck, 
-  FileText, 
-  Search, 
-  Filter, 
+import {
+  UserCheck,
+  FileText,
+  Search,
+  Filter,
   CheckCircle,
   XCircle,
   Clock,
@@ -26,7 +26,7 @@ import {
 
 function KycVerificationContent() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState<'ALL' | 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'VETERINARIAN'>('ALL');
+  const [selectedRole, setSelectedRole] = useState<'ALL' | 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'AGROEXPERT'>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'>('ALL');
 
   // Mock KYC data - in real app, this would come from API
@@ -121,7 +121,7 @@ function KycVerificationContent() {
       userId: 'user_5',
       name: 'Dr. Ahmed Vet',
       email: 'ahmed@example.com',
-      role: 'VETERINARIAN',
+      role: 'AGROEXPERT',
       status: 'PENDING',
       submittedAt: '2024-01-17T11:30:00Z',
       documents: {
@@ -135,17 +135,17 @@ function KycVerificationContent() {
       businessName: 'AgroVet Services',
       yearsExperience: 12,
       specializations: ['Livestock Health', 'Equipment Leasing', 'Expert Consultation'],
-      additionalInfo: 'Licensed veterinarian with 12 years experience in livestock health'
+      additionalInfo: 'Licensed AGROEXPERT with 12 years experience in livestock health'
     }
   ];
 
   const filteredSubmissions = kycSubmissions.filter(submission => {
     const matchesSearch = submission.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         submission.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         submission.businessName.toLowerCase().includes(searchTerm.toLowerCase());
+      submission.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      submission.businessName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesRole = selectedRole === 'ALL' || submission.role === selectedRole;
     const matchesStatus = selectedStatus === 'ALL' || submission.status === selectedStatus;
-    
+
     return matchesSearch && matchesRole && matchesStatus;
   });
 
@@ -159,7 +159,7 @@ function KycVerificationContent() {
         return <Building className="w-4 h-4 text-purple-600" />;
       case 'TRANSPORTER':
         return <Truck className="w-4 h-4 text-orange-600" />;
-      case 'VETERINARIAN':
+      case 'AGROEXPERT':
         return <Stethoscope className="w-4 h-4 text-red-600" />;
       default:
         return <Shield className="w-4 h-4 text-gray-600" />;
@@ -315,7 +315,7 @@ function KycVerificationContent() {
                 <option value="BUYER">Buyers</option>
                 <option value="DISTRIBUTOR">Distributors</option>
                 <option value="TRANSPORTER">Transporters</option>
-                <option value="VETERINARIAN">Agro Experts</option>
+                <option value="AGROEXPERT">Agro Experts</option>
               </select>
               <select
                 value={selectedStatus}
@@ -361,7 +361,7 @@ function KycVerificationContent() {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 {/* Business Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -386,10 +386,9 @@ function KycVerificationContent() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {Object.entries(submission.documents).map(([docType, status]) => (
                       <div key={docType} className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                          status === 'verified' ? 'bg-green-500' : 
-                          status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}></div>
+                        <div className={`w-2 h-2 rounded-full ${status === 'verified' ? 'bg-green-500' :
+                            status === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}></div>
                         <span className="text-sm capitalize">{docType.replace(/([A-Z])/g, ' $1').trim()}</span>
                         <span className={`text-xs ${getDocumentStatusColor(status)}`}>
                           {status}
@@ -422,7 +421,7 @@ function KycVerificationContent() {
                     <Eye className="w-4 h-4" />
                     <span>View Documents</span>
                   </Button>
-                  
+
                   <div className="flex space-x-2">
                     {submission.status === 'PENDING' && (
                       <>
