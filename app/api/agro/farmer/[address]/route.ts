@@ -1,11 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAgroContractService } from '@/utils/agroContract';
+import { AgroContractService, createAgroContractService } from '@/utils/agroContract';
 
-// Initialize contract service
-const contractService = createAgroContractService(
-  process.env.NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS || '',
-  'testnet'
-);
+let contractService: AgroContractService | null = null;
+
+const getContractService = (): AgroContractService | null => {
+  if (contractService) {
+    return contractService;
+  }
+
+  const contractAddress =
+    process.env.NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS ||
+    process.env.NEXT_PUBLIC_CONTRACT ||
+    process.env.AGRO_CONTRACT_ADDRESS ||
+    '';
+
+  if (!contractAddress) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Agro contract address is not configured. Set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS to enable farmer lookup.'
+      );
+    }
+    return null;
+  }
+
+  contractService = createAgroContractService(contractAddress, 'testnet');
+  return contractService;
+};
 
 export async function GET(
   request: NextRequest,
@@ -25,8 +45,20 @@ export async function GET(
       );
     }
 
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
     // Check if the address is registered as a farmer
-    const result = await contractService.whoFarmer(address);
+    const result = await service.getFarmerInfo(address);
 
     return NextResponse.json({
       success: true,

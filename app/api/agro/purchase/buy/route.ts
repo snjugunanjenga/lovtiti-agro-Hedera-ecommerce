@@ -3,11 +3,31 @@ import { AgroContractService, createAgroContractService } from '@/utils/agroCont
 import { BuyProductParams, WithdrawBalanceParams } from '@/types/agro-contract';
 import { getContractAddress } from '@/utils/getContractAddress';
 
-// Initialize contract service
-const contractService = createAgroContractService(
-  getContractAddress(),
-  (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
-);
+let contractService: AgroContractService | null = null;
+
+const getContractService = (): AgroContractService | null => {
+  if (contractService) {
+    return contractService;
+  }
+
+  const address = getContractAddress();
+
+  if (!address) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Agro contract address is not configured. Set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS to enable purchase endpoints.'
+      );
+    }
+    return null;
+  }
+
+  contractService = createAgroContractService(
+    address,
+    (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
+  );
+
+  return contractService;
+};
 
 /**
  * POST /api/agro/purchase/buy
@@ -48,7 +68,19 @@ export async function POST(request: NextRequest) {
     }
     
     // Get product information to validate purchase
-    const productResult = await contractService.getProduct(BigInt(productId));
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
+    const productResult = await service.getProduct(BigInt(productId));
     if (!productResult.success || !productResult.data) {
       return NextResponse.json(
         { 
@@ -81,19 +113,17 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    const requiredValue = product.metadata.hbarprice * BigInt(amount);
-    const THREE_HBAR = 3n * 10n ** 18n;
+    const totalPriceTinybar = product.price * BigInt(amount);
 
     // Execute purchase on contract
     const buyParams: BuyProductParams = {
       productId: BigInt(productId),
       amount: BigInt(amount),
-      value: THREE_HBAR,
       walletAddress,
       privateKey
     };
 
-    const result = await contractService.buyProduct(buyParams);
+    const result = await service.buyProduct(buyParams);
 
     if (!result.success) {
       return NextResponse.json(
@@ -108,7 +138,7 @@ export async function POST(request: NextRequest) {
     // Log the transaction for audit purposes
     console.log(`Product purchased: ${productId} by buyer: ${walletAddress}`, {
       amount: amount,
-      value: requiredValue.toString(),
+      valueTinybar: totalPriceTinybar.toString(),
       sellerAddress: product.owner,
       transactionHash: result.transactionHash,
       gasUsed: result.gasUsed?.toString()
@@ -119,7 +149,7 @@ export async function POST(request: NextRequest) {
       data: {
         productId,
         amount: amount,
-        value: requiredValue.toString(),
+        valueTinybar: totalPriceTinybar.toString(),
         buyerAddress: walletAddress,
         sellerAddress: product.owner,
         transactionHash: result.transactionHash,
@@ -173,7 +203,19 @@ export async function PUT(request: NextRequest) {
     }
 
     // Check if user is a farmer
-    const farmerCheck = await contractService.isFarmer(walletAddress);
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
+    const farmerCheck = await service.isFarmer(walletAddress);
     if (!farmerCheck.success || !farmerCheck.data) {
       return NextResponse.json(
         { 
@@ -185,7 +227,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Get farmer balance
-    const farmerInfo = await contractService.getFarmerInfo(walletAddress);
+    const farmerInfo = await service.getFarmerInfo(walletAddress);
     if (!farmerInfo.success || !farmerInfo.data) {
       return NextResponse.json(
         { 
@@ -212,7 +254,7 @@ export async function PUT(request: NextRequest) {
       privateKey
     };
 
-    const result = await contractService.withdrawBalance(withdrawParams);
+    const result = await service.withdrawBalance(withdrawParams);
 
     if (!result.success) {
       return NextResponse.json(

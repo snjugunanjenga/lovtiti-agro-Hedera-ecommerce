@@ -2,10 +2,10 @@
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   const originalWarn = console.warn;
   const originalError = console.error;
-  
-  console.warn = (...args: any[]) => {
-    const message = args[0];
-    
+
+  console.warn = (...args: unknown[]) => {
+    const [message] = args;
+
     // Suppress specific warnings
     if (
       typeof message === 'string' && (
@@ -18,14 +18,14 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     ) {
       return; // Suppress these warnings
     }
-    
+
     // Allow other warnings and console.log
-    originalWarn.apply(console, args);
+    originalWarn(...(args as Parameters<typeof console.warn>));
   };
-  
-  console.error = (...args: any[]) => {
-    const message = args[0];
-    
+
+  console.error = (...args: unknown[]) => {
+    const [message] = args;
+
     // Suppress specific errors
     if (
       typeof message === 'string' && (
@@ -38,9 +38,9 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
     ) {
       return; // Suppress these errors
     }
-    
+
     // Allow other errors
-    originalError.apply(console, args);
+    originalError(...(args as Parameters<typeof console.error>));
   };
 }
 
@@ -49,10 +49,10 @@ if (typeof window !== 'undefined') {
   // Override console methods to filter out Clerk development warnings
   const originalConsoleWarn = console.warn;
   const originalConsoleError = console.error;
-  
-  console.warn = (...args: any[]) => {
+
+  console.warn = (...args: unknown[]) => {
     const message = String(args[0] || '');
-    
+
     // Filter out Clerk development warnings
     if (
       message.includes('Clerk has been loaded with development keys') ||
@@ -61,13 +61,13 @@ if (typeof window !== 'undefined') {
     ) {
       return;
     }
-    
-    originalConsoleWarn.apply(console, args);
+
+    originalConsoleWarn(...(args as Parameters<typeof console.warn>));
   };
-  
-  console.error = (...args: any[]) => {
+
+  console.error = (...args: unknown[]) => {
     const message = String(args[0] || '');
-    
+
     // Filter out specific errors
     if (
       message.includes('Warning: Extra attributes from the server') ||
@@ -75,7 +75,7 @@ if (typeof window !== 'undefined') {
     ) {
       return;
     }
-    
-    originalConsoleError.apply(console, args);
+
+    originalConsoleError(...(args as Parameters<typeof console.error>));
   };
 }

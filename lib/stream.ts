@@ -52,7 +52,7 @@ export const createOrGetChannel = async (
   channelType: string,
   channelId: string,
   members: string[],
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
 ) => {
   try {
     const channel = client.channel(channelType, channelId, {

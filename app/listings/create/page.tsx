@@ -135,15 +135,12 @@ export default function CreateListingPage() {
         const priceInHbar = formData.contractPrice;
         const quantity = formData.contractStock;
 
-        const contractResult = await addProduct(
-          priceInHbar,
-          quantity,
-          user?.id || 'unknown'
-        );
+        const contractResult = await addProduct(priceInHbar, quantity, user?.id || 'unknown');
 
-        if (contractResult.success && contractResult.data?.productId) {
-          console.log('✅ Product added to smart contract');
-          contractProductId = contractResult.data.productId.toString();
+        const contractData = contractResult.data as { productId?: bigint | string | null } | undefined;
+
+        if (contractResult.success && contractData?.productId != null) {
+          contractProductId = contractData.productId.toString();
           contractTxHash = contractResult.transactionHash || null;
         } else {
           throw new Error(contractResult.error || 'Failed to create product on smart contract.');
@@ -575,3 +572,4 @@ export default function CreateListingPage() {
     </div>
   );
 }
+

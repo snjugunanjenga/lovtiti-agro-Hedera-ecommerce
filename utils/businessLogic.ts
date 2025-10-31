@@ -1,7 +1,14 @@
 // Business Logic for Lovtiti Agro Mart
 // Defines the relationships and interactions between different user roles
 
-export type UserRole = 'FARMER' | 'BUYER' | 'DISTRIBUTOR' | 'TRANSPORTER' | 'VETERINARIAN' | 'ADMIN';
+export type UserRole =
+  | 'FARMER'
+  | 'BUYER'
+  | 'DISTRIBUTOR'
+  | 'TRANSPORTER'
+  | 'AGROEXPERT'
+  | 'VETERINARIAN'
+  | 'ADMIN';
 
 export interface BusinessRule {
   canBuyFrom: UserRole[];
@@ -12,12 +19,21 @@ export interface BusinessRule {
   canReceiveServicesFrom: UserRole[];
 }
 
+const AGROEXPERT_RULES: BusinessRule = {
+  canBuyFrom: [], // Agro Experts don't buy products
+  canSellTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Agro Experts sell to farmers, buyers, distributors
+  canLeaseFrom: [], // Agro Experts don't lease from others
+  canLeaseTo: ['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER'], // Agro Experts lease to all users
+  canProvideServicesTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Agro Experts provide expert services
+  canReceiveServicesFrom: ['TRANSPORTER'], // Agro Experts can receive logistics services
+};
+
 export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   // Buyers can buy agricultural products from farmers and distributors
   BUYER: {
     canBuyFrom: ['FARMER', 'DISTRIBUTOR'],
     canSellTo: [], // Buyers don't sell products
-    canLeaseFrom: ['VETERINARIAN'], // Buyers can lease equipment from Agro Experts
+    canLeaseFrom: ['VETERINARIAN', 'AGROEXPERT'], // Buyers can lease equipment from Agro Experts
     canLeaseTo: [], // Buyers don't lease out equipment
     canProvideServicesTo: [], // Buyers don't provide services
     canReceiveServicesFrom: ['TRANSPORTER', 'DISTRIBUTOR'], // Buyers can receive logistics services
@@ -25,9 +41,9 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
 
   // Farmers can sell products to buyers and distributors, lease equipment from Agro Experts
   FARMER: {
-    canBuyFrom: ['VETERINARIAN'], // Farmers can buy equipment/products from Agro Experts
+    canBuyFrom: ['VETERINARIAN', 'AGROEXPERT'], // Farmers can buy equipment/products from Agro Experts
     canSellTo: ['BUYER', 'DISTRIBUTOR'], // Farmers sell to buyers and distributors
-    canLeaseFrom: ['VETERINARIAN'], // Farmers lease equipment from Agro Experts
+    canLeaseFrom: ['VETERINARIAN', 'AGROEXPERT'], // Farmers lease equipment from Agro Experts
     canLeaseTo: [], // Farmers don't lease out equipment
     canProvideServicesTo: [], // Farmers don't provide services
     canReceiveServicesFrom: ['TRANSPORTER', 'DISTRIBUTOR'], // Farmers can receive logistics services
@@ -37,7 +53,7 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   DISTRIBUTOR: {
     canBuyFrom: ['FARMER'], // Distributors buy from farmers
     canSellTo: ['BUYER'], // Distributors sell to buyers
-    canLeaseFrom: ['VETERINARIAN'], // Distributors can lease equipment from Agro Experts
+    canLeaseFrom: ['VETERINARIAN', 'AGROEXPERT'], // Distributors can lease equipment from Agro Experts
     canLeaseTo: [], // Distributors don't lease out equipment
     canProvideServicesTo: ['FARMER', 'BUYER'], // Distributors provide supply chain services
     canReceiveServicesFrom: ['TRANSPORTER'], // Distributors can receive logistics services
@@ -47,21 +63,15 @@ export const BUSINESS_RULES: Record<UserRole, BusinessRule> = {
   TRANSPORTER: {
     canBuyFrom: [], // Transporters don't buy products
     canSellTo: [], // Transporters don't sell products
-    canLeaseFrom: ['VETERINARIAN'], // Transporters can lease equipment from Agro Experts
+    canLeaseFrom: ['VETERINARIAN', 'AGROEXPERT'], // Transporters can lease equipment from Agro Experts
     canLeaseTo: [], // Transporters don't lease out equipment
-    canProvideServicesTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Transporters provide logistics to all
+    canProvideServicesTo: ['FARMER', 'BUYER', 'DISTRIBUTOR', 'VETERINARIAN', 'AGROEXPERT'], // Transporters provide logistics to all
     canReceiveServicesFrom: [], // Transporters don't receive services
   },
 
   // Agro Experts sell equipment/products to farmers and lease equipment to all users
-  VETERINARIAN: {
-    canBuyFrom: [], // Agro Experts don't buy products
-    canSellTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Agro Experts sell to farmers, buyers, distributors
-    canLeaseFrom: [], // Agro Experts don't lease from others
-    canLeaseTo: ['FARMER', 'BUYER', 'DISTRIBUTOR', 'TRANSPORTER'], // Agro Experts lease to all users
-    canProvideServicesTo: ['FARMER', 'BUYER', 'DISTRIBUTOR'], // Agro Experts provide expert services
-    canReceiveServicesFrom: ['TRANSPORTER'], // Agro Experts can receive logistics services
-  },
+  AGROEXPERT: AGROEXPERT_RULES,
+  VETERINARIAN: AGROEXPERT_RULES,
 
   // Admins are platform moderators - they don't participate in transactions
   ADMIN: {
@@ -80,6 +90,19 @@ export interface TransactionType {
   toRole: UserRole;
   description: string;
 }
+
+const AGROEXPERT_TRANSACTIONS: TransactionType[] = [
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Farmers buy equipment from Agro Experts' },
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Buyers buy equipment from Agro Experts' },
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Distributors buy equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Farmers lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Buyers lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Distributors lease equipment from Agro Experts' },
+  { type: 'LEASE', fromRole: 'AGROEXPERT', toRole: 'TRANSPORTER', description: 'Transporters lease equipment from Agro Experts' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Agro Experts provide expert services to farmers' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Agro Experts provide expert services to buyers' },
+  { type: 'SERVICE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Agro Experts provide expert services to distributors' },
+];
 
 export const VALID_TRANSACTIONS: TransactionType[] = [
   // Purchase transactions
@@ -106,6 +129,7 @@ export const VALID_TRANSACTIONS: TransactionType[] = [
   { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'FARMER', description: 'Agro Experts provide expert services to farmers' },
   { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'BUYER', description: 'Agro Experts provide expert services to buyers' },
   { type: 'SERVICE', fromRole: 'VETERINARIAN', toRole: 'DISTRIBUTOR', description: 'Agro Experts provide expert services to distributors' },
+  ...AGROEXPERT_TRANSACTIONS,
 ];
 
 export function canUserBuyFrom(buyerRole: UserRole, sellerRole: UserRole): boolean {
@@ -154,6 +178,7 @@ export function getRoleDescription(userRole: UserRole): string {
     BUYER: 'Individual or business that purchases agricultural products from farmers and distributors. Can lease equipment from Agro Experts and receive logistics services.',
     DISTRIBUTOR: 'Supply chain intermediary who manages inventory and connects farmers with buyers. Can buy from farmers, sell to buyers, and provide supply chain services.',
     TRANSPORTER: 'Logistics provider who handles transportation and delivery of agricultural products. Provides logistics services to all users.',
+    AGROEXPERT: 'Agricultural expert who sells products, leases equipment, and provides expert advice. Serves farmers, buyers, distributors, and transporters.',
     VETERINARIAN: 'Agricultural expert who sells products, leases equipment, and provides expert advice. Serves farmers, buyers, distributors, and transporters.',
     ADMIN: 'Platform moderator managing KYC verification, listings, disputes, and system oversight. Does not participate in commercial transactions.',
   };

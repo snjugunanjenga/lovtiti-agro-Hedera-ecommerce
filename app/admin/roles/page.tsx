@@ -19,7 +19,7 @@ import {
   UserPlus,
   Settings
 } from 'lucide-react';
-import { UserRole, getRoleDisplayName, getRoleDescription, getRoleColor, getRoleIcon } from '@/utils/roleManager';
+import { UserRole, getRoleDisplayName, getRoleDescription, getRoleColor } from '@/utils/roleManager';
 
 function RoleManagementContent() {
   const [searchTerm, setSearchTerm] = useState('');

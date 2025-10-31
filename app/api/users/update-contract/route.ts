@@ -35,23 +35,32 @@ export async function POST(request: NextRequest) {
     }
 
     // Update user with contract information
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
+    const updateResult = await prisma.profile.updateMany({
+      where: {
+        userId,
+        type: 'FARMER',
+      },
       data: {
-        contractAddress,
-        isContractFarmer: isContractFarmer || false,
-        contractCreatedAt: new Date(),
-        contractBalance: 0
-      }
+        hederaWallet: contractAddress,
+      },
     });
+
+    if (updateResult.count === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Farmer profile not found for user',
+        },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
       data: {
-        userId: updatedUser.id,
-        contractAddress: updatedUser.contractAddress,
-        isContractFarmer: updatedUser.isContractFarmer,
-        contractCreatedAt: updatedUser.contractCreatedAt
+        userId,
+        contractAddress,
+        isContractFarmer: true,
       }
     });
 

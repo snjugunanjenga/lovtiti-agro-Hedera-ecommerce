@@ -1,13 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { AgroContractService, createAgroContractService } from '@/utils/agroContract';
-import { CreateFarmerParams } from '@/types/agro-contract';
 import { getContractAddress } from '@/utils/getContractAddress';
 
-// Initialize contract service
-const contractService = createAgroContractService(
-  getContractAddress(),
-  (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
-);
+let contractService: AgroContractService | null = null;
+
+const getContractService = (): AgroContractService | null => {
+  if (contractService) {
+    return contractService;
+  }
+
+  const address = getContractAddress();
+
+  if (!address) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Agro contract address is not configured. Set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS to enable farmer contract endpoints.'
+      );
+    }
+    return null;
+  }
+
+  contractService = createAgroContractService(
+    address,
+    (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
+  );
+
+  return contractService;
+};
 
 /**
  * POST /api/agro/farmer/create
@@ -40,8 +59,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
     // Check if farmer already exists
-    const farmerCheck = await contractService.isFarmer(walletAddress);
+    const farmerCheck = await service.isFarmer(walletAddress);
     if (farmerCheck.success && farmerCheck.data) {
       return NextResponse.json(
         { 
@@ -53,12 +84,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Create farmer on contract
-    const createParams: CreateFarmerParams = {
+    const result = await service.createFarmer({
       walletAddress,
-      privateKey
-    };
-
-    const result = await contractService.createFarmer(createParams);
+      privateKey,
+    });
 
     if (!result.success) {
       return NextResponse.json(
@@ -119,7 +148,19 @@ export async function GET(
       );
     }
 
-    const result = await contractService.getFarmerInfo(address);
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
+    const result = await service.getFarmerInfo(address);
 
     if (!result.success) {
       return NextResponse.json(

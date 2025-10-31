@@ -53,6 +53,10 @@ export class AgroContractService {
     }
   }
 
+  private isBaseParams(input: ethers.Signer | BaseContractParams): input is BaseContractParams {
+    return typeof (input as BaseContractParams).walletAddress === 'string';
+  }
+
   constructor(config: ContractConfig) {
     this.config = config;
 
@@ -105,8 +109,25 @@ export class AgroContractService {
    * Create a farmer account on the contract
    * This should be called during user signup for farmers
    */
-  async createFarmer(signer: ethers.Signer): Promise<ContractResponse> {
+  async createFarmer(input: ethers.Signer | BaseContractParams): Promise<ContractResponse> {
     try {
+      let signer: ethers.Signer;
+      let walletAddress: string;
+
+      if (this.isBaseParams(input)) {
+        if (input.signer) {
+          signer = input.signer;
+        } else if (input.privateKey) {
+          signer = new ethers.Wallet(input.privateKey, this.provider);
+        } else {
+          throw new Error('Signer or private key is required to create a farmer');
+        }
+        walletAddress = input.walletAddress;
+      } else {
+        signer = input;
+        walletAddress = await signer.getAddress();
+      }
+
       const contractWithSigner = this.contract.connect(signer) as typeof this.contract;
 
       // Call the createFarmer function on the smart contract
@@ -119,30 +140,9 @@ export class AgroContractService {
 
       const statusValue = typeof receipt.status === 'bigint' ? receipt.status : BigInt(receipt.status ?? 0);
       if (statusValue !== 1n) {
-        let decodedReason = 'unknown';
-        try {
-          const callData = this.contract.interface.encodeFunctionData('buyproduct', [
-            params.productId,
-            params.amount
-          ]);
-
-          await this.provider.call(
-            {
-              to: this.config.address,
-              from: params.walletAddress,
-              data: callData,
-              value: totalValue
-            },
-            receipt.blockNumber ? (receipt.blockNumber - 1n >= 0n ? receipt.blockNumber - 1n : receipt.blockNumber) : undefined
-          );
-        } catch (callError) {
-          const err = callError as any;
-          decodedReason = err?.reason ?? err?.error?.message ?? decodedReason;
-        }
-
         return {
           success: false,
-          error: `Contract reverted: ${decodedReason}`,
+          error: 'Contract reverted while creating farmer',
           transactionHash: receipt.hash,
           gasUsed: receipt.gasUsed
         };
@@ -153,7 +153,7 @@ export class AgroContractService {
         transactionHash: receipt.hash,
         gasUsed: receipt.gasUsed,
         data: {
-          farmerAddress: await signer.getAddress(),
+          farmerAddress: walletAddress,
           transactionHash: receipt.hash,
         }
       };
@@ -253,9 +253,27 @@ export class AgroContractService {
       let computedTinybarTotal: bigint | null = null;
 
       if (valueWei === null) {
-        const productData = (await contractWithSigner.products(params.productId)) as Product;
-        const unitPrice = (productData && 'price' in productData ? productData.price : undefined) ??
-          ((productData as unknown as [bigint, string, bigint, bigint])[0] as bigint | undefined);
+        const rawProductData = await contractWithSigner.products(params.productId);
+        let unitPrice: bigint | undefined;
+
+        if (
+          rawProductData &&
+          typeof rawProductData === 'object' &&
+          !Array.isArray(rawProductData) &&
+          'price' in (rawProductData as Product)
+        ) {
+          const candidate = (rawProductData as Product).price;
+          if (typeof candidate === 'bigint') {
+            unitPrice = candidate;
+          }
+        }
+
+        if (unitPrice === undefined && Array.isArray(rawProductData)) {
+          const tupleCandidate = rawProductData[0];
+          if (typeof tupleCandidate === 'bigint') {
+            unitPrice = tupleCandidate;
+          }
+        }
 
         if (unitPrice === undefined) {
           throw new Error('Unable to determine product price from contract');
@@ -263,7 +281,6 @@ export class AgroContractService {
         computedTinybarTotal = unitPrice * params.amount;
         valueWei = tinybarToWei(computedTinybarTotal);
       }
-      
 
       if (valueWei === null) {
         throw new Error('Unable to determine total payment value for purchase');
@@ -346,7 +363,7 @@ export class AgroContractService {
             value: fallbackTx.value?.toString()
           });
 
-          receipt = await fallbackTx.wait();
+          receipt = (await fallbackTx.wait()) as ethers.ContractTransactionReceipt;
         } catch (fallbackError) {
           console.error('buyProduct fallback send failed', fallbackError);
           throw fallbackError;

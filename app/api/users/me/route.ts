@@ -17,9 +17,13 @@ export async function GET(request: NextRequest) {
         id: true,
         email: true,
         role: true,
-        walletAddress: true,
-        isContractFarmer: true
-      }
+        profiles: {
+          select: {
+            type: true,
+            hederaWallet: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -29,7 +33,16 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(user);
+    const farmerProfile = user.profiles.find((profile) => profile.type === 'FARMER');
+    const walletAddress = farmerProfile?.hederaWallet?.trim();
+
+    return NextResponse.json({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      walletAddress: walletAddress || undefined,
+      isContractFarmer: Boolean(walletAddress),
+    });
   } catch (error) {
     console.error('Error fetching user:', error);
     return NextResponse.json(

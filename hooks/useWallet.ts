@@ -86,7 +86,7 @@ export interface UseWalletResult {
   buyProduct: (
     productId: string | number | bigint,
     amount: string | number | bigint,
-    value: string | number | bigint,
+    value?: string | number | bigint,
     userId?: string
   ) => Promise<WalletActionResult>;
   withdrawBalance: (userId?: string) => Promise<WalletActionResult>;

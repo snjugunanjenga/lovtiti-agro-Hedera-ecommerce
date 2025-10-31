@@ -35,6 +35,12 @@ function normalizeDate(value: Date | null | undefined) {
   return value;
 }
 
+function normalizeContractMetadata(value: unknown) {
+  if (value === undefined) return undefined;
+  if (value === null) return Prisma.JsonNull;
+  return value as Prisma.InputJsonValue;
+}
+
 export async function createListing(rawInput: unknown) {
   const input: CreateListingInput = CreateListing.parse(rawInput);
 
@@ -60,9 +66,12 @@ export async function createListing(rawInput: unknown) {
     isVerified: input.isVerified ?? Boolean(input.contractProductId),
     contractProductId: input.contractProductId ?? null,
     contractTxHash: input.contractTxHash ?? null,
-    contractMetadata: input.contractMetadata ?? null,
     seller: { connect: { id: input.sellerId } },
   };
+  const contractMetadata = normalizeContractMetadata(input.contractMetadata);
+  if (contractMetadata !== undefined) {
+    data.contractMetadata = contractMetadata;
+  }
 
   const harvestDate = normalizeDate(input.harvestDate);
   if (harvestDate !== undefined) data.harvestDate = harvestDate;
@@ -123,7 +132,10 @@ export async function updateListing(rawInput: unknown) {
     const normalized = normalizeContractStock(rest.contractStock);
     data.contractStock = normalized ?? null;
   }
-  if (rest.contractMetadata !== undefined) data.contractMetadata = rest.contractMetadata ?? null;
+  if (rest.contractMetadata !== undefined) {
+    const normalizedMetadata = normalizeContractMetadata(rest.contractMetadata);
+    data.contractMetadata = normalizedMetadata ?? Prisma.JsonNull;
+  }
   if (rest.isActive !== undefined) data.isActive = rest.isActive;
   if (rest.isVerified !== undefined) data.isVerified = rest.isVerified;
 

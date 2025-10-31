@@ -13,13 +13,28 @@ export async function POST(request: NextRequest) {
     const { items, deliveryInfo, paymentMethod, totals, contractBuyerAddr } = body;
 
     // Validate required fields
-    if (!items || !deliveryInfo || !paymentMethod || !totals) {
+    if (!items || !deliveryInfo || !paymentMethod || !totals || !contractBuyerAddr) {
       return NextResponse.json(
         { 
           success: false, 
-          error: 'Missing required fields: items, deliveryInfo, paymentMethod, totals' 
+          error: 'Missing required fields: items, deliveryInfo, paymentMethod, totals, contractBuyerAddr' 
         },
         { status: 400 }
+      );
+    }
+
+    const buyerProfile = await prisma.profile.findFirst({
+      where: { hederaWallet: contractBuyerAddr },
+      include: { user: true },
+    });
+
+    if (!buyerProfile?.user) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Buyer not found for wallet address: ${contractBuyerAddr}`,
+        },
+        { status: 404 }
       );
     }
 
@@ -30,7 +45,13 @@ export async function POST(request: NextRequest) {
       // Find the listing by contract product ID
       const listing = await prisma.listing.findUnique({
         where: { contractProductId: item.contractProductId },
-        include: { seller: true }
+        include: {
+          seller: {
+            include: {
+              profiles: true,
+            },
+          },
+        },
       });
 
       if (!listing) {
@@ -43,25 +64,18 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Find buyer user by contract address
-      const buyer = await prisma.user.findUnique({
-        where: { contractAddress: contractBuyerAddr }
-      });
-
-      if (!buyer) {
-        return NextResponse.json(
-          { 
-            success: false, 
-            error: `Buyer not found for contract address: ${contractBuyerAddr}` 
-          },
-          { status: 404 }
-        );
-      }
+      const sellerWallet =
+        listing.seller.profiles.find(
+          (profile) =>
+            profile.type === 'FARMER' &&
+            profile.hederaWallet &&
+            profile.hederaWallet.trim().length > 0
+        )?.hederaWallet ?? '';
 
       // Create order
       const order = await prisma.order.create({
         data: {
-          buyerId: buyer.id,
+          buyerId: buyerProfile.user.id,
           listingId: listing.id,
           status: 'PAID',
           amountCents: item.amount,
@@ -73,7 +87,7 @@ export async function POST(request: NextRequest) {
           contractTxHash: item.transactionHash,
           contractAmount: item.amount / 100, // Convert from cents to ETH
           contractBuyerAddr: contractBuyerAddr,
-          contractSellerAddr: listing.seller.contractAddress || '',
+          contractSellerAddr: sellerWallet,
           contractPurchasedAt: new Date()
         }
       });

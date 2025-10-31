@@ -251,20 +251,30 @@ export default function FarmerProductForm({ onProductCreated }: FarmerProductFor
         description: 'Confirm the transaction in your wallet to continue.',
       });
 
-      const contractResult = await addProduct(
-        formState.contractPrice,
-        formState.contractStock,
-        user?.id
-      );
+      const contractResult = await addProduct(formState.contractPrice, formState.contractStock, user?.id);
 
-      if (!contractResult.success || !contractResult.data?.productId) {
+      const contractData = contractResult.data as
+        | {
+            productId?: bigint | string | null;
+            productInfo?: {
+              price?: bigint | string | null;
+              stock?: bigint | string | null;
+              owner?: string | null;
+            };
+            farmerAddress?: string | null;
+            hederaAccountId?: string | null;
+            price?: bigint | string | null;
+            amount?: bigint | string | null;
+          }
+        | undefined;
+
+      if (!contractResult.success || contractData?.productId == null) {
         throw new Error(contractResult.error || 'Failed to create product on smart contract.');
       }
 
-      const contractProductId = contractResult.data.productId.toString();
+      const contractProductId = contractData.productId.toString();
       const contractTxHash = contractResult.transactionHash ?? null;
 
-      const contractData: any = contractResult.data ?? {};
       const toBigIntSafe = (value: unknown): bigint | null => {
         if (value === null || value === undefined) return null;
         try {
@@ -365,8 +375,6 @@ export default function FarmerProductForm({ onProductCreated }: FarmerProductFor
   };
 
   return (
-    //tyoescript - ignore
-    // @ts-ignore
     <Card className="border-green-200 shadow-sm">
       <CardHeader className="space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">

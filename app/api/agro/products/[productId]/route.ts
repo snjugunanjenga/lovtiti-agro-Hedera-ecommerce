@@ -2,11 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AgroContractService, createAgroContractService } from '@/utils/agroContract';
 import { getContractAddress } from '@/utils/getContractAddress';
 
-// Initialize contract service
-const contractService = createAgroContractService(
-  getContractAddress(),
-  (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
-);
+let contractService: AgroContractService | null = null;
+
+const getContractService = (): AgroContractService | null => {
+  if (contractService) {
+    return contractService;
+  }
+
+  const address = getContractAddress();
+
+  if (!address) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Agro contract address is not configured. Set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS to fetch product information.'
+      );
+    }
+    return null;
+  }
+
+  contractService = createAgroContractService(
+    address,
+    (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
+  );
+
+  return contractService;
+};
 
 /**
  * GET /api/agro/products/[productId]
@@ -29,7 +49,19 @@ export async function GET(
       );
     }
 
-    const result = await contractService.getProduct(BigInt(productId));
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
+    const result = await service.getProduct(BigInt(productId));
 
     if (!result.success) {
       return NextResponse.json(

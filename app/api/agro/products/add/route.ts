@@ -3,11 +3,31 @@ import { AgroContractService, createAgroContractService } from '@/utils/agroCont
 import { AddProductParams, UpdateStockParams, IncreasePriceParams } from '@/types/agro-contract';
 import { getContractAddress } from '@/utils/getContractAddress';
 
-// Initialize contract service
-const contractService = createAgroContractService(
-  getContractAddress(),
-  (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
-);
+let contractService: AgroContractService | null = null;
+
+const getContractService = (): AgroContractService | null => {
+  if (contractService) {
+    return contractService;
+  }
+
+  const address = getContractAddress();
+
+  if (!address) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'Agro contract address is not configured. Set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS to enable product endpoints.'
+      );
+    }
+    return null;
+  }
+
+  contractService = createAgroContractService(
+    address,
+    (process.env.NETWORK as 'mainnet' | 'testnet' | 'local') || 'testnet'
+  );
+
+  return contractService;
+};
 
 /**
  * POST /api/agro/products/add
@@ -40,8 +60,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
     // Check if user is a farmer
-    const farmerCheck = await contractService.isFarmer(walletAddress);
+    const farmerCheck = await service.isFarmer(walletAddress);
     if (!farmerCheck.success || !farmerCheck.data) {
       return NextResponse.json(
         { 
@@ -60,7 +92,7 @@ export async function POST(request: NextRequest) {
       privateKey
     };
 
-    const result = await contractService.addProduct(addParams);
+    const result = await service.addProduct(addParams);
 
     if (!result.success) {
       return NextResponse.json(
@@ -141,6 +173,18 @@ export async function PUT(
       );
     }
 
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
     // Update stock on contract
     const updateParams: UpdateStockParams = {
       productId: BigInt(productId),
@@ -149,7 +193,7 @@ export async function PUT(
       privateKey
     };
 
-    const result = await contractService.updateStock(updateParams);
+    const result = await service.updateStock(updateParams);
 
     if (!result.success) {
       return NextResponse.json(
@@ -227,6 +271,18 @@ export async function PATCH(
       );
     }
 
+    const service = getContractService();
+
+    if (!service) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Agro contract address is not configured.'
+        },
+        { status: 500 }
+      );
+    }
+
     // Increase price on contract
     const increaseParams: IncreasePriceParams = {
       productId: BigInt(productId),
@@ -235,7 +291,7 @@ export async function PATCH(
       privateKey
     };
 
-    const result = await contractService.increasePrice(increaseParams);
+    const result = await service.increasePrice(increaseParams);
 
     if (!result.success) {
       return NextResponse.json(

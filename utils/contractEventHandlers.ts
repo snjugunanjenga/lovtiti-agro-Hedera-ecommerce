@@ -9,6 +9,19 @@ export class ContractEventHandlers implements EventHandler {
     this.prisma = new PrismaClient();
   }
 
+  private async findUserByWallet(address: string | null | undefined) {
+    if (!address) {
+      return null;
+    }
+
+    const profile = await this.prisma.profile.findFirst({
+      where: { hederaWallet: address },
+      include: { user: true },
+    });
+
+    return profile?.user ?? null;
+  }
+
   /**
    * Handle farmerJoined event - create farmer in database
    */
@@ -18,31 +31,18 @@ export class ContractEventHandlers implements EventHandler {
 
       const { farmerAddress, transactionHash, blockNumber } = data;
 
-      // Find user by contract address
-      const user = await this.prisma.user.findUnique({
-        where: { contractAddress: farmerAddress }
-      });
+      // Find user by wallet address
+      const user = await this.findUserByWallet(farmerAddress);
 
       if (!user) {
-        console.warn(`User not found for contract address: ${farmerAddress}`);
+        console.warn(`User not found for wallet address: ${farmerAddress}`);
         return;
       }
-
-      // Update user to mark as contract farmer
-      await this.prisma.user.update({
-        where: { id: user.id },
-        data: {
-          isContractFarmer: true,
-          contractFarmerId: farmerAddress,
-          contractCreatedAt: new Date(),
-          contractBalance: 0
-        }
-      });
 
       // Mark event as processed
       await this.markEventAsProcessed(transactionHash);
 
-      console.log(`Successfully created farmer account for user: ${user.id}`);
+      console.log(`Processed farmerJoined event for user: ${user.id}`);
     } catch (error) {
       console.error('Error processing farmerJoined event:', error);
       throw error;
@@ -65,13 +65,11 @@ export class ContractEventHandlers implements EventHandler {
         blockNumber 
       } = data;
 
-      // Find farmer user by contract address
-      const farmer = await this.prisma.user.findUnique({
-        where: { contractAddress: farmerAddress }
-      });
+      // Find farmer user by wallet address
+      const farmer = await this.findUserByWallet(farmerAddress);
 
       if (!farmer) {
-        console.warn(`Farmer not found for contract address: ${farmerAddress}`);
+        console.warn(`Farmer not found for wallet address: ${farmerAddress}`);
         return;
       }
 
@@ -127,21 +125,17 @@ export class ContractEventHandlers implements EventHandler {
 
       // Find buyer and farmer users
       const [buyer, farmer] = await Promise.all([
-        this.prisma.user.findUnique({
-          where: { contractAddress: buyerAddress }
-        }),
-        this.prisma.user.findUnique({
-          where: { contractAddress: farmerAddress }
-        })
+        this.findUserByWallet(buyerAddress),
+        this.findUserByWallet(farmerAddress),
       ]);
 
       if (!buyer) {
-        console.warn(`Buyer not found for contract address: ${buyerAddress}`);
+        console.warn(`Buyer not found for wallet address: ${buyerAddress}`);
         return;
       }
 
       if (!farmer) {
-        console.warn(`Farmer not found for contract address: ${farmerAddress}`);
+        console.warn(`Farmer not found for wallet address: ${farmerAddress}`);
         return;
       }
 
@@ -180,17 +174,6 @@ export class ContractEventHandlers implements EventHandler {
         data: {
           quantity: listing.quantity - parseInt(amount),
           contractStock: (listing.contractStock || 0) - parseInt(amount)
-        }
-      });
-
-      // Update farmer's contract balance
-      const purchaseAmount = parseFloat(amount) * parseFloat(listing.contractPrice?.toString() || '0');
-      await this.prisma.user.update({
-        where: { id: farmer.id },
-        data: {
-          contractBalance: {
-            increment: purchaseAmount
-          }
         }
       });
 
@@ -349,8 +332,11 @@ export class ContractEventHandlers implements EventHandler {
    */
   async getContractStats(): Promise<any> {
     try {
-      const totalFarmers = await this.prisma.user.count({
-        where: { isContractFarmer: true }
+      const totalFarmers = await this.prisma.profile.count({
+        where: {
+          type: 'FARMER',
+          hederaWallet: { not: '' },
+        },
       });
 
       const totalProducts = await this.prisma.listing.count({
@@ -361,16 +347,11 @@ export class ContractEventHandlers implements EventHandler {
         where: { contractTxHash: { not: null } }
       });
 
-      const totalContractBalance = await this.prisma.user.aggregate({
-        where: { isContractFarmer: true },
-        _sum: { contractBalance: true }
-      });
-
       return {
         totalFarmers,
         totalProducts,
         totalOrders,
-        totalContractBalance: totalContractBalance._sum.contractBalance || 0
+        totalContractBalance: 0,
       };
     } catch (error) {
       console.error('Error getting contract stats:', error);

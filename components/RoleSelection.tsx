@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -12,6 +11,7 @@ import {
   CheckCircle
 } from 'lucide-react';
 import { UserRole, getRoleDisplayName, getRoleDescription, getRoleColor } from '@/utils/roleManager';
+import type { LucideIcon } from 'lucide-react';
 
 interface RoleSelectionProps {
   selectedRole: UserRole | null;
@@ -20,7 +20,7 @@ interface RoleSelectionProps {
   isLoading?: boolean;
 }
 
-const roles: { role: UserRole; icon: any; description: string; features: string[] }[] = [
+const roles: { role: UserRole; icon: LucideIcon; description: string; features: string[] }[] = [
   {
     role: 'BUYER',
     icon: ShoppingCart,

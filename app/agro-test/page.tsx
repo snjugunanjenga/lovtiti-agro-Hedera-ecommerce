@@ -73,7 +73,7 @@ export default function AgroContractTestPage() {
     const result = await buyProduct(
       purchaseForm.productId,
       parseInt(purchaseForm.amount),
-      undefined,
+      purchaseForm.value,
       userId
     );
     if (result.success) {
@@ -147,19 +147,25 @@ export default function AgroContractTestPage() {
 
               <div className="flex space-x-4">
                 <button
-                  onClick={checkFarmerStatus}
+                  onClick={() => {
+                    void checkFarmerStatus();
+                  }}
                   className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
                 >
                   Check Farmer Status
                 </button>
                 <button
-                  onClick={getFarmerInfo}
+                  onClick={() => {
+                    void getFarmerInfo();
+                  }}
                   className="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700"
                 >
                   Get Farmer Info
                 </button>
                 <button
-                  onClick={getFarmerProducts}
+                  onClick={() => {
+                    void getFarmerProducts();
+                  }}
                   className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
                 >
                   Get Products
