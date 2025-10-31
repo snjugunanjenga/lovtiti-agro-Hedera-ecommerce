@@ -153,6 +153,20 @@ const ensureHederaNetwork = async () => {
     }
   }
 };
+const toHBAR8 = (value: string | number | bigint, label: string): bigint => {
+  // price in tinybars (10^8)
+  if (typeof value === 'bigint') return value;
+  if (typeof value === 'number') return ethers.parseUnits(value.toString(), 8);
+  if (typeof value === 'string') {
+    const s = value.trim();
+    if (!s) throw new Error(`${label} is required`);
+    return ethers.parseUnits(s, 8);
+  }
+  throw new Error(`Unsupported ${label} value`);
+};
+
+// convert tinybars (1e8) → wei(1e18) for msg.value when you compute from price
+const tinybarToWei = (x: bigint): bigint => x * 10n ** 10n;
 
 const toUint256 = (
   value: string | number | bigint,
@@ -584,7 +598,7 @@ export const useWallet = (): UseWalletResult => {
         try {
           const { contract, currentWallet } = await ensureWalletReady();
         const params: AddProductParams = {
-          price: toWei(priceInput, 'price'),
+          price: toHBAR8(priceInput, 'price'),
           amount: toUint256(amountInput, 'amount'),
           walletAddress: currentWallet.address,
           signer: currentWallet.signer,
@@ -667,7 +681,7 @@ export const useWallet = (): UseWalletResult => {
           const { contract, currentWallet } = await ensureWalletReady();
         const params: IncreasePriceParams = {
           productId: toUint256(productIdInput, 'product id'),
-          price: toWei(priceInput, 'price'),
+          price: toHBAR8(priceInput, 'price'),
           walletAddress: currentWallet.address,
           signer: currentWallet.signer,
           hederaAccountId: currentWallet.hederaAccountId ?? null,

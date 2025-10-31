@@ -16,6 +16,10 @@ import {
   BaseContractParams
 } from '../types/agro-contract';
 
+// Hedera native currency uses 8 decimal places; EVM msg.value expects 18.
+// Multiply tinybars (1e8) by 1e10 to convert to wei (1e18).
+const tinybarToWei = (amount: bigint): bigint => amount * 10n ** 10n;
+
 export class AgroContractService {
   private config: ContractConfig;
   private provider: ethers.Provider;
@@ -111,6 +115,37 @@ export class AgroContractService {
       
       if (!receipt) {
         throw new Error('Transaction failed - no receipt received');
+      }
+
+      const statusValue = typeof receipt.status === 'bigint' ? receipt.status : BigInt(receipt.status ?? 0);
+      if (statusValue !== 1n) {
+        let decodedReason = 'unknown';
+        try {
+          const callData = this.contract.interface.encodeFunctionData('buyproduct', [
+            params.productId,
+            params.amount
+          ]);
+
+          await this.provider.call(
+            {
+              to: this.config.address,
+              from: params.walletAddress,
+              data: callData,
+              value: totalValue
+            },
+            receipt.blockNumber ? (receipt.blockNumber - 1n >= 0n ? receipt.blockNumber - 1n : receipt.blockNumber) : undefined
+          );
+        } catch (callError) {
+          const err = callError as any;
+          decodedReason = err?.reason ?? err?.error?.message ?? decodedReason;
+        }
+
+        return {
+          success: false,
+          error: `Contract reverted: ${decodedReason}`,
+          transactionHash: receipt.hash,
+          gasUsed: receipt.gasUsed
+        };
       }
 
       return {
@@ -214,9 +249,10 @@ export class AgroContractService {
     try {
       const contractWithSigner = await this.getContractWithSigner(params);
 
-      let totalValue = params.value;
+      let valueWei = params.value ?? null;
+      let computedTinybarTotal: bigint | null = null;
 
-      if (totalValue === undefined || totalValue === null) {
+      if (valueWei === null) {
         const productData = (await contractWithSigner.products(params.productId)) as Product;
         const unitPrice = (productData && 'price' in productData ? productData.price : undefined) ??
           ((productData as unknown as [bigint, string, bigint, bigint])[0] as bigint | undefined);
@@ -224,23 +260,98 @@ export class AgroContractService {
         if (unitPrice === undefined) {
           throw new Error('Unable to determine product price from contract');
         }
-        totalValue = unitPrice * params.amount;
-
+        computedTinybarTotal = unitPrice * params.amount;
+        valueWei = tinybarToWei(computedTinybarTotal);
       }
-
-      const overrides = { value: totalValue };
       
 
-      const tx = await (contractWithSigner.buyproduct as (
-        pid: bigint,
-        amount: bigint,
-        overrides?: ethers.Overrides
-      ) => Promise<ethers.ContractTransactionResponse>)(
-        params.productId,
-        params.amount,
-        {value: totalValue}
-      );
-      const receipt = await tx.wait();
+      if (valueWei === null) {
+        throw new Error('Unable to determine total payment value for purchase');
+      }
+
+      console.info('[AgroContract] buyProduct request', {
+        productId: params.productId.toString(),
+        amount: params.amount.toString(),
+        totalValueTinybar: computedTinybarTotal ? computedTinybarTotal.toString() : null,
+        totalValueWei: valueWei.toString(),
+        suppliedValue: params.value ? params.value.toString() : null,
+        wallet: params.walletAddress
+      });
+
+      const overrides: ethers.Overrides = {
+        value: valueWei
+      };
+
+      const attemptBuy = async () =>
+        (contractWithSigner.buyproduct as (
+          pid: bigint,
+          amount: bigint,
+          overrides?: ethers.Overrides
+        ) => Promise<ethers.ContractTransactionResponse>)(
+          params.productId,
+          params.amount,
+          overrides
+        );
+
+      let receipt: ethers.ContractTransactionReceipt | null = null;
+
+      try {
+        const tx = await attemptBuy();
+        receipt = await tx.wait();
+      } catch (rawError) {
+        const error = rawError as any;
+        console.warn('[AgroContract] primary buyproduct call failed', {
+          code: error?.code,
+          reason: error?.reason,
+          action: error?.action,
+          message: error instanceof Error ? error.message : String(error)
+        });
+
+        const looksLikeNodeSimulationBug =
+          (error?.code === 'CALL_EXCEPTION' && error?.reason === 'insufficient funds' && error?.action === 'estimateGas') ||
+          error?.info?.error?.message?.toLowerCase?.().includes('insufficient funds');
+
+        if (!looksLikeNodeSimulationBug) {
+          console.error('buyProduct failed during primary send', error);
+          throw error;
+        }
+
+        try {
+          console.info('[AgroContract] attempting fallback sendTransaction');
+
+          const signer =
+            (contractWithSigner.runner as ethers.Signer | null | undefined) ??
+            params.signer ??
+            null;
+
+          if (!signer) {
+            throw new Error('Signer unavailable for fallback transaction');
+          }
+
+          const populated = await contractWithSigner.getFunction('buyproduct').populateTransaction(
+            params.productId,
+            params.amount,
+            overrides
+          );
+
+          const fallbackTx = await signer.sendTransaction({
+            ...populated,
+            value: valueWei,
+            gasLimit: populated.gasLimit ?? 500000n
+          });
+
+          console.info('[AgroContract] fallback transaction sent', {
+            hash: fallbackTx.hash,
+            gasLimit: fallbackTx.gasLimit?.toString(),
+            value: fallbackTx.value?.toString()
+          });
+
+          receipt = await fallbackTx.wait();
+        } catch (fallbackError) {
+          console.error('buyProduct fallback send failed', fallbackError);
+          throw fallbackError;
+        }
+      }
 
       if (!receipt) {
         throw new Error('Transaction failed - no receipt received');
@@ -254,7 +365,7 @@ export class AgroContractService {
           productId: params.productId,
           amount: params.amount,
           buyerAddress: params.walletAddress,
-          value: params.value,
+          value: valueWei,
           hederaAccountId: params.hederaAccountId
         }
       };

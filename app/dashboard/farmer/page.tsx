@@ -9,6 +9,7 @@ import FarmerProductForm from '@/components/dashboard/FarmerProductForm';
 import FarmerProductList, { FarmerListing } from '@/components/dashboard/FarmerProductList';
 import DashboardGuard from '@/components/DashboardGuard';
 import { useWallet } from '@/hooks/useWallet';
+import { useToast } from '@/hooks/use-toast';
 import {
   Leaf,
   Package,
@@ -26,7 +27,15 @@ function FarmerDashboardContent() {
   const [activeTab, setActiveTab] = useState<'overview' | 'listings'>('overview');
   const [productsRefreshKey, setProductsRefreshKey] = useState(0);
   const [syncedListings, setSyncedListings] = useState<FarmerListing[]>([]);
-  const { wallet, connectWallet, farmerInfo, getFarmerInfo } = useWallet();
+  const {
+    wallet,
+    connectWallet,
+    farmerInfo,
+    getFarmerInfo,
+    withdrawBalance,
+    isWithdrawing,
+  } = useWallet();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!wallet?.address) {
@@ -48,14 +57,16 @@ function FarmerDashboardContent() {
       0
     );
     const verifiedListings = syncedListings.filter((listing) => listing.isVerified).length;
-    const balanceValue =
-      farmerInfo?.balance !== undefined
-        ? Number(ethers.formatEther(farmerInfo.balance))
-        : 0;
-    const balanceHBAR = balanceValue.toLocaleString(undefined, {
-      minimumFractionDigits: balanceValue > 0 ? 2 : 0,
-      maximumFractionDigits: 2,
-    });
+    const balanceTinybar = farmerInfo?.balance ?? 0n;
+    const balanceFormatted = ethers.formatUnits(balanceTinybar, 8);
+    const balanceNumeric = Number(balanceFormatted);
+    const balanceHBAR =
+      Number.isFinite(balanceNumeric)
+        ? balanceNumeric.toLocaleString(undefined, {
+            minimumFractionDigits: balanceNumeric > 0 ? 2 : 0,
+            maximumFractionDigits: 2,
+          })
+        : balanceFormatted;
 
     return {
       productsOnChain,
@@ -63,6 +74,7 @@ function FarmerDashboardContent() {
       totalInventoryUnits,
       verifiedListings,
       balanceHBAR,
+      balanceTinybar,
     };
   }, [syncedListings, farmerInfo]);
 
@@ -85,7 +97,41 @@ function FarmerDashboardContent() {
     }
   };
 
+  const handleWithdrawBalance = async () => {
+    if (isWithdrawing) {
+      return;
+    }
+
+    try {
+      if (!wallet?.address) {
+        const connection = await connectWallet();
+        if (!connection?.address) {
+          throw new Error('Wallet connection is required to withdraw funds.');
+        }
+      }
+
+      const result = await withdrawBalance();
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to withdraw balance.');
+      }
+
+      toast({
+        title: 'Withdrawal submitted',
+        description: result.transactionHash
+          ? `Transaction ${result.transactionHash.slice(0, 10)}...`
+          : 'Request sent to your wallet.',
+      });
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Withdrawal failed',
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+    }
+  };
+
   const inventoryLabel = metrics.totalInventoryUnits.toLocaleString();
+  const hasWithdrawableBalance = (metrics.balanceTinybar ?? 0n) > 0n;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -241,6 +287,15 @@ function FarmerDashboardContent() {
                     <div className="mt-6 rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800">
                       Wallet connected but no farmer record detected. Use the navbar action to register this wallet on-chain.
                     </div>
+                  )}
+                  {wallet?.address && farmerInfo?.exists !== false && (
+                    <Button
+                      className="mt-6 w-full bg-green-600 hover:bg-green-700"
+                      disabled={!hasWithdrawableBalance || isWithdrawing}
+                      onClick={handleWithdrawBalance}
+                    >
+                      {isWithdrawing ? 'Processing...' : 'GET PAYED'}
+                    </Button>
                   )}
                 </CardContent>
               </Card>
