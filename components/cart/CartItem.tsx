@@ -179,21 +179,6 @@ export default function CartItem({ item, onUpdateQuantity, onRemove }: CartItemP
               </Button>
             </div>
 
-            {/* Certifications */}
-            {item.certifications && item.certifications.length > 0 && (
-              <div className="mt-3">
-                <div className="flex flex-wrap gap-1">
-                  {item.certifications.map((cert, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full"
-                    >
-                      {cert}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </CardContent>

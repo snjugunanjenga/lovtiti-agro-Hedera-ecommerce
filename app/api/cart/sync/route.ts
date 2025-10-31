@@ -1,9 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
-
-const prisma = new PrismaClient();
+import { requireUser } from "@/lib/auth-helpers";
 
 const cartItemSchema = z.object({
   id: z.string(),
@@ -22,7 +19,6 @@ const cartItemSchema = z.object({
   location: z.string(),
   harvestDate: z.string().optional(),
   expiryDate: z.string().optional(),
-  certifications: z.array(z.string()),
   addedAt: z.string(),
   updatedAt: z.string(),
 });
@@ -37,8 +33,9 @@ const syncCartSchema = z.object({
 // GET - Retrieve user's cart from server
 export async function GET() {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    try {
+      requireUser();
+    } catch {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -59,8 +56,9 @@ export async function GET() {
 // POST - Sync cart to server
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    try {
+      requireUser();
+    } catch {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -99,8 +97,9 @@ export async function POST(req: Request) {
 // DELETE - Clear user's cart on server
 export async function DELETE() {
   try {
-    const { userId } = auth();
-    if (!userId) {
+    try {
+      requireUser();
+    } catch {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { StreamChat } from 'stream-chat';
 import { Chat } from 'stream-chat-react';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/components/auth-client';
 import { streamClient, generateStreamToken, getUserRoleForStream } from '@/lib/stream';
 
 interface StreamProviderProps {
@@ -26,7 +26,7 @@ export default function StreamProvider({ children }: StreamProviderProps) {
 
       try {
         // Get user role from Clerk metadata
-        const userRole = (user.publicMetadata?.role as string) || 'BUYER';
+        const userRole = user.role || 'BUYER';
         
         // Generate Stream token
         const token = await generateStreamToken(user.id, userRole);
@@ -35,8 +35,7 @@ export default function StreamProvider({ children }: StreamProviderProps) {
         await streamClient.connectUser(
           {
             id: user.id,
-            name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User',
-            image: user.imageUrl,
+            name: user.email,
             role: getUserRoleForStream(userRole),
           },
           token

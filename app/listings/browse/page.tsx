@@ -30,6 +30,10 @@ interface Listing {
   location?: string;
   images: string[];
   harvestDate?: string;
+  contractProductId?: string | null;
+  contractPrice?: string | number | null;
+  contractStock?: number | null;
+  contractMetadata?: Record<string, any> | null;
   seller: {
     id: string;
     email: string;
@@ -105,7 +109,7 @@ export default function BrowseListingsPage() {
   };
 
   const formatPrice = (priceCents: number) => {
-    return `₦${(priceCents / 100).toLocaleString()}`;
+    return `NGN ${(priceCents / 100).toLocaleString()}`;
   };
 
   const formatDate = (dateString: string) => {
@@ -261,70 +265,105 @@ export default function BrowseListingsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.map((listing) => (
-              <Card key={listing.id} className="hover:shadow-lg transition-shadow">
-                <div className="aspect-square bg-gray-100 rounded-t-lg overflow-hidden relative">
-                  <SafeImage
-                    src={listing.images[0] || 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center'}
-                    alt={listing.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    {/* Title and Category */}
-                    <div>
-                      <h3 className="font-semibold text-lg text-gray-900 line-clamp-1">
-                        {listing.title}
-                      </h3>
-                      <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
-                        {listing.category}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {listings.map((listing) => {
+              const contractPrice =
+                listing.contractPrice !== null && listing.contractPrice !== undefined
+                  ? Number(listing.contractPrice)
+                  : null;
+              const contractPriceDisplay =
+                contractPrice !== null && Number.isFinite(contractPrice)
+                  ? contractPrice.toLocaleString(undefined, { maximumFractionDigits: 4 })
+                  : null;
+              const onChainQuantity =
+                listing.contractStock !== null && listing.contractStock !== undefined
+                  ? listing.contractStock
+                  : listing.quantity;
+              const harvestLabel = listing.harvestDate ? formatDate(listing.harvestDate) : null;
+
+              return (
+                <Card
+                  key={listing.id}
+                  className="overflow-hidden border border-green-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+                >
+                  <div className="relative aspect-[4/3] bg-gray-100">
+                    <SafeImage
+                      src={
+                        listing.images[0] ||
+                        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&h=300&fit=crop&crop=center'
+                      }
+                      alt={listing.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                    {listing.contractProductId && (
+                      <span className="absolute left-4 top-4 inline-flex items-center space-x-1 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-green-700 shadow-sm">
+                        <Package className="h-3.5 w-3.5" />
+                        <span>On-chain #{listing.contractProductId}</span>
                       </span>
+                    )}
+                    {listing.isVerified && (
+                      <span className="absolute right-4 top-4 rounded-full bg-green-600/90 px-3 py-1 text-xs font-semibold text-white shadow-sm">
+                        Verified
+                      </span>
+                    )}
+                  </div>
+                  <CardContent className="space-y-4 p-5">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+                          {listing.title}
+                        </h3>
+                        <span className="inline-flex min-w-[92px] justify-end text-xs text-gray-500">
+                          {listing.category}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-3">{listing.description}</p>
                     </div>
 
-                    {/* Description */}
-                    <p className="text-sm text-gray-600 line-clamp-2">
-                      {listing.description}
-                    </p>
-
-                    {/* Price and Quantity */}
-                    <div className="flex items-center justify-between">
+                    <div className="grid grid-cols-2 gap-3 rounded-lg border border-green-100 bg-green-50/60 p-3 text-xs text-gray-700">
                       <div>
-                        <p className="text-xl font-bold text-green-600">
+                        <p className="text-gray-500">Marketplace price</p>
+                        <p className="text-base font-semibold text-gray-900">
                           {formatPrice(listing.priceCents)}
                         </p>
-                        <p className="text-sm text-gray-500">
-                          per {listing.unit}
+                      </div>
+                      <div>
+                        <p className="text-gray-500">On-chain price</p>
+                        <p className="text-base font-semibold text-gray-900">
+                          {contractPriceDisplay ? `HBAR ${contractPriceDisplay}` : 'Not set'}
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-sm font-medium text-gray-900">
-                          {listing.quantity} {listing.unit}
+                      <div>
+                        <p className="text-gray-500">Inventory</p>
+                        <p className="text-base font-semibold text-gray-900">
+                          {onChainQuantity} {listing.unit}
                         </p>
-                        <p className="text-xs text-gray-500">available</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-500">Availability</p>
+                        <p className="text-base font-semibold text-gray-900">
+                          {harvestLabel ? `Harvested: ${harvestLabel}` : 'Fresh'}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Location and Harvest Date */}
-                    <div className="space-y-1">
+                    <div className="space-y-1 text-sm text-gray-600">
                       {listing.location && (
-                        <div className="flex items-center space-x-1 text-sm text-gray-600">
+                        <div className="flex items-center space-x-1">
                           <MapPin className="h-3 w-3" />
                           <span>{listing.location}</span>
                         </div>
                       )}
                       {listing.harvestDate && (
-                        <div className="flex items-center space-x-1 text-sm text-gray-600">
+                        <div className="flex items-center space-x-1">
                           <Calendar className="h-3 w-3" />
-                          <span>Harvested: {formatDate(listing.harvestDate)}</span>
+                          <span>Harvested: {harvestLabel}</span>
                         </div>
                       )}
                     </div>
 
-                    {/* Action Buttons */}
                     <ProductActions
                       productId={listing.id}
                       listingId={listing.id}
@@ -341,11 +380,16 @@ export default function BrowseListingsPage() {
                       harvestDate={listing.harvestDate ? new Date(listing.harvestDate) : undefined}
                       certifications={['Organic', 'Fresh']}
                       className="pt-2"
+                      contractProductId={listing.contractProductId ?? undefined}
+                      contractPriceHBAR={listing.contractPrice ?? undefined}
+                      contractStock={listing.contractStock ?? undefined}
+                      onChainQuantity={onChainQuantity}
+                      contractMetadata={listing.contractMetadata ?? null}
                     />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
         )}
 

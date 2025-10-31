@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, UserButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton, useUser, useAuth } from "@/components/auth-client";
 import { 
   Leaf,
   ShoppingCart,
@@ -14,6 +14,7 @@ import {
   Stethoscope,
   Users,
   ChevronDown,
+  CirclePlus,
   Shield,
   Lock,
   Settings,
@@ -41,7 +42,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDashboardDropdownOpen, setIsDashboardDropdownOpen] = useState(false);
   const { user } = useUser();
-  const [dbRole, setDbRole] = useState<string | null>(null);
+  const { logout } = useAuth();
   const { totalItems } = useCart();
   const { toast } = useToast();
   const { connectWallet, wallet, createFarmerAccount, addProduct, getFarmerProducts, getFarmerInfo } = useWallet();
@@ -50,64 +51,13 @@ export default function Navbar() {
   const [isViewingProducts, setIsViewingProducts] = useState(false);
   const [isFetchingFarmerInfo, setIsFetchingFarmerInfo] = useState(false);
 
-  // Get user role from metadata or user object
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchRoleFromDb = async () => {
-      if (!user) {
-        if (isMounted) setDbRole(null);
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/auth/sync-user', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (!response.ok) return;
-        const data = await response.json();
-        if (isMounted && data.user?.role) {
-          setDbRole(data.user.role);
-        }
-      } catch (error) {
-        console.error('Failed to fetch user role from database:', error);
-      }
-    };
-
-    fetchRoleFromDb();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user?.id]);
-
-  const normalizeRoleValue = (value?: string | null) => {
-    if (!value || value === 'UserRole') return null;
-    return value.toString().toUpperCase();
-  };
-
   const getUserRole = () => {
-    if (!user) return null;
-
-    const metadataRole = normalizeRoleValue(user.publicMetadata?.role as string | undefined);
-    if (metadataRole) {
-      return metadataRole;
-    }
-
-    const unsafeRole = normalizeRoleValue(user.unsafeMetadata?.role as string | undefined);
-    if (unsafeRole) {
-      return unsafeRole;
-    }
-
-    return normalizeRoleValue(dbRole);
+    return user?.role ?? null;
   };
 
   const userRole = getUserRole();
   const isFarmerRole = userRole === 'FARMER';
+  const userDisplayName = user?.email?.split('@')[0] ?? 'User';
   
   // Get display name for role
   const getRoleDisplayName = (role: string | null) => {
@@ -139,6 +89,15 @@ export default function Navbar() {
       description: 'Manage products & orders',
       color: 'text-green-600',
       bgColor: 'bg-green-100',
+      roles: ['FARMER', 'ADMIN']
+    },
+    {
+      name: 'Create Product',
+      href: '/dashboard/farmer/create-product',
+      icon: CirclePlus,
+      description: 'Publish a new marketplace listing',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-100',
       roles: ['FARMER', 'ADMIN']
     },
     {
@@ -623,7 +582,7 @@ export default function Navbar() {
                 </Link>
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">
-                    {user?.firstName || 'User'}
+                    {userDisplayName}
                   </p>
                   <p className="text-xs text-gray-500">
                     {getRoleDisplayName(userRole)}
@@ -743,7 +702,7 @@ export default function Navbar() {
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                       <p className="text-sm font-medium text-gray-900">
-                        {user?.firstName || 'User'}
+                        {userDisplayName}
                       </p>
                       <p className="text-xs text-gray-500">
                         {getRoleDisplayName(userRole)}

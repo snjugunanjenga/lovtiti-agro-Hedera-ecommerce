@@ -14,9 +14,9 @@ const mockPrisma = {
   },
 };
 
-// Mock Next.js auth
-jest.mock('@clerk/nextjs/server', () => ({
-  auth: jest.fn(),
+// Mock auth helper
+jest.mock('@/lib/auth-helpers', () => ({
+  requireUser: jest.fn(),
 }));
 
 // Mock Prisma
@@ -138,8 +138,8 @@ describe('Listings API', () => {
 
   describe('POST /api/listings', () => {
     it('should create a new listing', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const mockProfile = {
         id: 'profile1',
@@ -187,8 +187,8 @@ describe('Listings API', () => {
     });
 
     it('should reject listing creation for non-farmers', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       mockPrisma.profile.findFirst.mockResolvedValue(null);
 
@@ -213,8 +213,8 @@ describe('Listings API', () => {
     });
 
     it('should validate required fields', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const { POST } = await import('../../app/api/listings/route');
       const request = new Request('http://localhost:3000/api/listings', {
@@ -239,8 +239,8 @@ describe('Listings API', () => {
 
   describe('PUT /api/listings/[id]', () => {
     it('should update a listing', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const mockExistingListing = {
         id: '1',
@@ -283,8 +283,8 @@ describe('Listings API', () => {
     });
 
     it('should reject update for non-owners', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const mockExistingListing = {
         id: '1',
@@ -310,8 +310,8 @@ describe('Listings API', () => {
 
   describe('DELETE /api/listings/[id]', () => {
     it('should soft delete a listing', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const mockExistingListing = {
         id: '1',
@@ -336,8 +336,8 @@ describe('Listings API', () => {
     });
 
     it('should reject deletion for non-owners', async () => {
-      const mockAuth = require('@clerk/nextjs/server').auth;
-      mockAuth.mockResolvedValue({ userId: 'user123' });
+      const mockAuth = require('@/lib/auth-helpers').requireUser;
+      mockAuth.mockReturnValue({ id: 'user123', email: 'test@example.com', role: 'FARMER' });
 
       const mockExistingListing = {
         id: '1',

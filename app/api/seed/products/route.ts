@@ -507,9 +507,10 @@ export async function POST(request: Request) {
 
       // Create listings for this farmer
       for (const product of products) {
+        const { certifications: _certifications, ...productData } = product;
         const listing = await prisma.listing.create({
           data: {
-            ...product,
+            ...productData,
             sellerId: user.id,
             location: farmerData.profile.address,
             harvestDate: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),

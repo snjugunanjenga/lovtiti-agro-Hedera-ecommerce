@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { UserRole } from "@/utils/roleManager";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
+import { requireUser } from "@/lib/auth-helpers";
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
+    let authUser;
+    try {
+      authUser = requireUser(req);
+    } catch {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,22 +21,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });
     }
 
-    // Update the user's role in Clerk metadata
-    await clerkClient().users.updateUserMetadata(userId, {
-      publicMetadata: {
-        role: role
-      }
-    });
-
-    // Update the user's role in your database (select only existing columns)
     const updatedUser = await prisma.user.upsert({
-      where: { id: userId },
+      where: { id: authUser.id },
       update: {
         role: role as any,
       },
       create: {
-        id: userId,
-        email: "", // Will be updated by webhook
+        id: authUser.id,
+        email: authUser.email,
         role: role as any,
       },
       select: {
@@ -49,7 +40,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    console.log(`Role ${role} assigned to user ${userId} in both Clerk metadata and database`);
+    console.log(`Role ${role} assigned to user ${authUser.id}`);
 
     return NextResponse.json({ 
       success: true, 

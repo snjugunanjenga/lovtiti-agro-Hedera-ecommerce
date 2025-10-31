@@ -1,14 +1,16 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { kycSchema } from "@/utils/validators";
-
-const prisma = new PrismaClient();
+import { requireUser } from "@/lib/auth-helpers";
 
 export async function POST(req: Request) {
 	try {
-		const { userId } = auth();
-		if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		let authUser;
+		try {
+			authUser = requireUser();
+		} catch {
+			return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+		}
 		const json = await req.json();
 		const parsed = kycSchema.safeParse(json);
 		if (!parsed.success) return NextResponse.json({ error: parsed.error.format() }, { status: 400 });
@@ -29,8 +31,8 @@ export async function POST(req: Request) {
 		// Find or create user by Clerk userId email is not stored here; using userId in profiles
 		// For simplicity, ensure user exists
 		const user = await prisma.user.upsert({
-			where: { email: `${userId}@clerk.local` },
-			create: { email: `${userId}@clerk.local`, role: userRole as any },
+			where: { id: authUser.id },
+			create: { id: authUser.id, email: authUser.email, role: userRole as any },
 			update: { role: userRole as any },
 		});
 

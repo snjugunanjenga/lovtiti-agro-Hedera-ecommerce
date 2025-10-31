@@ -1,33 +1,53 @@
 'use client';
-// import { SignOutButton, SignedIn } from "@clerk/nextjs";
-import Link from "next/link";
+
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LogoutPage() {
-	// Check if Clerk keys are properly configured
-	const hasValidClerkKeys = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY &&
-		process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY !== 'pk_test_placeholder_key_for_development_only';
+  const router = useRouter();
+  const { logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-	return (
-		<main className="p-8 flex flex-col items-center gap-4">
-			<h1 className="text-2xl font-semibold">Logout</h1>
-			{hasValidClerkKeys ? (
-				<div className="text-center">
-					<p className="text-gray-600 mb-4">Authentication is configured. Sign out functionality would be available here.</p>
-					<button className="px-4 py-2 bg-gray-500 text-white rounded cursor-not-allowed" disabled>
-						Sign out (Clerk configured)
-					</button>
-				</div>
-			) : (
-				<div className="text-center">
-					<p className="text-gray-600 mb-4">Authentication is not configured.</p>
-					<div className="bg-yellow-50 border border-yellow-200 rounded p-4">
-						<p className="text-sm text-yellow-800">
-							<strong>Setup Required:</strong> Add your Clerk API keys to enable logout functionality.
-						</p>
-					</div>
-				</div>
-			)}
-			<Link className="text-blue-600 hover:underline" href="/">Go home</Link>
-		</main>
-	);
+  const handleLogout = async () => {
+    setError(null);
+    setIsLoggingOut(true);
+    try {
+      await logout();
+      router.push('/auth/login');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to logout');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gradient-to-br from-green-50 via-emerald-50 to-blue-50 p-6">
+      <h1 className="text-3xl font-semibold text-gray-900">Sign out</h1>
+      <p className="text-gray-600">End your session on Lovtiti Agro Mart.</p>
+      {error && (
+        <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+          {error}
+        </div>
+      )}
+      <Button onClick={handleLogout} disabled={isLoggingOut} className="min-w-[180px]">
+        {isLoggingOut ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Signing out...
+          </>
+        ) : (
+          'Sign out'
+        )}
+      </Button>
+      <Link className="text-sm text-green-700 hover:underline" href="/">
+        Return to home
+      </Link>
+    </main>
+  );
 }

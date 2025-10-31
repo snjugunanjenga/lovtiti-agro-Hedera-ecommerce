@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useUser } from "@clerk/nextjs";
 import { useWallet } from '@/hooks/useWallet';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 export function BlockchainStatus() {
   const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
   const [isChecking, setIsChecking] = useState(true);
-  const { user } = useUser();
+  const { user } = useAuth();
   const { wallet, connectWallet, createFarmerAccount } = useWallet();
   const { toast } = useToast();
 
@@ -43,18 +43,9 @@ export function BlockchainStatus() {
         await connectWallet();
       }
 
-      // Create farmer account on blockchain
-      const result = await createFarmerAccount();
+      const result = await createFarmerAccount(user?.id);
 
       if (result.success) {
-        // Update user metadata with contract address
-        await user?.update({
-          unsafeMetadata: {
-            walletAddress: wallet?.address,
-            isContractFarmer: true
-          }
-        });
-
         setIsRegistered(true);
         toast({
           title: "Success!",
@@ -74,7 +65,7 @@ export function BlockchainStatus() {
   };
 
   // If not a farmer role, don't show anything
-  const userRole = user?.unsafeMetadata?.role as string;
+  const userRole = user?.role ?? null;
   if (userRole !== 'FARMER') {
     return null;
   }

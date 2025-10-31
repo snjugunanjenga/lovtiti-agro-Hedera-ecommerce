@@ -23,7 +23,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@/hooks/useWallet';
-// import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/components/auth-client';
 
 interface DeliveryInfo {
   fullName: string;
@@ -48,8 +48,7 @@ interface PaymentMethod {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  // const { user } = useUser();
-  const user = null as any; // Temporary for development
+  const { user } = useUser();
   const { items, totalItems, totalPrice, clearCart } = useCart();
   
   // Wallet integration
@@ -63,8 +62,8 @@ export default function CheckoutPage() {
   
   const [currentStep, setCurrentStep] = useState(1);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
-    fullName: user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : '',
-    email: user?.emailAddresses[0]?.emailAddress || '',
+    fullName: '',
+    email: user?.email ?? '',
     phone: '',
     address: '',
     city: '',
@@ -112,6 +111,15 @@ export default function CheckoutPage() {
       processingTime: '1-3 minutes'
     }
   ];
+
+  useEffect(() => {
+    if (user?.email) {
+      setDeliveryInfo((prev) => ({
+        ...prev,
+        email: prev.email || user.email,
+      }));
+    }
+  }, [user?.email]);
 
   const calculateTotals = () => {
     const subtotal = totalPrice;
@@ -285,15 +293,11 @@ export default function CheckoutPage() {
       //   throw new Error(`Product ${item.name} is not available on the contract`);
       // }
 
-      // Calculate the total value for this item
-      const itemTotal = item.price * item.quantity;
-      const valueInEth = (itemTotal / 100).toString(); // Convert from cents to ETH (simplified)
-
       // Buy product through smart contract
       const result = await buyProduct(
         item.productId, // Use productId instead of contractProductId
         item.quantity,
-        valueInEth,
+        undefined,
         user?.id || 'unknown'
       );
 
@@ -305,7 +309,7 @@ export default function CheckoutPage() {
         itemId: item.id,
         contractProductId: item.productId, // Use productId instead of contractProductId
         transactionHash: result.transactionId,
-        amount: itemTotal
+        amount: item.price * item.quantity
       });
     }
 

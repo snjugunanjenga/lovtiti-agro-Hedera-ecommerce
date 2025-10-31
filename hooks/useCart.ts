@@ -20,7 +20,7 @@ export interface CartItem {
   location: string;
   harvestDate?: Date;
   expiryDate?: Date;
-  certifications: string[];
+  certifications?: string[];
   addedAt: Date;
   updatedAt: Date;
   // Big tech cart features

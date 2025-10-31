@@ -16,15 +16,22 @@ const contractService = createAgroContractService(
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { productId, amount, value, walletAddress, privateKey, userId } = body;
+    const { productId, amount,  walletAddress, privateKey, userId } = body;
 
     // Validate required fields
-    if (!productId || !amount || !value || !walletAddress || !privateKey || !userId) {
+    if (!productId || !amount || !walletAddress || !privateKey || !userId) {
       return NextResponse.json(
         { 
           success: false, 
           error: 'Missing required fields: productId, amount, value, walletAddress, privateKey, userId' 
         },
+        { status: 400 }
+      );
+    }
+    // Amount must be > 0
+    if (BigInt(amount) <= 0n) {
+      return NextResponse.json(
+        { success: false, error: 'Amount must be greater than 0' },
         { status: 400 }
       );
     }
@@ -39,7 +46,7 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
+    
     // Get product information to validate purchase
     const productResult = await contractService.getProduct(BigInt(productId));
     if (!productResult.success || !productResult.data) {
@@ -65,17 +72,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const requiredValue = product.price * BigInt(amount);
-    if (BigInt(value) < requiredValue) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Insufficient payment amount' 
-        },
-        { status: 400 }
-      );
-    }
-
     if (product.owner.toLowerCase() === walletAddress.toLowerCase()) {
       return NextResponse.json(
         { 
@@ -85,12 +81,14 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    const requiredValue = product.metadata.hbarprice * BigInt(amount);
+    const THREE_HBAR = 3n * 10n ** 18n;
 
     // Execute purchase on contract
     const buyParams: BuyProductParams = {
       productId: BigInt(productId),
       amount: BigInt(amount),
-      value: BigInt(value),
+      value: THREE_HBAR,
       walletAddress,
       privateKey
     };
@@ -110,7 +108,7 @@ export async function POST(request: NextRequest) {
     // Log the transaction for audit purposes
     console.log(`Product purchased: ${productId} by buyer: ${walletAddress}`, {
       amount: amount,
-      value: value,
+      value: requiredValue.toString(),
       sellerAddress: product.owner,
       transactionHash: result.transactionHash,
       gasUsed: result.gasUsed?.toString()
@@ -121,7 +119,7 @@ export async function POST(request: NextRequest) {
       data: {
         productId,
         amount: amount,
-        value: value,
+        value: requiredValue.toString(),
         buyerAddress: walletAddress,
         sellerAddress: product.owner,
         transactionHash: result.transactionHash,
@@ -150,6 +148,7 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { walletAddress, privateKey, userId } = body;
+    
 
     // Validate required fields
     if (!walletAddress || !privateKey || !userId) {

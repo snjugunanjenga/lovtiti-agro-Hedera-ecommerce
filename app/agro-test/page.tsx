@@ -73,7 +73,7 @@ export default function AgroContractTestPage() {
     const result = await buyProduct(
       purchaseForm.productId,
       parseInt(purchaseForm.amount),
-      purchaseForm.value,
+      undefined,
       userId
     );
     if (result.success) {

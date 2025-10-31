@@ -384,7 +384,7 @@ export interface AddProductParams extends BaseContractParams {
 export interface BuyProductParams extends BaseContractParams {
   productId: bigint;
   amount: bigint;
-  value: bigint; // ETH value to send
+  value?: bigint; // Optional ETH value to send; if omitted, service computes from contract
 }
 
 export interface UpdateStockParams extends BaseContractParams {

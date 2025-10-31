@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
+import { requireUser } from "@/lib/auth-helpers";
 
 // GET /api/listings/[id] - Get a specific listing
 export async function GET(
@@ -60,9 +58,10 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
+    let authUser;
+    try {
+      authUser = requireUser();
+    } catch {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -78,7 +77,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    if (existingListing.sellerId !== userId) {
+    if (existingListing.sellerId !== authUser.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -124,9 +123,10 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
+    let authUser;
+    try {
+      authUser = requireUser();
+    } catch {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -140,7 +140,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
-    if (existingListing.sellerId !== userId) {
+    if (existingListing.sellerId !== authUser.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

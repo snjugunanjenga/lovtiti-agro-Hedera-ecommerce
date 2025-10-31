@@ -49,25 +49,32 @@ jest.mock('next/navigation', () => ({
 }))
 
 // Mock Clerk
-jest.mock('@clerk/nextjs', () => ({
+jest.mock('@/components/auth-client', () => ({
   useUser: () => ({
     user: {
       id: 'test-user-id',
-      emailAddresses: [{ emailAddress: 'test@example.com' }],
+      email: 'test@example.com',
+      role: 'FARMER',
     },
     isLoaded: true,
-    isSignedIn: true,
   }),
   useAuth: () => ({
-    userId: 'test-user-id',
-    isLoaded: true,
+    user: {
+      id: 'test-user-id',
+      email: 'test@example.com',
+      role: 'FARMER',
+    },
+    loading: false,
+    isSignedIn: true,
+    refresh: jest.fn(),
+    logout: jest.fn(),
+    setUser: jest.fn(),
+    getToken: jest.fn().mockResolvedValue(null),
     isSignedIn: true,
   }),
-  SignIn: () => <div>Mock SignIn</div>,
-  SignUp: () => <div>Mock SignUp</div>,
-  auth: () => ({
-    userId: 'test-user-id',
-  }),
+  SignedIn: ({ children }) => <>{children}</>,
+  SignedOut: ({ children }) => <>{children}</>,
+  UserButton: () => <button>Mock User Button</button>,
 }))
 
 // Mock localStorage

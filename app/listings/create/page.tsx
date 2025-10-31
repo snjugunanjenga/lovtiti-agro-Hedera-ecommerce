@@ -20,7 +20,7 @@ import {
   Shield,
   AlertCircle
 } from 'lucide-react';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/components/auth-client';
 import { getBusinessRulesForUser } from '@/utils/businessLogic';
 import { useWallet } from '@/hooks/useWallet';
 
@@ -59,7 +59,7 @@ export default function CreateListingPage() {
   } = useWallet();
 
   // Check if user can create listings (Farmers and Agro Experts only)
-  const userRole = user?.publicMetadata?.role as string || 'BUYER';
+  const userRole = user?.role || 'BUYER';
   const canCreateListings = ['FARMER', 'AGROEXPERT', 'ADMIN'].includes(userRole);
 
   const categories = [

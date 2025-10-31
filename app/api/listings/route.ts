@@ -1,8 +1,33 @@
 import { NextResponse } from "next/server";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
+import { Prisma } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { requireUser } from "@/lib/auth-helpers";
 
-const prisma = new PrismaClient();
+const MIN_SUPPORTED_YEAR = 1900;
+const MAX_SUPPORTED_YEAR = 9999;
+
+function parseOptionalDate(value: unknown) {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  const year = parsed.getUTCFullYear();
+  if (year < MIN_SUPPORTED_YEAR || year > MAX_SUPPORTED_YEAR) {
+    return null;
+  }
+
+  return parsed;
+}
 
 // GET /api/listings - Get all listings with optional filters
 export async function GET(request: Request) {
@@ -87,6 +112,21 @@ export async function GET(request: Request) {
       prisma.listing.count({ where }),
     ]);
 
+    console.log('[listings] GET result', {
+      filters: {
+        category,
+        search,
+        minPrice,
+        maxPrice,
+        sortBy,
+        verifiedParam,
+        page,
+        limit,
+      },
+      pageCount: listings.length,
+      total,
+    });
+
     return NextResponse.json({
       listings,
       pagination: {
@@ -108,12 +148,7 @@ export async function GET(request: Request) {
 // POST /api/listings - Create a new listing
 export async function POST(request: Request) {
   try {
-    const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
+    // Parse body first so we can echo parts back predictably
     const body = await request.json();
     const {
       title,
@@ -136,7 +171,7 @@ export async function POST(request: Request) {
       isVerified,
     } = body;
 
-    // Validate required fields
+    // Basic payload validation
     if (!title || !description || !priceCents || !quantity || !category) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -144,37 +179,43 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find or create user in database
-    const user = await prisma.user.findUnique({
-      where: { email: `${userId}@clerk.local` },
-      include: {
-        profiles: {
-          where: {
-            type: { in: ['FARMER', 'AGROEXPERT'] },
-          },
-        },
-      },
+    let authUser;
+    try {
+      authUser = requireUser();
+    } catch {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    console.log('[listings] create payload received', {
+      user: authUser,
+      body,
     });
 
-    if (!user) {
+    const isDbFarmer = (user: any) => {
+      if (!user) return false;
+      if (user.role === 'FARMER') return true;
+      if (Array.isArray(user.profiles)) {
+        return user.profiles.some((p: any) => p?.type === 'FARMER');
+      }
+      return false;
+    };
+
+    const farmer = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      include: { profiles: { select: { type: true } } },
+    });
+
+    // 4) Authorize using DB ONLY
+    if (!farmer || !isDbFarmer(farmer)) {
       return NextResponse.json(
-        { error: 'User not found. Please complete your profile first.' },
-        { status: 404 }
+        { error: 'You are not registered as a farmer in the database.' },
+        { status: 401 }
       );
     }
 
-    // Check if user has farmer or agro expert profile (KYC not strictly required for now)
-    const hasValidProfile = user.profiles.length > 0;
-
-    if (!hasValidProfile) {
-      return NextResponse.json(
-        { error: 'Farmer or Agro Expert profile required. Please complete KYC verification.' },
-        { status: 403 }
-      );
-    }
-
+    // 5) Create listing (no on-chain checks here)
     const normalizedPriceCents =
-      typeof priceCents === 'number' ? priceCents : parseInt(priceCents, 10);
+      typeof priceCents === 'number' ? priceCents : parseInt(String(priceCents), 10);
 
     const listing = await prisma.listing.create({
       data: {
@@ -182,45 +223,44 @@ export async function POST(request: Request) {
         description,
         productDescription,
         priceCents: normalizedPriceCents,
-        quantity: typeof quantity === 'number' ? quantity : parseFloat(quantity),
+        quantity: typeof quantity === 'number' ? quantity : parseFloat(String(quantity)),
         unit,
         category,
         location,
-        harvestDate: harvestDate ? new Date(harvestDate) : null,
-        expiryDate: expiryDate ? new Date(expiryDate) : null,
+        harvestDate: parseOptionalDate(harvestDate),
+        expiryDate: parseOptionalDate(expiryDate),
         images: images || [],
         video,
-        sellerId: user.id,
+        sellerId: farmer.id,
         contractProductId: contractProductId ? String(contractProductId) : null,
         contractTxHash: contractTxHash || null,
-        contractPrice: contractPrice
-          ? new Prisma.Decimal(contractPrice)
-          : null,
-        contractStock: contractStock
-          ? parseInt(contractStock, 10)
-          : null,
+        contractPrice: contractPrice ? new Prisma.Decimal(contractPrice) : null,
+        contractStock: contractStock ? parseInt(String(contractStock), 10) : null,
         contractMetadata: contractMetadata || null,
         contractCreatedAt: contractProductId ? new Date() : null,
         isVerified: Boolean(contractProductId || isVerified),
       },
-      include: {
-        seller: {
-          select: {
-            id: true,
-            email: true,
-            profiles: {
-              where: { type: 'FARMER' },
-              select: {
-                fullName: true,
-                country: true,
-              },
-            },
-          },
-        },
-      },
     });
 
-    return NextResponse.json(listing, { status: 201 });
+    console.log('[listings] listing persisted', {
+      id: listing.id,
+      sellerId: listing.sellerId,
+      createdAt: listing.createdAt,
+      contractProductId: listing.contractProductId,
+      contractMetadata: listing.contractMetadata,
+      priceCents: listing.priceCents,
+      quantity: listing.quantity,
+    });
+
+    // Predictable response for client to toast
+    return NextResponse.json(
+      {
+        id: listing.id,
+        title: listing.title,
+        ownerId: farmer.id,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error('Error creating listing:', error);
     return NextResponse.json(

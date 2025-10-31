@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef } from 'react';
-import { useUser } from '@clerk/nextjs';
+import { useUser } from '@/components/auth-client';
 import { useCart } from './useCart';
 
 interface CartSyncOptions {
@@ -17,7 +17,8 @@ export function useCartSync(options: CartSyncOptions = {}) {
     syncOnVisibility = true,
   } = options;
 
-  const { user, isSignedIn } = useUser();
+  const { user } = useUser();
+  const isSignedIn = Boolean(user);
   const cart = useCart();
   const syncTimeoutRef = useRef<NodeJS.Timeout>();
   const lastSyncRef = useRef<Date>();

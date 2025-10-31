@@ -34,7 +34,6 @@ export default function TestCartPersistence() {
     images: ['https://images.unsplash.com/photo-1592924357228-91a4daadcfea'],
     category: 'Vegetables',
     location: 'Lagos, Nigeria',
-    certifications: ['Organic', 'Fair Trade'],
   };
 
   const handleAddToCart = () => {

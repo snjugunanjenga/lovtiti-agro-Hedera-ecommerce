@@ -5,7 +5,6 @@ import CartItem from '@/components/cart/CartItem';
 import CartSummary from '@/components/cart/CartSummary';
 import CartEmpty from '@/components/cart/CartEmpty';
 import { Loader2, LogIn } from 'lucide-react';
-// import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

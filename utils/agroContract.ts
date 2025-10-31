@@ -168,6 +168,23 @@ export class AgroContractService {
         }
       }
 
+      let productInfo: ProductInfo | null = null;
+
+      if (createdProductId != null) {
+        try {
+          const [price, owner, stock, id] = await this.contract.products(createdProductId);
+          productInfo = {
+            price,
+            owner,
+            stock,
+            id,
+            farmerAddress: owner,
+          };
+        } catch (productError) {
+          console.warn('Failed to fetch freshly created product info:', productError);
+        }
+      }
+
       return {
         success: true,
         transactionHash: receipt.hash,
@@ -177,7 +194,8 @@ export class AgroContractService {
           price: params.price,
           amount: params.amount,
           farmerAddress: params.walletAddress,
-          hederaAccountId: params.hederaAccountId
+          hederaAccountId: params.hederaAccountId,
+          productInfo,
         }
       };
     } catch (error) {
@@ -196,7 +214,23 @@ export class AgroContractService {
     try {
       const contractWithSigner = await this.getContractWithSigner(params);
 
-      const overrides = { value: params.value };
+      let totalValue = params.value;
+
+      if (totalValue === undefined || totalValue === null) {
+        const productData = (await contractWithSigner.products(params.productId)) as Product;
+        const unitPrice = (productData && 'price' in productData ? productData.price : undefined) ??
+          ((productData as unknown as [bigint, string, bigint, bigint])[0] as bigint | undefined);
+
+        if (unitPrice === undefined) {
+          throw new Error('Unable to determine product price from contract');
+        }
+        totalValue = unitPrice * params.amount;
+
+      }
+
+      const overrides = { value: totalValue };
+      
+
       const tx = await (contractWithSigner.buyproduct as (
         pid: bigint,
         amount: bigint,
@@ -204,7 +238,7 @@ export class AgroContractService {
       ) => Promise<ethers.ContractTransactionResponse>)(
         params.productId,
         params.amount,
-        overrides
+        {value: totalValue}
       );
       const receipt = await tx.wait();
 

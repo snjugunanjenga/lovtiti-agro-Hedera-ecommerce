@@ -230,7 +230,7 @@ export const useWallet = (): UseWalletResult => {
 
   const contractService = useMemo(() => getAgroContractService(), []);
 
-  const ensureWalletReady = useCallback(() => {
+  const ensureWalletReady = useCallback(async () => {
     if (!contractService) {
       throw new Error(
         'Smart contract is not configured. Please set NEXT_PUBLIC_AGRO_CONTRACT_ADDRESS.'
@@ -239,6 +239,26 @@ export const useWallet = (): UseWalletResult => {
 
     if (!wallet?.signer) {
       throw new Error('Wallet not connected');
+    }
+
+    try {
+      await ensureHederaNetwork();
+    } catch (networkError) {
+      setError(
+        networkError instanceof Error
+          ? networkError.message
+          : 'Failed to switch to Hedera network',
+      );
+      throw networkError;
+    }
+
+    if (wallet.provider) {
+      const network = await wallet.provider.getNetwork();
+      if (Number(network.chainId) !== HEDERA_CHAIN_ID_DEC) {
+        const message = `Wrong network: expected Hedera Testnet (${HEDERA_CHAIN_ID_DEC}), got ${network.chainId.toString()}`;
+        setError(message);
+        throw new Error(message);
+      }
     }
 
     return { contract: contractService, currentWallet: wallet };
@@ -524,10 +544,10 @@ export const useWallet = (): UseWalletResult => {
   }, [wallet?.address, refreshFarmerState]);
 
   const createFarmerAccount = useCallback(
-    async (userId?: string): Promise<WalletActionResult> => {
-      setIsCreatingFarmer(true);
-      try {
-        const { contract, currentWallet } = ensureWalletReady();
+      async (userId?: string): Promise<WalletActionResult> => {
+        setIsCreatingFarmer(true);
+        try {
+          const { contract, currentWallet } = await ensureWalletReady();
         const response = await contract.createFarmer(currentWallet.signer);
 
         if (response.success) {
@@ -561,8 +581,8 @@ export const useWallet = (): UseWalletResult => {
       userId?: string
     ): Promise<WalletActionResult> => {
       setIsAddingProduct(true);
-      try {
-        const { contract, currentWallet } = ensureWalletReady();
+        try {
+          const { contract, currentWallet } = await ensureWalletReady();
         const params: AddProductParams = {
           price: toWei(priceInput, 'price'),
           amount: toUint256(amountInput, 'amount'),
@@ -602,8 +622,8 @@ export const useWallet = (): UseWalletResult => {
       userId?: string
     ): Promise<WalletActionResult> => {
       setIsUpdatingStock(true);
-      try {
-        const { contract, currentWallet } = ensureWalletReady();
+        try {
+          const { contract, currentWallet } = await ensureWalletReady();
         const params: UpdateStockParams = {
           productId: toUint256(productIdInput, 'product id'),
           stock: toUint256(stockInput, 'stock'),
@@ -643,8 +663,8 @@ export const useWallet = (): UseWalletResult => {
       userId?: string
     ): Promise<WalletActionResult> => {
       setIsIncreasingPrice(true);
-      try {
-        const { contract, currentWallet } = ensureWalletReady();
+        try {
+          const { contract, currentWallet } = await ensureWalletReady();
         const params: IncreasePriceParams = {
           productId: toUint256(productIdInput, 'product id'),
           price: toWei(priceInput, 'price'),
@@ -683,16 +703,19 @@ export const useWallet = (): UseWalletResult => {
     async (
       productIdInput: string | number | bigint,
       amountInput: string | number | bigint,
-      valueInput: string | number | bigint,
+      valueInput?: string | number | bigint,
       userId?: string
     ): Promise<WalletActionResult> => {
       setIsBuyingProduct(true);
       try {
-        const { contract, currentWallet } = ensureWalletReady();
+        const { contract, currentWallet } = await ensureWalletReady();
         const params: BuyProductParams = {
           productId: toUint256(productIdInput, 'product id'),
           amount: toUint256(amountInput, 'amount'),
-          value: toWei(valueInput, 'value'),
+          value:
+            valueInput === undefined || valueInput === null
+              ? undefined
+              : toWei(valueInput, 'value'),
           walletAddress: currentWallet.address,
           signer: currentWallet.signer,
           hederaAccountId: currentWallet.hederaAccountId ?? null,
@@ -722,8 +745,8 @@ export const useWallet = (): UseWalletResult => {
   const withdrawBalance = useCallback(
     async (userId?: string): Promise<WalletActionResult> => {
       setIsWithdrawing(true);
-      try {
-        const { contract, currentWallet } = ensureWalletReady();
+        try {
+          const { contract, currentWallet } = await ensureWalletReady();
         const params: WithdrawBalanceParams = {
           walletAddress: currentWallet.address,
           signer: currentWallet.signer,
