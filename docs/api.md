@@ -298,7 +298,7 @@ Update order status
 ```json
 {
   "status": "SHIPPED",
-  "trackingNumber": "TRK123456789",
+  "trackiHBARumber": "TRK123456789",
   "notes": "Package shipped via logistics partner"
 }
 ```

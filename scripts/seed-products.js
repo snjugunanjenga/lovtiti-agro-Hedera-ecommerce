@@ -180,7 +180,7 @@ const productsByFarmingType = {
       title: 'Premium White Rice',
       description: 'High-quality long-grain white rice',
       productDescription: 'Organically grown white rice with excellent cooking properties. Perfect for daily meals and special occasions.',
-      priceCents: 250000, // 2500 NGN
+      priceCents: 250000, // 2500 HBAR
       quantity: 1000,
       unit: 'kg',
       category: 'Grains',
@@ -355,7 +355,7 @@ const productsByFarmingType = {
       title: 'Premium Beef Cattle',
       description: 'Healthy grass-fed cattle',
       productDescription: 'Well-raised cattle for beef production. Grass-fed and hormone-free. Average weight 400-500kg.',
-      priceCents: 45000000, // 450,000 NGN
+      priceCents: 45000000, // 450,000 HBAR
       quantity: 20,
       unit: 'piece',
       category: 'Livestock',
@@ -366,7 +366,7 @@ const productsByFarmingType = {
       title: 'Healthy Goats',
       description: 'Mixed breed goats',
       productDescription: 'Healthy goats suitable for meat and milk production. Well-vaccinated and disease-free.',
-      priceCents: 8500000, // 85,000 NGN
+      priceCents: 8500000, // 85,000 HBAR
       quantity: 50,
       unit: 'piece',
       category: 'Livestock',

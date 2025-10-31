@@ -86,9 +86,9 @@ export const VALID_TRANSACTIONS: TransactionType[] = [
   { type: 'PURCHASE', fromRole: 'FARMER', toRole: 'BUYER', description: 'Buyers buy agricultural products from farmers' },
   { type: 'PURCHASE', fromRole: 'FARMER', toRole: 'DISTRIBUTOR', description: 'Distributors buy products from farmers' },
   { type: 'PURCHASE', fromRole: 'DISTRIBUTOR', toRole: 'BUYER', description: 'Buyers buy products from distributors' },
-  { type: 'PURCHASE', fromRole: 'VETERINARIAN', toRole: 'FARMER', description: 'Farmers buy equipment from Agro Experts' },
-  { type: 'PURCHASE', fromRole: 'VETERINARIAN', toRole: 'BUYER', description: 'Buyers buy equipment from Agro Experts' },
-  { type: 'PURCHASE', fromRole: 'VETERINARIAN', toRole: 'DISTRIBUTOR', description: 'Distributors buy equipment from Agro Experts' },
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'FARMER', description: 'Farmers buy equipment from Agro Experts' },
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'BUYER', description: 'Buyers buy equipment from Agro Experts' },
+  { type: 'PURCHASE', fromRole: 'AGROEXPERT', toRole: 'DISTRIBUTOR', description: 'Distributors buy equipment from Agro Experts' },
 
   // Lease transactions
   { type: 'LEASE', fromRole: 'VETERINARIAN', toRole: 'FARMER', description: 'Farmers lease equipment from Agro Experts' },

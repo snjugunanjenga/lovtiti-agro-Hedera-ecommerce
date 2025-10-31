@@ -12,7 +12,7 @@ export interface DeliveryUpdate {
   actualDelivery?: Date;
   deliveryProof?: string[];
   carrier?: string;
-  trackingNumber?: string;
+  trackiHBARumber?: string;
 }
 
 export interface DeliveryStats {
@@ -54,7 +54,7 @@ export class DeliveryTrackingService {
           actualDelivery: update.actualDelivery,
           deliveryNotes: update.notes,
           deliveryProof: update.deliveryProof || [],
-          trackingNumber: update.trackingNumber,
+          trackiHBARumber: update.trackiHBARumber,
           updatedAt: new Date()
         }
       });
@@ -121,7 +121,7 @@ export class DeliveryTrackingService {
    */
   async getUserDeliveries(userId: string, userType: 'buyer' | 'seller'): Promise<any[]> {
     try {
-      const where = userType === 'buyer' 
+      const where = userType === 'buyer'
         ? { buyerId: userId }
         : { listing: { sellerId: userId } };
 
@@ -174,7 +174,7 @@ export class DeliveryTrackingService {
           where: { deliveryStatus: 'FAILED_DELIVERY' }
         }),
         this.prisma.order.findMany({
-          where: { 
+          where: {
             deliveryStatus: 'DELIVERED',
             actualDelivery: { not: null },
             createdAt: { not: null as any }

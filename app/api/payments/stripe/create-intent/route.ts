@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     // Create line items for Stripe
     const lineItems = items.map((item: any) => ({
       price_data: {
-        currency: 'ngn', // Nigerian Naira
+        currency: 'HBAR', // Nigerian Naira
         product_data: {
           name: item.name,
           description: item.description,
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     // Add delivery fee
     lineItems.push({
       price_data: {
-        currency: 'ngn',
+        currency: 'HBAR',
         product_data: {
           name: 'Delivery Fee',
           description: 'Standard delivery to your location',
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     // Add service fee
     lineItems.push({
       price_data: {
-        currency: 'ngn',
+        currency: 'HBAR',
         product_data: {
           name: 'Service Fee',
           description: 'Platform service fee (2.5%)',
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totals.total * 100), // Convert to kobo
-      currency: 'ngn',
+      currency: 'HBAR',
       automatic_payment_methods: {
         enabled: true,
       },
@@ -102,13 +102,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Stripe payment intent creation error:', error);
-    
+
     if (error instanceof Stripe.errors.StripeError) {
       return NextResponse.json(
-        { 
+        {
           error: 'Payment processing error',
           message: error.message,
-          type: error.type 
+          type: error.type
         },
         { status: 400 }
       );

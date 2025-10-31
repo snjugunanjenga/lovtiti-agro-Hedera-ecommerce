@@ -164,7 +164,7 @@ curl -X POST http://localhost:3000/api/seed/products \
 
 ### Each Product Has:
 - ✅ Title and descriptions
-- ✅ Price in cents (NGN)
+- ✅ Price in cents (HBAR)
 - ✅ Available quantity
 - ✅ Unit of measurement
 - ✅ Category

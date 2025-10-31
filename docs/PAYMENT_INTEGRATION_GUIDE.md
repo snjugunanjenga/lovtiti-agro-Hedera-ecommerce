@@ -28,7 +28,7 @@ Complete payment integration system supporting multiple payment methods for the 
 - `/app/api/payments/stripe/webhook/route.ts`
 
 **Features**:
-- ✅ Payment Intent creation with Nigerian Naira (NGN) support
+- ✅ Payment Intent creation with Nigerian Naira (HBAR) support
 - ✅ Automatic payment methods (cards, digital wallets)
 - ✅ Webhook handling for payment events
 - ✅ Order metadata and shipping information
@@ -85,7 +85,7 @@ MPESA_ENVIRONMENT=sandbox
 
 **Features**:
 - ✅ HBAR escrow transactions
-- ✅ Currency conversion (NGN to HBAR)
+- ✅ Currency conversion (HBAR to HBAR)
 - ✅ Escrow fund management
 - ✅ Release mechanism for delivery confirmation
 - ✅ Transaction tracking and logging

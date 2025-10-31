@@ -5,10 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import DashboardGuard from '@/components/DashboardGuard';
-import { 
-  FileText, 
-  Search, 
-  Filter, 
+import {
+  FileText,
+  Search,
+  Filter,
   CheckCircle,
   XCircle,
   AlertTriangle,
@@ -48,7 +48,7 @@ function ContentModerationContent() {
       createdAt: '2024-01-15T10:30:00Z',
       updatedAt: '2024-01-15T14:20:00Z',
       price: 500,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Vegetables',
       location: 'Lagos, Nigeria',
       flags: 0,
@@ -73,7 +73,7 @@ function ContentModerationContent() {
       createdAt: '2024-01-16T09:15:00Z',
       updatedAt: '2024-01-16T09:15:00Z',
       price: 15000,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Transportation',
       location: 'Abuja, Nigeria',
       flags: 0,
@@ -98,7 +98,7 @@ function ContentModerationContent() {
       createdAt: '2024-01-14T16:20:00Z',
       updatedAt: '2024-01-17T11:30:00Z',
       price: 800,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Grains',
       location: 'Kano, Nigeria',
       flags: 3,
@@ -123,7 +123,7 @@ function ContentModerationContent() {
       createdAt: '2024-01-12T14:00:00Z',
       updatedAt: '2024-01-12T14:00:00Z',
       price: 8000,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Veterinary Services',
       location: 'Ibadan, Nigeria',
       flags: 0,
@@ -148,7 +148,7 @@ function ContentModerationContent() {
       createdAt: '2024-01-13T12:15:00Z',
       updatedAt: '2024-01-18T08:45:00Z',
       price: 1200,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Spices',
       location: 'Ondo, Nigeria',
       flags: 5,
@@ -162,11 +162,11 @@ function ContentModerationContent() {
 
   const filteredContent = contentItems.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.seller.name.toLowerCase().includes(searchTerm.toLowerCase());
+      item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.seller.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'ALL' || item.status === selectedStatus;
     const matchesType = selectedType === 'ALL' || item.type === selectedType;
-    
+
     return matchesSearch && matchesStatus && matchesType;
   });
 
@@ -389,7 +389,7 @@ function ContentModerationContent() {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="space-y-4">
                 {/* Seller Information */}
                 <div className="flex items-center space-x-3">
@@ -456,7 +456,7 @@ function ContentModerationContent() {
                     <Eye className="w-4 h-4" />
                     <span>View Details</span>
                   </Button>
-                  
+
                   <div className="flex space-x-2">
                     {item.status === 'PENDING' && (
                       <>

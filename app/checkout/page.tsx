@@ -23,7 +23,8 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useWallet } from '@/hooks/useWallet';
-// import { useUser } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
+import HederaPaymentModal from '@/components/checkout/HederaPaymentModal';
 
 interface DeliveryInfo {
   fullName: string;
@@ -48,14 +49,14 @@ interface PaymentMethod {
 
 export default function CheckoutPage() {
   const router = useRouter();
-  // const { user } = useUser();
-  const user = null as any; // Temporary for development
+  const { user } = useUser();
   const { items, totalItems, totalPrice, clearCart } = useCart();
 
   // Wallet integration
   const {
     isConnected,
     wallet,
+    connectWallet,
     buyProduct,
     isBuyingProduct,
     error: walletError
@@ -77,8 +78,25 @@ export default function CheckoutPage() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState<string>('');
+  const [showHederaModal, setShowHederaModal] = useState(false);
 
   const paymentMethods: PaymentMethod[] = [
+    {
+      id: 'hedera',
+      name: 'Hedera HBAR (Recommended)',
+      icon: <Coins className="w-6 h-6" />,
+      description: 'Direct payment to farmers with HBAR',
+      fees: 'Low network fees',
+      processingTime: '2-5 seconds'
+    },
+    {
+      id: 'metamask',
+      name: 'MetaMask Wallet',
+      icon: <Shield className="w-6 h-6" />,
+      description: 'Connect your MetaMask wallet',
+      fees: 'Gas fees only',
+      processingTime: '1-3 minutes'
+    },
     {
       id: 'stripe',
       name: 'Credit/Debit Card',
@@ -94,22 +112,6 @@ export default function CheckoutPage() {
       description: 'Mobile money payment',
       fees: '1.5%',
       processingTime: 'Instant'
-    },
-    {
-      id: 'hedera',
-      name: 'Hedera HBAR',
-      icon: <Coins className="w-6 h-6" />,
-      description: 'Blockchain payment with escrow',
-      fees: '0.1%',
-      processingTime: '2-5 minutes'
-    },
-    {
-      id: 'metamask',
-      name: 'MetaMask',
-      icon: <Shield className="w-6 h-6" />,
-      description: 'Ethereum, USDT, USDC',
-      fees: 'Gas fees only',
-      processingTime: '1-3 minutes'
     }
   ];
 
@@ -134,6 +136,16 @@ export default function CheckoutPage() {
       router.push('/cart');
     }
   }, [totalItems, router]);
+
+  useEffect(() => {
+    if (user?.firstName && user?.lastName) {
+      setDeliveryInfo(prev => ({
+        ...prev,
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
+        email: user.emailAddresses?.[0]?.emailAddress || prev.email
+      }));
+    }
+  }, [user]);
 
   const handleDeliveryInfoChange = (field: keyof DeliveryInfo, value: string) => {
     setDeliveryInfo(prev => ({
@@ -168,6 +180,26 @@ export default function CheckoutPage() {
       return;
     }
 
+    // For Hedera payments, open the modal
+    if (selectedPaymentMethod === 'hedera') {
+      setShowHederaModal(true);
+      return;
+    }
+
+    // For MetaMask, connect wallet first if not connected
+    if (selectedPaymentMethod === 'metamask' && !isConnected) {
+      try {
+        await connectWallet();
+        if (!isConnected) {
+          setPaymentError('Please connect your wallet to continue');
+          return;
+        }
+      } catch (error) {
+        setPaymentError('Failed to connect wallet. Please try again.');
+        return;
+      }
+    }
+
     setIsProcessing(true);
     setPaymentError('');
 
@@ -187,9 +219,6 @@ export default function CheckoutPage() {
         case 'mpesa':
           await processMpesaPayment(orderData);
           break;
-        case 'hedera':
-          await processHederaPayment(orderData);
-          break;
         case 'metamask':
           await processMetaMaskPayment(orderData);
           break;
@@ -207,6 +236,13 @@ export default function CheckoutPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleHederaPaymentSuccess = (transactionId: string) => {
+    console.log('Hedera payment successful:', transactionId);
+    setShowHederaModal(false);
+    clearCart();
+    router.push('/checkout/success?payment=hedera&tx=' + transactionId);
   };
 
   const processStripePayment = async (orderData: any) => {
@@ -276,37 +312,62 @@ export default function CheckoutPage() {
       throw new Error('Wallet address not found');
     }
 
-    // Process each item in the cart through the smart contract
+    // Group items by seller to process payments to individual farmers
+    const itemsBySeller = items.reduce((acc, item) => {
+      if (!acc[item.sellerId]) {
+        acc[item.sellerId] = [];
+      }
+      acc[item.sellerId].push(item);
+      return acc;
+    }, {} as { [sellerId: string]: typeof items });
+
     const purchaseResults = [];
 
-    for (const item of items) {
-      // Skip contract validation for now - products may not have contractProductId
-      // if (!item.contractProductId) {
-      //   throw new Error(`Product ${item.name} is not available on the contract`);
-      // }
-
-      // Calculate the total value for this item
-      const itemTotal = item.price * item.quantity;
-      const valueInEth = (itemTotal / 100).toString(); // Convert from cents to ETH (simplified)
-
-      // Buy product through smart contract
-      const result = await buyProduct(
-        item.productId, // Use productId instead of contractProductId
-        item.quantity,
-        valueInEth,
-        user?.id || 'unknown'
-      );
-
-      if (!result.success) {
-        throw new Error(result.error || `Failed to purchase ${item.name}`);
+    // Process payment to each farmer
+    for (const [sellerId, sellerItems] of Object.entries(itemsBySeller)) {
+      // Get farmer's wallet address
+      const farmerResponse = await fetch(`/api/users/${sellerId}/wallet`);
+      if (!farmerResponse.ok) {
+        throw new Error(`Failed to get farmer wallet for seller ${sellerId}`);
       }
 
-      purchaseResults.push({
-        itemId: item.id,
-        contractProductId: item.productId, // Use productId instead of contractProductId
-        transactionHash: result.transactionId,
-        amount: itemTotal
-      });
+      const farmerData = await farmerResponse.json();
+      const farmerWallet = farmerData.hederaWallet;
+
+      if (!farmerWallet || farmerWallet === 'Not provided') {
+        throw new Error(`Farmer wallet not available for seller ${sellerId}`);
+      }
+
+      // Calculate total for this farmer
+      const sellerTotal = sellerItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const valueInEth = (sellerTotal / 100).toString(); // Convert from cents to ETH
+
+      // For each item, process through smart contract
+      for (const item of sellerItems) {
+        const itemTotal = item.price * item.quantity;
+        const itemValueInEth = (itemTotal / 100).toString();
+
+        // Buy product through smart contract
+        const result = await buyProduct(
+          item.productId,
+          item.quantity,
+          itemValueInEth,
+          user?.id || 'unknown'
+        );
+
+        if (!result.success) {
+          throw new Error(result.error || `Failed to purchase ${item.name}`);
+        }
+
+        purchaseResults.push({
+          itemId: item.id,
+          productId: item.productId,
+          sellerId: item.sellerId,
+          farmerWallet: farmerWallet,
+          transactionHash: result.transactionId,
+          amount: itemTotal
+        });
+      }
     }
 
     // Create order in database with contract information
@@ -316,9 +377,9 @@ export default function CheckoutPage() {
       body: JSON.stringify({
         items: purchaseResults,
         deliveryInfo,
-        paymentMethod: 'agro_contract',
+        paymentMethod: 'metamask_contract',
         totals,
-        contractBuyerAddr: wallet.address
+        buyerWallet: wallet.address
       })
     });
 
@@ -494,16 +555,16 @@ export default function CheckoutPage() {
                       <div
                         key={method.id}
                         className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${selectedPaymentMethod === method.id
-                            ? 'border-green-500 bg-green-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                          ? 'border-green-500 bg-green-50'
+                          : 'border-gray-200 hover:border-gray-300'
                           }`}
                         onClick={() => handlePaymentMethodSelect(method.id)}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-3">
                             <div className={`p-2 rounded-lg ${selectedPaymentMethod === method.id
-                                ? 'bg-green-600 text-white'
-                                : 'bg-gray-100 text-gray-600'
+                              ? 'bg-green-600 text-white'
+                              : 'bg-gray-100 text-gray-600'
                               }`}>
                               {method.icon}
                             </div>
@@ -555,20 +616,20 @@ export default function CheckoutPage() {
                 <div className="border-t border-gray-200 pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">NGN {totals.subtotal.toLocaleString()}</span>
+                    <span className="font-medium">HBAR {totals.subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Delivery Fee</span>
-                    <span className="font-medium">NGN {totals.deliveryFee.toLocaleString()}</span>
+                    <span className="font-medium">HBAR {totals.deliveryFee.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Service Fee (2.5%)</span>
-                    <span className="font-medium">NGN {totals.serviceFee.toFixed(2)}</span>
+                    <span className="font-medium">HBAR {totals.serviceFee.toFixed(2)}</span>
                   </div>
                   <div className="border-t border-gray-200 pt-2">
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span className="text-green-600">NGN {totals.total.toLocaleString()}</span>
+                      <span className="text-green-600">HBAR {totals.total.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -593,22 +654,47 @@ export default function CheckoutPage() {
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           Processing Payment...
                         </>
+                      ) : selectedPaymentMethod === 'hedera' ? (
+                        `Pay with HBAR - ℏ${(totals.total / 100).toFixed(2)}`
+                      ) : selectedPaymentMethod === 'metamask' ? (
+                        isConnected ? `Pay with MetaMask - ℏ${(totals.total / 100).toFixed(2)}` : 'Connect Wallet & Pay'
                       ) : (
-                        `Pay NGN ${totals.total.toLocaleString()}`
+                        `Pay HBAR ${totals.total.toLocaleString()}`
                       )}
                     </Button>
                   )}
                 </div>
 
+                {/* Wallet Connection Status */}
+                {selectedPaymentMethod === 'metamask' && (
+                  <div className="text-xs text-center pt-2">
+                    {isConnected ? (
+                      <p className="text-green-600">✅ Wallet Connected: {wallet?.address?.slice(0, 6)}...{wallet?.address?.slice(-4)}</p>
+                    ) : (
+                      <p className="text-orange-600">⚠️ Wallet not connected</p>
+                    )}
+                  </div>
+                )}
+
                 {/* Security Notice */}
                 <div className="text-xs text-gray-500 text-center pt-2 border-t border-gray-100">
                   <p>🔒 Secure checkout with blockchain verification</p>
-                  <p>📦 Supply chain tracking included</p>
+                  <p>📦 Direct payments to farmers' wallets</p>
+                  <p>🌾 Supply chain tracking included</p>
                 </div>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Hedera Payment Modal */}
+        <HederaPaymentModal
+          isOpen={showHederaModal}
+          onClose={() => setShowHederaModal(false)}
+          items={items}
+          totalAmount={totals.total}
+          onPaymentSuccess={handleHederaPaymentSuccess}
+        />
       </div>
     </div>
   );

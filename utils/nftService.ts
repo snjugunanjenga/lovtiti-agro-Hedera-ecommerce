@@ -1,11 +1,11 @@
 // NFT Service for Lovtiti Agro Mart Marketplace
 import { walletManager, WalletAccount } from "./walletService";
-import { 
-  BaseNFT, 
-  NFTMetadata, 
-  NFTAttributes, 
-  ProductAttributes, 
-  ServiceAttributes, 
+import {
+  BaseNFT,
+  NFTMetadata,
+  NFTAttributes,
+  ProductAttributes,
+  ServiceAttributes,
   EquipmentAttributes,
   MintNFTRequest,
   MintNFTResponse,
@@ -489,7 +489,7 @@ export class NFTService {
   public async updateDeliveryStatus(
     transactionId: string,
     status: string,
-    trackingNumber?: string,
+    trackiHBARumber?: string,
     carrier?: string
   ): Promise<void> {
     if (!this.walletAccount) {
@@ -501,7 +501,7 @@ export class NFTService {
         method: "POST",
         body: JSON.stringify({
           status,
-          trackingNumber,
+          trackiHBARumber,
           carrier,
         }),
       });
@@ -616,7 +616,7 @@ export class NFTService {
 
   private async callAPI(endpoint: string, options: RequestInit = {}): Promise<any> {
     const url = `${this.config.apiBaseUrl}${endpoint}`;
-    
+
     const defaultOptions: RequestInit = {
       headers: {
         "Content-Type": "application/json",

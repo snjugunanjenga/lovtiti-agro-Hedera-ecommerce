@@ -14,12 +14,12 @@ interface CartSummaryProps {
   isLoading?: boolean;
 }
 
-export default function CartSummary({ 
-  items, 
-  totalItems, 
-  totalPrice, 
-  onClearCart, 
-  isLoading = false 
+export default function CartSummary({
+  items,
+  totalItems,
+  totalPrice,
+  onClearCart,
+  isLoading = false
 }: CartSummaryProps) {
   const subtotal = totalPrice;
   const deliveryFee = totalPrice > 0 ? 500 : 0; // Fixed delivery fee
@@ -81,19 +81,19 @@ export default function CartSummary({
         {/* Items Count */}
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Items ({totalItems})</span>
-          <span className="font-medium">{items[0]?.currency || 'NGN'} {subtotal.toLocaleString()}</span>
+          <span className="font-medium">{items[0]?.currency || 'HBAR'} {subtotal.toLocaleString()}</span>
         </div>
 
         {/* Delivery Fee */}
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Delivery Fee</span>
-          <span className="font-medium">{items[0]?.currency || 'NGN'} {deliveryFee.toLocaleString()}</span>
+          <span className="font-medium">{items[0]?.currency || 'HBAR'} {deliveryFee.toLocaleString()}</span>
         </div>
 
         {/* Service Fee */}
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Service Fee (2.5%)</span>
-          <span className="font-medium">{items[0]?.currency || 'NGN'} {serviceFee.toFixed(2)}</span>
+          <span className="font-medium">{items[0]?.currency || 'HBAR'} {serviceFee.toFixed(2)}</span>
         </div>
 
         {/* Divider */}
@@ -102,12 +102,12 @@ export default function CartSummary({
         {/* Total */}
         <div className="flex justify-between text-lg font-bold">
           <span>Total</span>
-          <span className="text-green-600">{items[0]?.currency || 'NGN'} {total.toLocaleString()}</span>
+          <span className="text-green-600">{items[0]?.currency || 'HBAR'} {total.toLocaleString()}</span>
         </div>
 
         {/* Checkout Button */}
         <Link href="/checkout" className="block">
-          <Button 
+          <Button
             className="w-full bg-green-600 hover:bg-green-700"
             disabled={isLoading}
           >

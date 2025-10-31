@@ -15,9 +15,9 @@ export async function POST(request: NextRequest) {
     // Validate required fields
     if (!items || !deliveryInfo || !paymentMethod || !totals) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Missing required fields: items, deliveryInfo, paymentMethod, totals' 
+        {
+          success: false,
+          error: 'Missing required fields: items, deliveryInfo, paymentMethod, totals'
         },
         { status: 400 }
       );
@@ -27,32 +27,35 @@ export async function POST(request: NextRequest) {
     const createdOrders = [];
 
     for (const item of items) {
-      // Find the listing by contract product ID
+      // Find the listing by product ID
       const listing = await prisma.listing.findUnique({
-        where: { contractProductId: item.contractProductId },
+        where: { id: item.productId || item.contractProductId },
         include: { seller: true }
       });
 
       if (!listing) {
         return NextResponse.json(
-          { 
-            success: false, 
-            error: `Listing not found for contract product ID: ${item.contractProductId}` 
+          {
+            success: false,
+            error: `Listing not found for product ID: ${item.productId || item.contractProductId}`
           },
           { status: 404 }
         );
       }
 
-      // Find buyer user by contract address
-      const buyer = await prisma.user.findUnique({
-        where: { contractAddress: contractBuyerAddr }
+      // Find buyer user by wallet address in their profile
+      const buyerProfile = await prisma.profile.findFirst({
+        where: { hederaWallet: contractBuyerAddr },
+        include: { user: true }
       });
+
+      const buyer = buyerProfile?.user;
 
       if (!buyer) {
         return NextResponse.json(
-          { 
-            success: false, 
-            error: `Buyer not found for contract address: ${contractBuyerAddr}` 
+          {
+            success: false,
+            error: `Buyer not found for contract address: ${contractBuyerAddr}`
           },
           { status: 404 }
         );
@@ -67,14 +70,7 @@ export async function POST(request: NextRequest) {
           amountCents: item.amount,
           currency: 'ETH',
           deliveryAddress: `${deliveryInfo.address}, ${deliveryInfo.city}, ${deliveryInfo.state}, ${deliveryInfo.country}`,
-          deliveryStatus: 'PENDING',
-          
-          // Contract integration fields
-          contractTxHash: item.transactionHash,
-          contractAmount: item.amount / 100, // Convert from cents to ETH
-          contractBuyerAddr: contractBuyerAddr,
-          contractSellerAddr: listing.seller.contractAddress || '',
-          contractPurchasedAt: new Date()
+          notes: `Contract transaction: ${item.transactionHash}`
         }
       });
 
@@ -94,9 +90,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error creating orders:', error);
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to create orders' 
+      {
+        success: false,
+        error: 'Failed to create orders'
       },
       { status: 500 }
     );

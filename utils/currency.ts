@@ -21,7 +21,7 @@ export const SUPPORTED_CURRENCIES: Currency[] = [
     decimalPlaces: 2
   },
   {
-    code: 'NGN',
+    code: 'HBAR',
     name: 'Nigerian Naira',
     symbol: 'ℏ',
     country: 'Nigeria',

@@ -418,7 +418,7 @@ Get escrow transaction details
     "status": "PENDING_DELIVERY", // "PENDING_PAYMENT", "PENDING_DELIVERY", "DELIVERED", "RELEASED", "DISPUTED"
     "deliveryStatus": {
       "isShipped": false,
-      "trackingNumber": null,
+      "trackiHBARumber": null,
       "estimatedDelivery": "2024-01-20T00:00:00Z",
       "actualDelivery": null
     },
@@ -438,7 +438,7 @@ Update delivery status (seller only)
 ```json
 {
   "status": "SHIPPED",
-  "trackingNumber": "TRK123456789",
+  "trackiHBARumber": "TRK123456789",
   "carrier": "Fast Logistics",
   "estimatedDelivery": "2024-01-19T00:00:00Z",
   "notes": "Package shipped, tracking available"

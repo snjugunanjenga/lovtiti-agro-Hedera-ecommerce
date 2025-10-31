@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown, 
-  Users, 
-  Package, 
+import {
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+  Users,
+  Package,
   DollarSign,
   Calendar,
   Download,
@@ -123,7 +123,7 @@ function AnalyticsContent() {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'NGN'
+      currency: 'HBAR'
     }).format(amount);
   };
 
@@ -403,7 +403,7 @@ function AnalyticsContent() {
                   {formatCurrency(data.performanceMetrics.averageOrderValue)}
                 </p>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-blue-600" />
@@ -413,7 +413,7 @@ function AnalyticsContent() {
                   {data.performanceMetrics.customerRetention}%
                 </p>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Zap className="w-8 h-8 text-purple-600" />
@@ -423,7 +423,7 @@ function AnalyticsContent() {
                   {data.performanceMetrics.supplyChainEfficiency}%
                 </p>
               </div>
-              
+
               <div className="text-center">
                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="w-8 h-8 text-orange-600" />

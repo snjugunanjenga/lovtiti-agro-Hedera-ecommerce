@@ -13,7 +13,7 @@ export default function TestActivityPage() {
     const userId = 'test-user-' + Date.now();
     const userRole = 'FARMER';
     const userEmail = 'test@example.com';
-    
+
     logUserLogin(userId, userRole, userEmail, {
       loginMethod: 'test',
       browser: 'Chrome',
@@ -32,13 +32,13 @@ export default function TestActivityPage() {
     const userId = 'test-user-' + Date.now();
     const userRole = 'BUYER';
     const userEmail = 'buyer@example.com';
-    
+
     logCartActivity(userId, userRole, userEmail, 'CART_ADD', {
       productId: 'prod-123',
       productName: 'Fresh Tomatoes',
       quantity: 5,
       price: 2500,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Vegetables',
       sellerType: 'FARMER'
     });
@@ -50,13 +50,13 @@ export default function TestActivityPage() {
     const userId = 'test-user-' + Date.now();
     const userRole = 'FARMER';
     const userEmail = 'farmer@example.com';
-    
+
     logListingActivity(userId, userRole, userEmail, 'LISTING_CREATE', {
       listingId: 'listing-456',
       productName: 'Organic Maize',
       category: 'Grains',
       price: 1800,
-      currency: 'NGN',
+      currency: 'HBAR',
       quantity: 100,
       unit: 'kg'
     });
@@ -68,7 +68,7 @@ export default function TestActivityPage() {
     const userId = 'test-user-' + Date.now();
     const userRole = 'DISTRIBUTOR';
     const userEmail = 'distributor@example.com';
-    
+
     logDashboardAccess(userId, userRole, userEmail, 'Distributor Dashboard', {
       section: 'inventory',
       timestamp: new Date().toISOString()

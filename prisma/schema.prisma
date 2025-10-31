@@ -12,6 +12,8 @@ generator client {
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
+  firstName     String?
+  lastName      String?
   role          Role
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -91,7 +93,7 @@ model Order {
   hederaEscrow    String?
   deliveryAddress String?
   deliveryDate    DateTime?
-  trackingNumber  String?
+  trackiHBARumber  String?
   notes           String?
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -237,6 +239,7 @@ enum ProfileType {
   TRANSPORTER
   BUYER
   AGROEXPERT
+  ADMIN
 }
 
 enum KycStatus {
@@ -387,7 +390,7 @@ model EscrowTransaction {
   currency          String
   status            String // PENDING_PAYMENT, PENDING_DELIVERY, DELIVERED, RELEASED, DISPUTED
   deliveryStatus    String    @default("PENDING_DELIVERY")
-  trackingNumber    String?
+  trackiHBARumber    String?
   carrier           String?
   estimatedDelivery DateTime?
   actualDelivery    DateTime?
@@ -401,4 +404,30 @@ model EscrowTransaction {
   feedback          String?
   createdAt         DateTime  @default(now())
   expiresAt         DateTime
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  amount        Int // Amount in cents
+  currency      String        @default("HBAR")
+  status        PaymentStatus @default(PENDING)
+  paymentMethod String // HEDERA, METAMASK, STRIPE, MPESA
+  fromWallet    String?
+  toWallet      String?
+  sellerId      String?
+  buyerId       String?
+  orderId       String?
+  transactionHash String?
+  metadata      Json? // Additional payment data
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
 }

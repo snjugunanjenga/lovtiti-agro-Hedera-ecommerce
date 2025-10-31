@@ -156,13 +156,13 @@ export default function Navbar() {
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+                className="relative flex items-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
               >
                 <ShoppingCart className="h-4 w-4" />
                 <span>Cart</span>
                 {totalItems > 0 && (
-                  <div className="w-5 h-5 bg-green-500 text-white text-xs rounded-full flex items-center justify-center">
-                    {totalItems}
+                  <div className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
+                    {totalItems > 99 ? '99+' : totalItems}
                   </div>
                 )}
               </Button>
@@ -260,13 +260,13 @@ export default function Navbar() {
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full mt-4 flex items-center justify-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+                  className="relative w-full mt-4 flex items-center justify-center space-x-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   <span>Cart</span>
                   {totalItems > 0 && (
-                    <div className="w-5 h-5 bg-green-500 text-white text-xs rounded-full flex items-center justify-center">
-                      {totalItems}
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
+                      {totalItems > 99 ? '99+' : totalItems}
                     </div>
                   )}
                 </Button>

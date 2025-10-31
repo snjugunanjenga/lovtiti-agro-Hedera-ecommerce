@@ -14,18 +14,18 @@ const ERC20_ABI = [
   {
     "constant": false,
     "inputs": [
-      {"name": "_to", "type": "address"},
-      {"name": "_value", "type": "uint256"}
+      { "name": "_to", "type": "address" },
+      { "name": "_value", "type": "uint256" }
     ],
     "name": "transfer",
-    "outputs": [{"name": "", "type": "bool"}],
+    "outputs": [{ "name": "", "type": "bool" }],
     "type": "function"
   },
   {
     "constant": true,
-    "inputs": [{"name": "_owner", "type": "address"}],
+    "inputs": [{ "name": "_owner", "type": "address" }],
     "name": "balanceOf",
-    "outputs": [{"name": "balance", "type": "uint256"}],
+    "outputs": [{ "name": "balance", "type": "uint256" }],
     "type": "function"
   }
 ];
@@ -51,13 +51,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert NGN to token amount (simplified conversion)
+    // Convert HBAR to token amount (simplified conversion)
     // In production, you would use real-time exchange rates
     const conversionRates = {
-      ETH: 0.0001, // 1 NGN = 0.0001 ETH (example)
-      USDT: 0.001, // 1 NGN = 0.001 USDT (example)
-      USDC: 0.001, // 1 NGN = 0.001 USDC (example)
-      DAI: 0.001,  // 1 NGN = 0.001 DAI (example)
+      ETH: 0.0001, // 1 HBAR = 0.0001 ETH (example)
+      USDT: 0.001, // 1 HBAR = 0.001 USDT (example)
+      USDC: 0.001, // 1 HBAR = 0.001 USDC (example)
+      DAI: 0.001,  // 1 HBAR = 0.001 DAI (example)
     };
 
     const rate = conversionRates[tokenType as keyof typeof conversionRates];
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       orderId: `AGRO-${Date.now()}`,
       tokenType,
       tokenAmount,
-      ngnAmount: totals.total,
+      HBARAmount: totals.total,
       conversionRate: rate,
       recipientAddress: process.env.METAMASK_RECIPIENT_ADDRESS || '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Your business wallet
       items: items.map((item: any) => ({
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       // ERC-20 token transaction
       const contractAddress = CONTRACT_ADDRESSES[tokenType as keyof typeof CONTRACT_ADDRESSES];
       const web3 = new Web3();
-      
+
       // Encode the transfer function call
       const transferData = web3.eth.abi.encodeFunctionCall(
         {
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       orderId: transactionData.orderId,
       tokenType,
       tokenAmount,
-      ngnAmount: totals.total,
+      HBARAmount: totals.total,
       conversionRate: rate,
       transactionParams,
       message: `Please confirm the ${tokenType} transaction in MetaMask`,
@@ -161,7 +161,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('MetaMask transaction creation error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'MetaMask payment failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -190,7 +190,7 @@ export async function GET(request: NextRequest) {
     try {
       // Get transaction receipt
       const receipt = await web3.eth.getTransactionReceipt(transactionHash);
-      
+
       if (!receipt) {
         return NextResponse.json({
           success: false,
@@ -204,7 +204,7 @@ export async function GET(request: NextRequest) {
       if (isSuccessful) {
         // Get transaction details
         const transaction = await web3.eth.getTransaction(transactionHash);
-        
+
         const transactionData = {
           hash: transactionHash,
           blockNumber: receipt.blockNumber,
@@ -245,7 +245,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Transaction verification error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Transaction verification failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },

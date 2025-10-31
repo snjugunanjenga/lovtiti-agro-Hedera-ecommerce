@@ -64,7 +64,7 @@ export default function UserActivityDemoPage() {
       productName: 'Fresh Organic Tomatoes',
       quantity: 5,
       price: 2500,
-      currency: 'NGN',
+      currency: 'HBAR',
       category: 'Vegetables',
       location: 'Lagos, Nigeria',
       timestamp: new Date().toISOString()
@@ -96,7 +96,7 @@ export default function UserActivityDemoPage() {
       productName: 'Organic Maize',
       category: 'Grains',
       price: 1800,
-      currency: 'NGN',
+      currency: 'HBAR',
       quantity: 100,
       unit: 'kg',
       location: 'Kano, Nigeria',

@@ -146,9 +146,9 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
 ];
 
 export const getPaymentMethodsByCurrency = (currency: string): PaymentMethod[] => {
-  return PAYMENT_METHODS.filter(method => 
-    method.currency === currency || 
-    method.type === 'crypto' || 
+  return PAYMENT_METHODS.filter(method =>
+    method.currency === currency ||
+    method.type === 'crypto' ||
     method.type === 'stripe'
   );
 };
@@ -164,7 +164,7 @@ export const calculatePaymentFees = (
   const fees = (amount * paymentMethod.fees.percentage / 100) + paymentMethod.fees.fixed;
   const total = amount + fees;
   const net = amount;
-  
+
   return { total, fees, net };
 };
 
@@ -188,7 +188,7 @@ export const processStripePayment = async (request: PaymentRequest): Promise<Pay
     });
 
     const data = await response.json();
-    
+
     if (data.success) {
       return {
         success: true,
@@ -231,7 +231,7 @@ export const processMpesaPayment = async (request: PaymentRequest): Promise<Paym
     });
 
     const data = await response.json();
-    
+
     if (data.success) {
       return {
         success: true,
@@ -284,7 +284,7 @@ export const processAgroContractPayment = async (request: PaymentRequest): Promi
     });
 
     const data = await response.json();
-    
+
     if (data.success) {
       return {
         success: true,
@@ -310,7 +310,7 @@ export const processAgroContractPayment = async (request: PaymentRequest): Promi
 // Main payment processor
 export const processPayment = async (request: PaymentRequest): Promise<PaymentResponse> => {
   const paymentMethod = PAYMENT_METHODS.find(method => method.id === request.paymentMethod);
-  
+
   if (!paymentMethod) {
     return {
       success: false,
@@ -342,7 +342,7 @@ export const checkPaymentStatus = async (transactionId: string): Promise<Payment
   try {
     const response = await fetch(`/api/payments/status/${transactionId}`);
     const data = await response.json();
-    
+
     return {
       success: data.success,
       transactionId: data.transaction_id,
@@ -365,7 +365,7 @@ export const getSupportedCurrencies = (paymentMethod: string): string[] => {
 
   switch (method.type) {
     case 'stripe':
-      return ['USD', 'EUR', 'GBP', 'NGN', 'KES', 'GHS', 'ZAR'];
+      return ['USD', 'EUR', 'GBP', 'HBAR', 'KES', 'GHS', 'ZAR'];
     case 'mpesa':
       return ['KES', 'TZS', 'UGX'];
     case 'crypto':

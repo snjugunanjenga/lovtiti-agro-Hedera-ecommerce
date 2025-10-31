@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stethoscope, User, MapPin, Phone, CreditCard, Globe, CheckCircle, FileText, Award, Plus, X } from 'lucide-react';
-import { veterinarianKycSchema } from "@/utils/validators";
+import { agroExpertKycSchema } from "@/utils/validators";
 
 export default function VeterinarianOnboarding() {
 	const [formData, setFormData] = useState({
@@ -43,7 +43,7 @@ export default function VeterinarianOnboarding() {
 		setError(null);
 
 		try {
-			const parsed = veterinarianKycSchema.safeParse({ 
+			const parsed = agroExpertKycSchema.safeParse({ 
 				...formData, 
 				type: "AGROEXPERT" as const,
 				productSupplierPermits: formData.productSupplierPermits.filter(permit => permit.trim() !== ''),

@@ -300,7 +300,7 @@ export interface EscrowTransaction {
 
 export interface DeliveryStatus {
   isShipped: boolean;
-  trackingNumber?: string;
+  trackiHBARumber?: string;
   carrier?: string;
   estimatedDelivery?: Date;
   actualDelivery?: Date;
@@ -473,7 +473,7 @@ export interface NFTError {
 }
 
 // WebSocket Event Types
-export type NFTEventType = 
+export type NFTEventType =
   | "NFT_MINTED"
   | "NFT_LISTED"
   | "NFT_UNLISTED"

@@ -56,7 +56,7 @@ function DisputeManagementContent() {
         quantity: 50,
         unit: 'kg',
         price: 25000,
-        currency: 'NGN',
+        currency: 'HBAR',
         orderDate: '2024-01-10T08:00:00Z',
         deliveryDate: '2024-01-12T15:30:00Z'
       },
@@ -116,7 +116,7 @@ function DisputeManagementContent() {
         quantity: 1,
         unit: 'trip',
         price: 15000,
-        currency: 'NGN',
+        currency: 'HBAR',
         orderDate: '2024-01-12T10:00:00Z',
         deliveryDate: '2024-01-13T14:00:00Z'
       },
@@ -176,7 +176,7 @@ function DisputeManagementContent() {
         quantity: 1,
         unit: 'session',
         price: 8000,
-        currency: 'NGN',
+        currency: 'HBAR',
         orderDate: '2024-01-10T14:00:00Z',
         deliveryDate: '2024-01-11T10:00:00Z'
       },

@@ -2,10 +2,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useWallet } from './useWallet';
 import { nftService, defaultNFTServiceConfig } from '../utils/nftService';
-import { 
-  BaseNFT, 
-  NFTListing, 
-  NFTTransaction, 
+import {
+  BaseNFT,
+  NFTListing,
+  NFTTransaction,
   EscrowTransaction,
   ServiceBooking,
   EquipmentLease,
@@ -571,7 +571,7 @@ export function useEscrow(transactionId?: string) {
   const updateDeliveryStatus = useCallback(async (
     id: string,
     status: string,
-    trackingNumber?: string,
+    trackiHBARumber?: string,
     carrier?: string
   ) => {
     if (!wallet) {
@@ -585,7 +585,7 @@ export function useEscrow(transactionId?: string) {
       const service = nftService;
       // service.setWalletAccount(wallet);
 
-      await service.updateDeliveryStatus(id, status, trackingNumber, carrier);
+      await service.updateDeliveryStatus(id, status, trackiHBARumber, carrier);
       await fetchEscrow(id); // Refresh data
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to update delivery status";

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 		const roleMapping: Record<string, string> = {
 			"BUYER": "BUYER",
 			"FARMER": "FARMER",
-			"DISTRIBUTOR": "DISTRIBUTOR", 
+			"DISTRIBUTOR": "DISTRIBUTOR",
 			"TRANSPORTER": "TRANSPORTER",
 			"AGROEXPERT": "AGROEXPERT"
 		};
@@ -37,23 +37,23 @@ export async function POST(req: Request) {
 		// Create profile with role-specific data
 		const profile = await prisma.profile.upsert({
 			where: { userId_type: { userId: user.id, type: type as any } },
-			create: { 
-				userId: user.id, 
-				type: type as any, 
-				fullName, 
-				country, 
-				address, 
-				idNumber, 
-				phone, 
-				hederaWallet, 
-				kycStatus: "PENDING" 
+			create: {
+				userId: user.id,
+				type: type as any,
+				fullName,
+				country,
+				address,
+				idNumber,
+				phone,
+				hederaWallet,
+				kycStatus: "PENDING"
 			},
-			update: { 
-				fullName, 
-				country, 
-				address, 
-				idNumber, 
-				phone, 
+			update: {
+				fullName,
+				country,
+				address,
+				idNumber,
+				phone,
 				hederaWallet,
 				kycStatus: "PENDING" // Reset to pending when updating
 			},
@@ -66,9 +66,9 @@ export async function POST(req: Request) {
 		} else if (type === "TRANSPORTER") {
 			const { vehicleRegistrations, insurancePolicy, drivingLicense, fleetSize, vehicleTypes } = parsed.data;
 			console.log("Transporter KYC:", { vehicleRegistrations, insurancePolicy, drivingLicense, fleetSize, vehicleTypes });
-		} else if (type === "VETERINARIAN") {
+		} else if (type === "AGROEXPERT") {
 			const { professionalLicense, productSupplierPermits, agriculturalExpertiseCert, specialization, yearsOfExperience } = parsed.data;
-			console.log("Veterinarian KYC:", { professionalLicense, productSupplierPermits, agriculturalExpertiseCert, specialization, yearsOfExperience });
+			console.log("AgroExpert KYC:", { professionalLicense, productSupplierPermits, agriculturalExpertiseCert, specialization, yearsOfExperience });
 		} else if (type === "FARMER") {
 			const { landOwnership, certifications, farmSize, cropTypes } = parsed.data;
 			console.log("Farmer KYC:", { landOwnership, certifications, farmSize, cropTypes });

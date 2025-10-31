@@ -28,7 +28,7 @@ export default function TestCartPersistence() {
     name: 'Test Organic Tomatoes',
     description: 'Fresh organic tomatoes for testing',
     price: 5000,
-    currency: 'NGN',
+    currency: 'HBAR',
     quantity: 1,
     unit: 'kg',
     images: ['https://images.unsplash.com/photo-1592924357228-91a4daadcfea'],
@@ -81,8 +81,8 @@ export default function TestCartPersistence() {
                 disabled={isInCart(testProduct.productId, testProduct.listingId)}
               >
                 <ShoppingCart className="w-4 h-4 mr-2" />
-                {isInCart(testProduct.productId, testProduct.listingId) 
-                  ? '✅ Added to Cart' 
+                {isInCart(testProduct.productId, testProduct.listingId)
+                  ? '✅ Added to Cart'
                   : 'Add Test Product to Cart'}
               </Button>
 
@@ -91,15 +91,14 @@ export default function TestCartPersistence() {
                 variant="outline"
                 className="w-full"
               >
-                <Heart 
-                  className={`w-4 h-4 mr-2 ${
-                    isLiked(testProduct.productId, testProduct.listingId) 
-                      ? 'fill-red-500 text-red-500' 
+                <Heart
+                  className={`w-4 h-4 mr-2 ${isLiked(testProduct.productId, testProduct.listingId)
+                      ? 'fill-red-500 text-red-500'
                       : ''
-                  }`} 
+                    }`}
                 />
-                {isLiked(testProduct.productId, testProduct.listingId) 
-                  ? '❤️ Liked' 
+                {isLiked(testProduct.productId, testProduct.listingId)
+                  ? '❤️ Liked'
                   : 'Like Test Product'}
               </Button>
 
@@ -138,7 +137,7 @@ export default function TestCartPersistence() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Price:</span>
                   <span className="font-bold text-green-600">
-                    NGN {totalPrice.toLocaleString()}
+                    HBAR {totalPrice.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between">

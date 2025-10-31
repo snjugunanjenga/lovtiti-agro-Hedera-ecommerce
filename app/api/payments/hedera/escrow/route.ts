@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { 
-  Client, 
-  PrivateKey, 
-  AccountId, 
-  TransferTransaction, 
+import {
+  Client,
+  PrivateKey,
+  AccountId,
+  TransferTransaction,
   Hbar,
   ContractCreateFlow,
   ContractFunctionParameters,
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Initialize Hedera client
     const accountId = process.env.HEDERA_ACCOUNT_ID!;
     const privateKey = process.env.HEDERA_PRIVATE_KEY!;
-    
+
     if (!accountId || !privateKey) {
       throw new Error('Hedera credentials not configured');
     }
@@ -44,10 +44,10 @@ export async function POST(request: NextRequest) {
       privateKeyObj
     );
 
-    // Convert NGN to HBAR (simplified conversion rate)
+    // Convert HBAR to HBAR (simplified conversion rate)
     // In production, you would use a real-time exchange rate API
-    const ngnToHbarRate = 0.0001; // 1 NGN = 0.0001 HBAR (example rate)
-    const hbarAmount = Math.round(totals.total * ngnToHbarRate * 100) / 100; // Round to 2 decimal places
+    const HBARToHbarRate = 0.0001; // 1 HBAR = 0.0001 HBAR (example rate)
+    const hbarAmount = Math.round(totals.total * HBARToHbarRate * 100) / 100; // Round to 2 decimal places
 
     // Create escrow transaction
     const escrowData = {
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Hedera escrow error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Hedera payment failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },
@@ -143,7 +143,7 @@ export async function PUT(request: NextRequest) {
     // Initialize Hedera client
     const accountId = process.env.HEDERA_ACCOUNT_ID!;
     const privateKey = process.env.HEDERA_PRIVATE_KEY!;
-    
+
     let privateKeyObj;
     if (privateKey.startsWith('0x')) {
       privateKeyObj = PrivateKey.fromString(privateKey.slice(2));
@@ -193,7 +193,7 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Hedera escrow release error:', error);
     return NextResponse.json(
-      { 
+      {
         error: 'Escrow release failed',
         message: error instanceof Error ? error.message : 'Unknown error'
       },

@@ -5,16 +5,14 @@ import CartItem from '@/components/cart/CartItem';
 import CartSummary from '@/components/cart/CartSummary';
 import CartEmpty from '@/components/cart/CartEmpty';
 import { Loader2, LogIn } from 'lucide-react';
-// import { useUser } from '@clerk/nextjs';
+import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function CartPage() {
-  // const { isSignedIn, isLoaded } = useUser();
-  const isSignedIn = true; // Allow cart access without authentication for now
-  const isLoaded = true; // Temporary for development
+  const { isSignedIn, isLoaded } = useUser();
   const router = useRouter();
-  
+
   const {
     items,
     totalItems,
