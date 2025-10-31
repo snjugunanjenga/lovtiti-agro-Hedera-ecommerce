@@ -61,7 +61,7 @@ model Listing {
   description        String
   productDescription String?
   priceCents         Int
-  currency           String    @default("USD")
+  currency           String    @default("HBAR")
   quantity           Int
   unit               String    @default("kg")
   category           String
@@ -87,7 +87,7 @@ model Order {
   listingId       String
   status          OrderStatus @default(PENDING)
   amountCents     Int
-  currency        String      @default("USD")
+  currency        String      @default("HBAR")
   hederaEscrow    String?
   deliveryAddress String?
   deliveryDate    DateTime?

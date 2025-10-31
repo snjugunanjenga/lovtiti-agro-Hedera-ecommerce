@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 /**
  * POST /api/listings/[id]/contract
@@ -31,11 +29,11 @@ export async function POST(
     const updatedListing = await prisma.listing.update({
       where: { id },
       data: {
-        contractProductId,
-        contractTxHash,
-        contractPrice: contractPrice ? parseFloat(contractPrice.toString()) : null,
-        contractStock: contractStock ? parseInt(contractStock.toString()) : null,
-        contractCreatedAt: new Date()
+        //contractProductId,
+        //contractTxHash,
+        //contractPrice: contractPrice ? parseFloat(contractPrice.toString()) : null,
+        //contractStock: contractStock ? parseInt(contractStock.toString()) : null,
+        //contractCreatedAt: new Date()
       }
     });
 

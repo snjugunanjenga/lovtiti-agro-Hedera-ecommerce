@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { auth } from "@clerk/nextjs/server";
 
-const prisma = new PrismaClient();
-
+import prisma from '@/lib/prisma';
 // GET /api/listings/[id] - Get a specific listing
 export async function GET(
   request: Request,
@@ -61,13 +59,13 @@ export async function PUT(
 ) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
-    
+
     // Check if listing exists and user owns it
     const existingListing = await prisma.listing.findUnique({
       where: { id: params.id },
@@ -118,6 +116,49 @@ export async function PUT(
   }
 }
 
+// PATCH /api/listings/[id] - Update specific fields of a listing
+export async function PATCH(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+
+    // Check if listing exists and user owns it
+    const existingListing = await prisma.listing.findUnique({
+      where: { id: params.id },
+      select: { sellerId: true },
+    });
+
+    if (!existingListing) {
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
+    }
+
+    if (existingListing.sellerId !== userId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const updatedListing = await prisma.listing.update({
+      where: { id: params.id },
+      data: body,
+    });
+
+    return NextResponse.json(updatedListing);
+  } catch (error) {
+    console.error('Error updating listing:', error);
+    return NextResponse.json(
+      { error: 'Failed to update listing' },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE /api/listings/[id] - Delete a listing
 export async function DELETE(
   request: Request,
@@ -125,7 +166,7 @@ export async function DELETE(
 ) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -144,10 +185,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Soft delete by setting isActive to false
-    await prisma.listing.update({
+    // Hard delete the listing
+    await prisma.listing.delete({
       where: { id: params.id },
-      data: { isActive: false },
     });
 
     return NextResponse.json({ message: 'Listing deleted successfully' });

@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import CreateProduct from '@/components/farmer/CreateProduct';
+import FarmerListings from '@/components/farmer/FarmerListings';
 // import DashboardGuard from '@/components/DashboardGuard';
 import {
   Leaf,
@@ -32,13 +34,45 @@ import {
 
 function FarmerDashboardContent() {
   const [activeTab, setActiveTab] = useState('overview');
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [stats, setStats] = useState({
+    totalListings: 0,
+    totalSales: 0,
+    totalRevenue: 0,
+    pendingOrders: 0
+  });
 
-  // Mock data - in real app, this would come from API
-  const stats = {
-    totalListings: 12,
-    totalSales: 45,
-    totalRevenue: 125000,
-    pendingOrders: 8
+  // Fetch dashboard stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('/api/listings/farmer');
+        if (response.ok) {
+          const data = await response.json();
+          const listings = data.listings || [];
+
+          const totalListings = listings.length;
+          const totalSales = listings.reduce((sum: number, listing: any) => sum + listing.totalOrders, 0);
+          const totalRevenue = listings.reduce((sum: number, listing: any) => sum + listing.totalRevenue, 0);
+          const pendingOrders = listings.reduce((sum: number, listing: any) => sum + listing.pendingOrders, 0);
+
+          setStats({
+            totalListings,
+            totalSales,
+            totalRevenue,
+            pendingOrders
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, [refreshTrigger]);
+
+  const handleProductCreated = () => {
+    setRefreshTrigger(prev => prev + 1);
   };
 
   const recentListings = [
@@ -145,7 +179,7 @@ function FarmerDashboardContent() {
                 <DollarSign className="h-8 w-8 text-green-600" />
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">ℏ{stats.totalRevenue.toLocaleString()}</p>
+                  <p className="text-2xl font-bold text-gray-900">ℏ{(stats.totalRevenue / 100).toFixed(2)}</p>
                 </div>
               </div>
             </CardContent>
@@ -175,8 +209,8 @@ function FarmerDashboardContent() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center space-x-2 ${activeTab === tab.id
-                        ? 'border-green-500 text-green-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      ? 'border-green-500 text-green-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
                   >
                     <Icon className="h-4 w-4" />
@@ -207,8 +241,8 @@ function FarmerDashboardContent() {
                       </div>
                       <div className="text-right">
                         <span className={`px-2 py-1 text-xs rounded-full ${listing.status === 'Active'
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-100 text-gray-800'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
                           }`}>
                           {listing.status}
                         </span>
@@ -217,8 +251,12 @@ function FarmerDashboardContent() {
                     </div>
                   ))}
                 </div>
-                <Button className="w-full mt-4" variant="outline">
-                  View All Listings
+                <Button
+                  className="w-full mt-4"
+                  variant="outline"
+                  onClick={() => setActiveTab('listings')}
+                >
+                  {recentListings.length === 0 ? 'Create First Listing' : 'View All Listings'}
                 </Button>
               </CardContent>
             </Card>
@@ -240,10 +278,10 @@ function FarmerDashboardContent() {
                       <div className="text-right">
                         <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
                         <span className={`px-2 py-1 text-xs rounded-full ${order.status === 'Delivered'
-                            ? 'bg-green-100 text-green-800'
-                            : order.status === 'Shipped'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-green-100 text-green-800'
+                          : order.status === 'Shipped'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-yellow-100 text-yellow-800'
                           }`}>
                           {order.status}
                         </span>
@@ -262,76 +300,10 @@ function FarmerDashboardContent() {
         {activeTab === 'listings' && (
           <div className="space-y-6">
             {/* Add New Listing */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Plus className="h-5 w-5" />
-                  <span>Add New Listing</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="productName">Product Name</Label>
-                    <Input id="productName" placeholder="Enter product name" />
-                  </div>
-                  <div>
-                    <Label htmlFor="price">Price per Unit (ℏ)</Label>
-                    <Input id="price" type="number" placeholder="Enter price" />
-                  </div>
-                  <div>
-                    <Label htmlFor="quantity">Quantity Available</Label>
-                    <Input id="quantity" type="number" placeholder="Enter quantity" />
-                  </div>
-                  <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Input id="category" placeholder="e.g., Vegetables, Grains" />
-                  </div>
-                </div>
-                <Button className="mt-4">Create Listing</Button>
-              </CardContent>
-            </Card>
+            <CreateProduct onProductCreated={handleProductCreated} />
 
             {/* Listings Management */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>My Listings</CardTitle>
-                    <CardDescription>Manage your product listings</CardDescription>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div className="relative">
-                      <Search className="h-4 w-4 absolute left-3 top-3 text-gray-400" />
-                      <Input placeholder="Search listings..." className="pl-10" />
-                    </div>
-                    <Button variant="outline" size="sm">
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filter
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentListings.map((listing) => (
-                    <div key={listing.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h4 className="font-medium">{listing.name}</h4>
-                        <p className="text-sm text-gray-600">ℏ{listing.price} per unit • {listing.quantity} units available</p>
-                        <p className="text-sm text-gray-500">{listing.views} views</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="outline" size="sm">Edit</Button>
-                        <Button variant="outline" size="sm">
-                          {listing.status === 'Active' ? 'Deactivate' : 'Activate'}
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            <FarmerListings refreshTrigger={refreshTrigger} />
           </div>
         )}
 
@@ -353,10 +325,10 @@ function FarmerDashboardContent() {
                     <div className="text-right">
                       <p className="font-medium">ℏ{order.total.toLocaleString()}</p>
                       <span className={`px-2 py-1 text-xs rounded-full ${order.status === 'Delivered'
-                          ? 'bg-green-100 text-green-800'
-                          : order.status === 'Shipped'
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                        ? 'bg-green-100 text-green-800'
+                        : order.status === 'Shipped'
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-yellow-100 text-yellow-800'
                         }`}>
                         {order.status}
                       </span>

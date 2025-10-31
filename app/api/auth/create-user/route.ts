@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient, Role } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { logUserRegistration } from '@/utils/userActivityLogger';
 import { getRoleDisplayName, getRolePermissions, UserRole } from '@/utils/roleManager';
 import { z } from 'zod';
+import { AGRO_CONTRACT_ID, hederaClient } from '@/lib/hederaClient';
+import { ContractExecuteTransaction, ContractFunctionParameters } from '@hashgraph/sdk';
 
-const prisma = new PrismaClient();
 
 // Validation schema for create user request
 const createUserSchema = z.object({
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
       data: {
         id: userId,
         email,
-        role: role as Role
+        role: role as any
       }
     });
 
@@ -88,6 +89,27 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (role === "FARMER" && profile && profile.hederaWallet) {
+      try {
+        console.log("🌾 Executing registerFarmer() on Hedera...");
+        console.log("📜 Contract ID:", AGRO_CONTRACT_ID.toString());
+        console.log("👤 Wallet:", profile.hederaWallet);
+    
+        const tx = await new ContractExecuteTransaction()
+          .setContractId(AGRO_CONTRACT_ID)
+          .setGas(400_000)
+          .setFunction(
+            "registerFarmer",
+            new ContractFunctionParameters().addAddress(profile.hederaWallet)
+          )
+          .execute(hederaClient); // Automatically signed using your operator key
+    
+        const receipt = await tx.getReceipt(hederaClient);
+        console.log("✅ Hedera transaction status:", receipt.status.toString());
+      } catch (hederaError: any) {
+        console.error("❌ Hedera contract execution failed:", hederaError.message || hederaError);
+      }
+    }
     console.log('✅ User created successfully:', newUser);
 
     // Log user registration activity

@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import prisma from '@/lib/prisma';
+import { ContractExecuteTransaction, ContractFunctionParameters, } from "@hashgraph/sdk";
+import { uploadToIPFS } from "@/utils/pinata"; //Use your Pinata util
 import { auth } from "@clerk/nextjs/server";
+import dotenv from "dotenv";
+import { AGRO_CONTRACT_ID, hederaClient } from "@/lib/hederaClient";
 
-const prisma = new PrismaClient();
+dotenv.config();
 
 // GET /api/listings - Get all listings with optional filters
 export async function GET(request: Request) {
@@ -101,13 +105,11 @@ export async function GET(request: Request) {
 }
 
 // POST /api/listings - Create a new listing
+
 export async function POST(request: Request) {
   try {
     const { userId } = await auth();
-    
-    if (!userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await request.json();
     const {
@@ -125,82 +127,94 @@ export async function POST(request: Request) {
       video,
     } = body;
 
-    // Validate required fields
     if (!title || !description || !priceCents || !quantity || !category) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    // Find or create user in database
+    // Find user
     const user = await prisma.user.findUnique({
-      where: { email: `${userId}@clerk.local` },
-      include: {
-        profiles: {
-          where: {
-            type: { in: ['FARMER', 'AGROEXPERT'] },
-          },
-        },
-      },
+      where: { id: userId },
+      include: { profiles: true },
     });
 
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found. Please complete your profile first.' },
-        { status: 404 }
-      );
-    }
+    if (!user)
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Check if user has farmer or agro expert profile (KYC not strictly required for now)
-    const hasValidProfile = user.profiles.length > 0;
-
+    const hasValidProfile = user.profiles.some((p) =>
+      ["FARMER", "AGROEXPERT"].includes(p.type)
+    );
     if (!hasValidProfile) {
       return NextResponse.json(
-        { error: 'Farmer or Agro Expert profile required. Please complete KYC verification.' },
+        { error: "Farmer or Agro Expert profile required." },
         { status: 403 }
       );
     }
 
+    // ✅ Upload images to Pinata (instead of Infura IPFS)
+    const uploadedImages: string[] = [];
+    for (const file of images || []) {
+      if (typeof file === "string") {
+        uploadedImages.push(file); // already uploaded or base64 URL
+      } else {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const uploaded = await uploadToIPFS(buffer, title);
+        uploadedImages.push(`https://gateway.pinata.cloud/ipfs/${uploaded.IpfsHash}`);
+      }
+    }
+
+    // ✅ Call Hedera smart contract
+    const tx = new ContractExecuteTransaction()
+      .setContractId(AGRO_CONTRACT_ID)
+      .setGas(300000)
+      .setFunction(
+        "addProduct",
+        new ContractFunctionParameters()
+          .addUint256(Number(priceCents))
+          .addUint256(Math.floor(Number(quantity)))
+      );
+
+    const submitTx = await tx.execute(hederaClient);
+    const receipt = await submitTx.getReceipt(hederaClient);
+    const status = receipt.status.toString();
+
+    if (status !== "SUCCESS") {
+      return NextResponse.json(
+        { error: `Hedera contract execution failed: ${status}` },
+        { status: 500 }
+      );
+    }
+
+    // Store contract transaction hash for future use
+    const contractTxHash = submitTx.transactionId.toString();
+    console.log(`✅ Hedera contract transaction: ${contractTxHash}`);
+
+    // ✅ Save to Prisma DB
     const listing = await prisma.listing.create({
       data: {
         title,
         description,
         productDescription,
         priceCents: parseInt(priceCents),
+        currency: "HBAR",
         quantity: parseFloat(quantity),
         unit,
         category,
         location,
         harvestDate: harvestDate ? new Date(harvestDate) : null,
         expiryDate: expiryDate ? new Date(expiryDate) : null,
-        images: images || [],
+        images: uploadedImages,
         video,
         sellerId: user.id,
       },
-      include: {
-        seller: {
-          select: {
-            id: true,
-            email: true,
-            profiles: {
-              where: { type: 'FARMER' },
-              select: {
-                fullName: true,
-                country: true,
-              },
-            },
-          },
-        },
-      },
     });
 
-    return NextResponse.json(listing, { status: 201 });
-  } catch (error) {
-    console.error('Error creating listing:', error);
+    return NextResponse.json({ success: true, listing }, { status: 201 });
+  } catch (err) {
+    console.error("Error creating listing:", err);
     return NextResponse.json(
-      { error: 'Failed to create listing' },
+      { error: "Failed to create listing" },
       { status: 500 }
     );
   }
 }
+
